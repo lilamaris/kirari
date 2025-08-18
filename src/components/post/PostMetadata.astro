@@ -1,0 +1,38 @@
+---
+import { CalendarDays, Bookmark, Tag } from "@lucide/astro"
+import { formatDate } from "@/lib/utils";
+import IconText from "@/components/IconText.astro";
+import { Fragment } from "react";
+import type { Post } from "@/types/post";
+
+interface Props {
+  class?: string;
+    post: Post
+}
+
+const { class:className, post }: Props = Astro.props;
+---
+<div class="flex gap-x-4 md:flex-row flex-col">
+  <IconText>
+    <CalendarDays slot="icon" />
+    {formatDate(post.data.published)}
+  </IconText>
+  {post.data.seriesName && (
+    <IconText>
+      <Bookmark slot="icon" />
+      {post.data.seriesName}
+    </IconText>
+  )}
+  <IconText>
+    <Tag slot="icon" />
+    <div class="flex gap-2 flex-nowrap">
+      <span>
+        {post.data.category}
+      </span>
+      {(post.data.tags.map((tag,i) => (
+        <div class:list={[{"hidden": i==0}, "mx-1.5 text-sm"]}>/</div>
+        <a href={""}>{tag.trim()}</a>
+      )))}
+    </div>
+  </IconText>
+</div>

@@ -1,0 +1,27 @@
+---
+import PostMetadata from "@/components/post/PostMetadata.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getAllPosts } from "@/lib/post";
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+
+export const getStaticPaths = (async () => {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({
+    params: { slug: post.data.slug },
+    props: { post }
+  }))
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+---
+<Layout>
+  <div class="bg-sidebar p-6 rounded-lg">
+    <h1>{post.data.title}</h1>
+    <PostMetadata post={post} />
+    <article class="prose">
+      <Content />
+    </article>
+  </div>
+</Layout>

@@ -1,0 +1,37 @@
+---
+import { Button } from "@/components/ui/button";
+import { Sun } from "@lucide/astro";
+---
+
+<Button id="theme-controller" variant="ghost">
+  <Sun />
+</Button>
+
+<script is:inline>
+  const getThemePreference = () => {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+      return localStorage.getItem("theme");
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  };
+
+  const theme = getThemePreference();
+  document.documentElement.setAttribute("data-theme", theme);
+  window.localStorage.setItem("theme", theme);
+</script>
+
+<script>
+  function handleToggle() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", nextTheme);
+    window.localStorage.setItem("theme", nextTheme);
+  }
+
+  const controller = document.getElementById("theme-controller");
+  if (controller) {
+    controller.addEventListener("click", handleToggle);
+  }
+</script>

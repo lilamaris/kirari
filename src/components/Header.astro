@@ -1,0 +1,15 @@
+---
+import ThemeController from "./header/ThemeController.astro";
+
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props;
+---
+
+<header class:list={["flex gap-x-8 px-4 py-3 items-center justify-between rounded-b-lg", className]}>
+  This is Header
+
+  <ThemeController />
+</header>
