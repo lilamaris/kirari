@@ -1,0 +1,21 @@
+---
+import type { Post } from '@/types/post';
+import PostMetadata from './PostMetadata.astro';
+
+  interface Props {
+    class?: string;
+    post: Post
+  }
+
+  const { class: className, post }: Props = Astro.props;
+---
+<div class:list={["flex flex-col rounded-md bg-sidebar"]}>
+    <div class="p-6">
+
+    <a href={`/posts/${post.data.slug}`}>{post.data.title}</a>
+    <PostMetadata post={post} />
+      <div class="mb-3.5 pr-4 line-clamp-2">
+        { post.data.description }
+      </div>
+    </div>
+</div>

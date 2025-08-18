@@ -1,0 +1,27 @@
+---
+import "@/styles/global.css";
+import "@/styles/typography.css";
+
+import Header from "@/components/Header.astro";
+
+import { SITE_CONFIG } from "@/consts/site";
+import Img from "@/components/Img.astro"
+---
+
+<!doctype html>
+<html lang={SITE_CONFIG.lang}>
+  <head>
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen transition">
+    <div class="max-w-[var(--page-width)] mx-auto">
+      <Header class="bg-sidebar" />
+    </div>
+    <div class="absolute w-full top-0 -z-10 pointer-events-none select-none">
+      <Img src="/src/assets/demo-banner.jpg" alt="banner" class="h-[var(--banner-height)]" />
+    </div>
+    <main class="relative max-w-[var(--page-width)] mx-auto top-[calc(var(--banner-height)_-_5rem)]">
+      <slot />
+    </main>
+  </body>
+</html>
