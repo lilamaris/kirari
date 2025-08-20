@@ -5,6 +5,8 @@ export const SITE_CONFIG: SiteConfig = {
   description: "goot blog template",
   author: "lilamaris",
   lang: "en",
+  theme: "light",
+  hue: 270,
 };
 export const SITE_APPEARANCE_CONFIG: SiteAppearanceConfig = {
   bannerHeight: 75,

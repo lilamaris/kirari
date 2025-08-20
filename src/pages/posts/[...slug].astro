@@ -9,15 +9,16 @@ export const getStaticPaths = (async () => {
   const posts = await getAllPosts();
   return posts.map((post) => ({
     params: { slug: post.data.slug },
-    props: { post }
-  }))
+    props: { post },
+  }));
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 ---
+
 <Layout>
-  <div class="bg-sidebar p-6 rounded-lg">
+  <div class="bg-sidebar rounded-lg p-6">
     <h1>{post.data.title}</h1>
     <PostMetadata post={post} />
     <article class="prose">

@@ -5,22 +5,34 @@ import "@/styles/typography.css";
 import Header from "@/components/Header.astro";
 
 import { SITE_CONFIG } from "@/consts/site";
-import Img from "@/components/Img.astro"
+import Img from "@/components/Img.astro";
 ---
 
 <!doctype html>
-<html lang={SITE_CONFIG.lang}>
+<html lang={SITE_CONFIG.lang} class="bg-[var(--page-bg)] transition">
   <head>
+    <script is:inline>
+      const theme = localStorage.getItem("theme") || "light";
+      const hue = localStorage.getItem("hue") || 250;
+      document.documentElement.style.setProperty("--hue", hue);
+      document.documentElement.setAttribute("data-theme", theme);
+    </script>
     <slot name="head" />
   </head>
-  <body class="min-h-screen transition">
-    <div class="max-w-[var(--page-width)] mx-auto">
-      <Header class="bg-sidebar" />
+  <body class="min-h-screen">
+    <div class="mx-auto max-w-[var(--page-width)]">
+      <Header />
     </div>
-    <div class="absolute w-full top-0 -z-10 pointer-events-none select-none">
-      <Img src="/src/assets/demo-banner.jpg" alt="banner" class="h-[var(--banner-height)]" />
+    <div class="pointer-events-none absolute top-0 -z-10 w-full select-none">
+      <Img
+        src="/src/assets/demo-banner.jpg"
+        alt="banner"
+        class="h-[var(--banner-height)]"
+      />
     </div>
-    <main class="relative max-w-[var(--page-width)] mx-auto top-[calc(var(--banner-height)_-_5rem)]">
+    <main
+      class="relative top-[calc(var(--banner-height)_-_5rem)] mx-auto max-w-[var(--page-width)]"
+    >
       <slot />
     </main>
   </body>

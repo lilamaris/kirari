@@ -1,0 +1,15 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className }: Props = Astro.props;
+const BASE_CLS = "card";
+---
+
+<div class:list={[BASE_CLS, "flex flex-col gap-2 rounded-md p-6"]}>
+  <div>|<slot name="title" /></div>
+  <div class="flex-1">
+    <slot />
+  </div>
+</div>

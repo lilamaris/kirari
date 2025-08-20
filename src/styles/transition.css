@@ -1,0 +1,29 @@
+@reference './global.css';
+
+/* html.is-changing .transition-fade { */
+/*   @apply transition-all duration-200; */
+/* } */
+/**/
+/* html.is-animating .transition-fade { */
+/*   @apply translate-y-4 opacity-0; */
+/* } */
+/**/
+/* @keyframes fade-in-up { */
+/*   0% { */
+/*     transform: translateY(2rem); */
+/*     opacity: 0; */
+/*   } */
+/*   100% { */
+/*     transform: translateY(0); */
+/*     opacity: 1; */
+/*   } */
+/* } */
+/**/
+/* @layer components { */
+/*   /* Main components */ */
+/*   .onload-animation { */
+/*     opacity: 0; */
+/*     animation: 300ms fade-in-up; */
+/*     animation-fill-mode: forwards; */
+/*   } */
+/* } */

@@ -12,12 +12,15 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 ---
+
 <Layout>
-    <ul class="flex flex-col gap-4">
-      {page.data.map((post) => (
+  <ul class="flex flex-col gap-4">
+    {
+      page.data.map((post) => (
         <li>
-      <PostCard post={post} />
+          <PostCard post={post} />
         </li>
-      ))}
-    </ul>
+      ))
+    }
+  </ul>
 </Layout>

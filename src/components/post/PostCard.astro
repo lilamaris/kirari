@@ -1,21 +1,22 @@
 ---
-import type { Post } from '@/types/post';
-import PostMetadata from './PostMetadata.astro';
+import type { Post } from "@/types/post";
+import Card from "@/components/Card.astro";
+import PostMetadata from "@/components/post/PostMetadata.astro";
 
-  interface Props {
-    class?: string;
-    post: Post
-  }
+interface Props {
+  class?: string;
+  post: Post;
+}
 
-  const { class: className, post }: Props = Astro.props;
+const { class: className, post }: Props = Astro.props;
 ---
-<div class:list={["flex flex-col rounded-md bg-sidebar"]}>
-    <div class="p-6">
 
-    <a href={`/posts/${post.data.slug}`}>{post.data.title}</a>
+<Card>
+  <a slot="title" href={`/posts/${post.data.slug}`}>{post.data.title}</a>
+  <div>
     <PostMetadata post={post} />
-      <div class="mb-3.5 pr-4 line-clamp-2">
-        { post.data.description }
-      </div>
+    <div class="mb-3.5 line-clamp-2 pr-4">
+      {post.data.description}
     </div>
-</div>
+  </div>
+</Card>
