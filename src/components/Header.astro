@@ -1,15 +1,15 @@
 ---
-import ThemeController from "./header/ThemeController.astro";
+import ThemeController from "./header/ThemeController.svelte";
+import HueController from "@/components/header/HueController.svelte";
 
 interface Props {
-  class?: string
+  class?: string;
 }
 
 const { class: className } = Astro.props;
 ---
 
-<header class:list={["flex gap-x-8 px-4 py-3 items-center justify-between rounded-b-lg", className]}>
-  This is Header
-
-  <ThemeController />
+<header class:list={[className, "card flex justify-between px-4 py-3"]}>
+  <HueController client:only="svelte" />
+  <ThemeController client:only="svelte" />
 </header>

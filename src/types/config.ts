@@ -3,6 +3,8 @@ export interface SiteConfig {
   description: string;
   author: string;
   lang: string;
+  theme: SiteTheme;
+  hue: number;
 }
 
 export interface SiteAppearanceConfig {
@@ -12,3 +14,5 @@ export interface SiteAppearanceConfig {
   recentPostCount: number;
   postPerPageCount: number;
 }
+
+export type SiteTheme = "light" | "dark" | "system";
