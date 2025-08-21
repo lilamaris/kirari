@@ -3,6 +3,10 @@ import Img from "@/components/ui/Img.astro";
 import Layout from "@/layouts/Layout.astro";
 
 import { SITE_CONFIG } from "@/consts/site";
+import { getAllPosts } from "@/lib/post";
+import PostMetadata from "@/components/PostMetadata.astro";
+
+const recentPosts = (await getAllPosts()).slice(0, 3);
 ---
 
 <Layout>
@@ -25,7 +29,16 @@ import { SITE_CONFIG } from "@/consts/site";
 
     <div class="flex flex-col gap-2">
       <div class="card flex flex-col gap-2">Git Activity Calendar</div>
-      <div class="card flex flex-col gap-2">Recently posts</div>
+      <ul class="flex gap-2">
+        {
+          recentPosts.map((post) => (
+            <div class="card flex-1">
+              <PostMetadata post={post} />
+              <p class="mb-3.5 line-clamp-2 pr-4">{post.data.description}</p>
+            </div>
+          ))
+        }
+      </ul>
       <div class="card flex flex-col gap-2">Git Activity Calendar</div>
     </div>
   </div>
