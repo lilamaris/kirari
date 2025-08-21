@@ -1,16 +1,17 @@
 ---
-import { CalendarDays, Bookmark, Tag } from "@lucide/astro"
-import { formatDate } from "@/lib/utils";
-import IconText from "@/components/ui/IconText.astro";
 import { Fragment } from "react";
+import { CalendarDays, Bookmark, Tag } from "@lucide/astro"
+
+import IconText from "@/components/ui/IconText.astro";
+
+import { formatDate } from "@/lib/utils";
 import type { Post } from "@/types/post";
 
 interface Props {
-  class?: string;
-    post: Post
+  post: Post
 }
 
-const { class:className, post }: Props = Astro.props;
+const { post }: Props = Astro.props;
 ---
 <IconText>
   <CalendarDays slot="icon" />
