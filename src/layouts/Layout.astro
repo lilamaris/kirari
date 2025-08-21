@@ -1,5 +1,6 @@
 ---
 import "@/styles/global.css";
+import "@/styles/transition.css";
 
 import Header from "@/components/Header.astro";
 import Img from "@/components/ui/Img.astro";
@@ -30,8 +31,9 @@ import { SITE_CONFIG } from "@/consts/site";
       />
     </div>
     <main
-      class="relative top-[calc(var(--banner-height)_-_10rem)] mx-auto max-w-[var(--page-width)]"
+      class="onload-animation relative top-[calc(var(--banner-height)_-_10rem)] mx-auto max-w-[var(--page-width)]"
     >
+      Hi
       <slot />
     </main>
   </body>
