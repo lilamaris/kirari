@@ -4,14 +4,11 @@ import svelte from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
 import swup from "@swup/astro";
 
-// TODO: Remove reast integration
-import react from "@astrojs/react";
-
 // https://astro.build/config
 export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
 
-  integrations: [react(), svelte(), swup()],
+  integrations: [svelte(), swup()],
 });
