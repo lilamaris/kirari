@@ -1,4 +1,5 @@
 ---
+import { House } from "@lucide/svelte";
 import ThemeController from "./header/ThemeController.svelte";
 import HueController from "@/components/header/HueController.svelte";
 
@@ -9,7 +10,18 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<header class:list={[className, "card flex justify-between px-4 py-3"]}>
-  <HueController client:only="svelte" />
-  <ThemeController client:only="svelte" />
+<header
+  class:list={[
+    className,
+    "card flex items-center justify-between rounded-t-none rounded-b-xl p-4",
+  ]}
+>
+  <div class="flex gap-1 px-5 text-xl">
+    <House /> lilamaris
+  </div>
+  <div></div>
+  <div class="flex gap-1">
+    <HueController client:only="svelte" />
+    <ThemeController client:only="svelte" />
+  </div>
 </header>
