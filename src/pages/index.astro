@@ -1,7 +1,32 @@
 ---
+import Img from "@/components/ui/Img.astro";
 import Layout from "@/layouts/Layout.astro";
+
+import { SITE_CONFIG } from "@/consts/site";
 ---
 
 <Layout>
-  <div class="bg-sidebar grid h-full"></div>
+  <div
+    class="bg-sidebar grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] gap-4"
+  >
+    <div class="flex flex-col gap-2">
+      <div class="card flex flex-col gap-2">
+        <div class="overflow-hidden rounded-lg">
+          <Img src="/src/assets/demo-profile.jpg" alt="profile" />
+        </div>
+        <h1>{SITE_CONFIG.author}</h1>
+        <p>{SITE_CONFIG.description}</p>
+      </div>
+
+      <div class="card flex flex-col gap-2">Tags</div>
+
+      <div class="card flex flex-col gap-2">Categories</div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <div class="card flex flex-col gap-2">Git Activity Calendar</div>
+      <div class="card flex flex-col gap-2">Recently posts</div>
+      <div class="card flex flex-col gap-2">Git Activity Calendar</div>
+    </div>
+  </div>
 </Layout>
