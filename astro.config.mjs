@@ -10,5 +10,12 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  integrations: [svelte(), swup()],
+  integrations: [
+    svelte(),
+    swup({
+      theme: false,
+      animationClass: "transition-swup-",
+      containers: ["main", "#toc"],
+    }),
+  ],
 });

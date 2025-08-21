@@ -1,5 +1,5 @@
 ---
-import { CalendarDays, Bookmark, Tag } from "@lucide/svelte"
+import { CalendarDays, BookMarked, Bookmark, Tag } from "@lucide/svelte"
 
 import IconText from "@/components/ui/IconText.astro";
 
@@ -16,18 +16,20 @@ const { post }: Props = Astro.props;
   <CalendarDays slot="icon" />
   {formatDate(post.data.published)}
 </IconText>
+
+<IconText>
+  <BookMarked slot="icon" />
+  {post.data.seriesName}
+</IconText>
 {post.data.seriesName && (
   <IconText>
     <Bookmark slot="icon" />
-    {post.data.seriesName}
+    {post.data.category}
   </IconText>
 )}
 <IconText>
   <Tag slot="icon" />
   <div class="flex gap-2 flex-nowrap">
-    <span>
-      {post.data.category}
-    </span>
     {(post.data.tags.map((tag,i) => (
       <div class:list={[{"hidden": i==0}, "mx-1.5 text-sm"]}>/</div>
       <a href={""}>{tag.trim()}</a>
