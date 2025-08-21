@@ -33,6 +33,7 @@ const recentPosts = (await getAllPosts()).slice(0, 3);
         {
           recentPosts.map((post) => (
             <li class="card flex-1">
+              <a href={`/posts/${post.data.slug}`}>{post.data.title}</a>
               <PostMetadata post={post} />
               <p class="mb-3.5 line-clamp-2 pr-4">{post.data.description}</p>
             </li>

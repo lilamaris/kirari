@@ -1,10 +1,10 @@
 @reference './global.css';
 
-html.is-changing .transition-swup-fade {
+html.is-changing .transition-fade {
   @apply transition-all duration-200;
 }
 
-html.is-animating .transition-swup-fade {
+html.is-animating .transition-fade {
   @apply translate-y-4 opacity-0;
 }
 
