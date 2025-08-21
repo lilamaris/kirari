@@ -1,10 +1,11 @@
 ---
-import PostMetadata from "@/components/PostMetadata.astro";
-import Layout from "@/layouts/Layout.astro";
-import { getAllPosts } from "@/lib/post";
-
 import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
+
+import Layout from "@/layouts/Layout.astro";
+import PostMetadata from "@/components/PostMetadata.astro";
+
+import { getAllPosts } from "@/lib/post";
 
 export const getStaticPaths = (async () => {
   const posts = await getAllPosts();
@@ -15,7 +16,7 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
-const { Content, headings } = await render(post);
+const { Content } = await render(post);
 ---
 
 <Layout>

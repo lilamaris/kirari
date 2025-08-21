@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { getHue, setHue } from "@/lib/utils";
   import { Palette } from "@lucide/svelte";
+
+  import { getHue, setHue } from "@/lib/utils";
 
   let hue = $state(getHue());
 

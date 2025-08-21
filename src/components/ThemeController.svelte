@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SiteTheme } from "@/types/config";
-  import { Moon, Palette, Sun, SunMoon } from "@lucide/svelte";
+  import { Moon, Sun, SunMoon } from "@lucide/svelte";
+
   import { setTheme } from "@/lib/utils";
 
   const themes: SiteTheme[] = ["light", "dark", "system"];
@@ -18,7 +19,6 @@
 
 {#snippet ThemeIcon(theme: SiteTheme)}
   {#if theme === "light"}
-    <!-- content here -->
     <Sun />
   {:else if theme === "dark"}
     <Moon />
