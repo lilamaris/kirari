@@ -20,7 +20,10 @@ const { class: className } = Astro.props;
   <div class="flex gap-1 px-5 text-xl">
     <House /> lilamaris
   </div>
-  <div><a href="/">Home</a></div>
+  <div class="flex gap-1">
+    <a class="btn" href="/">Home</a>
+    <a class="btn" href="/posts/">Posts</a>
+  </div>
   <div class="flex gap-1">
     <HueController client:only="svelte" />
     <ThemeController client:only="svelte" />
