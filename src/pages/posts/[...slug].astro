@@ -20,11 +20,15 @@ const { Content } = await render(post);
 ---
 
 <Layout>
-  <div class="bg-sidebar rounded-lg p-6">
-    <h1>{post.data.title}</h1>
-    <PostMetadata post={post} />
-    <article class="prose">
-      <Content />
-    </article>
+  <div class="grid grid-cols-[auto_1fr_auto] gap-2">
+    <div class="card">This is tag, categories area</div>
+    <div class="card">
+      <h1>{post.data.title}</h1>
+      <PostMetadata post={post} />
+      <article class="prose">
+        <Content />
+      </article>
+    </div>
+    <div class="card">This is TOC Area</div>
   </div>
 </Layout>
