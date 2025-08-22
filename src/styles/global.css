@@ -129,8 +129,7 @@
     &:hover {
       :where([data-float-menu-role="content"]) {
         @apply pointer-events-auto visible translate-y-0 opacity-100;
-
-        &::before {
+        󰍟 &::before {
           @apply absolute right-0 bottom-full left-0 h-[var(--menu-gap)] content-[''];
         }
       }
