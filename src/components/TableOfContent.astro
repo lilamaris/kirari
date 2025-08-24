@@ -9,12 +9,12 @@ interface Props {
 const { class: className, headings }: Props = Astro.props;
 ---
 
-<div class:list={["card", className]}>
-  <ul>
-    {
-      headings.map((heading) => (
-        <li style={`margin-left: ${heading.depth * 2}rem`}>{heading.text}</li>
-      ))
-    }
-  </ul>
-</div>
+<ul class:list={["card w-max p-4", className]}>
+  {
+    headings.map((heading) => (
+      <li style={`margin-left: ${(heading.depth - 1) * 2}rem`}>
+        {heading.text}
+      </li>
+    ))
+  }
+</ul>
