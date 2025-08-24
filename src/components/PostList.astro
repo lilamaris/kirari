@@ -1,0 +1,22 @@
+---
+import type { Post } from "@/types/post";
+import type { HTMLAttributes } from "astro/types";
+import PostCard from "./PostCard.astro";
+
+interface Props extends HTMLAttributes<"ul"> {
+  posts: Post[];
+}
+
+const { posts, class:className, ...props }: Props = Astro.props;
+---
+
+
+<ul class:list={[className, "flex flex-col gap-2 onload-animation" ]} {...props}>
+    {
+    posts.map((post, i) => (
+        <li  style=`animation-delay: ${i * 100}ms` >
+      <PostCard post={post}/>
+        </li>
+      ))
+    }
+  </ul>

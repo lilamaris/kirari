@@ -5,50 +5,21 @@
 @theme inline {
   --color-white: oklch(1 0 0);
   --color-black: oklch(0 0 0);
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-
-  --rainbow-light: linear-gradient(
-    to right,
-    oklch(0.8 0.1 0),
-    oklch(0.8 0.1 30),
-    oklch(0.8 0.1 60),
-    oklch(0.8 0.1 90),
-    oklch(0.8 0.1 120),
-    oklch(0.8 0.1 150),
-    oklch(0.8 0.1 180),
-    oklch(0.8 0.1 210),
-    oklch(0.8 0.1 240),
-    oklch(0.8 0.1 270),
-    oklch(0.8 0.1 300),
-    oklch(0.8 0.1 330),
-    oklch(0.8 0.1 360)
-  );
-  --rainbow-dark: linear-gradient(
-    to right,
-    oklch(0.7 0.1 0),
-    oklch(0.7 0.1 30),
-    oklch(0.7 0.1 60),
-    oklch(0.7 0.1 90),
-    oklch(0.7 0.1 120),
-    oklch(0.7 0.1 150),
-    oklch(0.7 0.1 180),
-    oklch(0.7 0.1 210),
-    oklch(0.7 0.1 240),
-    oklch(0.7 0.1 270),
-    oklch(0.7 0.1 300),
-    oklch(0.7 0.1 330),
-    oklch(0.7 0.1 360)
-  );
-}
-
-:root {
   --radius: 0.625rem;
   --page-width: 75rem;
   --banner-height: 40vh;
+  --banner-overlap: 2rem;
+}
+
+:root {
+  --primary: oklch(0.7 0.14 var(--hue));
+  --page-bg: oklch(0.97 0.01 var(--hue));
+  --card-bg: var(--color-white);
+  --btn-bg: oklch(0.8 0.015 var(--hue));
+  --btn-bg-hover: oklch(0.9 0.015 var(--hue));
+  --border: oklch(0.922 0 var(--hue));
+  --ring: oklch(0.708 0 var(--hue));
+
   --rainbow: linear-gradient(
     to right,
     oklch(0.8 0.1 0),
@@ -65,15 +36,10 @@
     oklch(0.8 0.1 330),
     oklch(0.8 0.1 360)
   );
-  --page-bg: oklch(0.95 0.01 var(--hue));
-  --card-bg: var(--color-white);
-  --btn-bg: oklch(0.8 0.015 var(--hue));
-  --btn-bg-hover: oklch(0.9 0.015 var(--hue));
-  --border: oklch(0.922 0 var(--hue));
-  --ring: oklch(0.708 0 var(--hue));
 }
 
 [data-theme="dark"] {
+  --primary: oklch(0.75 0.14 var(--hue));
   --page-bg: oklch(0.16 0.014 var(--hue));
   --card-bg: oklch(0.23 0.015 var(--hue));
   --btn-bg: oklch(0.3 0.015 var(--hue));
@@ -111,25 +77,29 @@
     &:active {
       @apply scale-90;
     }
+    &.btn-icon {
+      @apply flex h-10 w-10 items-center justify-center;
+    }
   }
 
   .card {
-    @apply rounded-[var(--radius)] bg-[var(--card-bg)] p-2 text-black/90 transition dark:text-white/90;
+    @apply rounded-[var(--radius)] bg-[var(--card-bg)] p-2 text-black/90 shadow-xs transition dark:text-white/90;
   }
 
   .floating-menu {
     --menu-gap: var(--gap, 1rem);
+    --align: var(--content-align, "center");
     @apply relative z-50;
 
     :where([data-float-menu-role="content"]) {
-      @apply pointer-events-none invisible absolute top-full left-1/2 mt-[var(--menu-gap)] -translate-x-1/2 -translate-y-5 opacity-0 transition;
+      @apply pointer-events-none invisible absolute top-full right-0 mt-[var(--menu-gap)] -translate-y-5 opacity-0 transition;
     }
 
     &:has([data-float-menu-role="content"]:focus-visible),
     &:hover {
       :where([data-float-menu-role="content"]) {
         @apply pointer-events-auto visible translate-y-0 opacity-100;
-        󰍟 &::before {
+        &::before {
           @apply absolute right-0 bottom-full left-0 h-[var(--menu-gap)] content-[''];
         }
       }

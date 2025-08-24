@@ -1,6 +1,6 @@
 ---
-import { House } from "@lucide/svelte";
-
+import { Icon } from "astro-icon/components";
+import Link from "@/components/ui/Link.astro";
 import ThemeController from "@/components/ThemeController.svelte";
 import HueController from "@/components/HueController.svelte";
 
@@ -18,11 +18,12 @@ const { class: className } = Astro.props;
   ]}
 >
   <div class="flex gap-1 px-5 text-xl">
-    <House /> lilamaris
+    <Icon name="lucide:house" class="mr-2 mb-1 text-[1.75rem]" />
+    lilamaris
   </div>
   <div class="flex gap-1">
-    <a class="btn" href="/">Home</a>
-    <a class="btn" href="/posts/">Posts</a>
+    <Link href="/">Home</Link>
+    <Link href="/posts/">Post</Link>
   </div>
   <div class="flex gap-1">
     <HueController client:only="svelte" />

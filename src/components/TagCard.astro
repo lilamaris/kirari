@@ -1,0 +1,17 @@
+---
+import Link from "@/components/ui/Link.astro";
+import { getAllTags } from "@/lib/post";
+import type { HTMLAttributes } from "astro/types";
+interface Props extends HTMLAttributes<"div"> {
+  class?: string;
+}
+
+const { class: className, ...props } = Astro.props;
+
+const tags = await getAllTags();
+---
+
+<div class:list={["card", className]} {...props}>
+  <h1>Tags</h1>
+  {tags.map((tag) => <Link href={`archive/?tag=${tag}`}>{tag}</Link>)}
+</div>
