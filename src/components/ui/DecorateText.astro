@@ -1,0 +1,27 @@
+---
+import { Icon } from "astro-icon/components";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  icon?: string;
+}
+
+const { icon, class: className, ...props }: Props = Astro.props;
+
+const decoratorClass = icon
+  ? ""
+  : "flex before:w-1 before:left-0 before:mr-2 before:h-5 before:my-auto before:rounded-md before:bg-[var(--primary)]";
+---
+
+<div class:list={[className, "flex items-center"]} {...props}>
+  {
+    icon && (
+      <div class="mr-2 flex h-7 w-7 items-center justify-center rounded-md bg-[var(--primary)] text-lg text-[var(--text-primary)]">
+        <Icon name={icon} />
+      </div>
+    )
+  }
+  <span class={decoratorClass}>
+    <slot />
+  </span>
+</div>
