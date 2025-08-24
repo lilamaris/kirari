@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from "astro";
 
 import Layout from "@/layouts/Layout.astro";
-import PostMetadata from "@/components/PostMetadata.astro";
+import PostList from "@/components/PostList.astro";
 
 import { SITE_APPEARANCE_CONFIG } from "@/consts/site";
 import { getAllPosts } from "@/lib/post";
@@ -16,15 +16,5 @@ const { page } = Astro.props;
 ---
 
 <Layout>
-  <ul class="flex flex-col gap-4">
-    {
-      page.data.map((post) => (
-        <li class="card flex-1">
-          <a href={`/posts/${post.data.slug}`}>{post.data.title}</a>
-          <PostMetadata post={post} />
-          <p class="mb-3.5 line-clamp-2 pr-4">{post.data.description}</p>
-        </li>
-      ))
-    }
-  </ul>
+  <PostList posts={page.data} />
 </Layout>
