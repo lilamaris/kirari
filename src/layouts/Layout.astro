@@ -4,6 +4,9 @@ import "@/styles/transition.css";
 
 import Header from "@/components/Header.astro";
 import Img from "@/components/ui/Img.astro";
+import AvatarCard from "@/components/AvatarCard.astro";
+import TagCard from "@/components/TagCard.astro";
+import CategoryCard from "@/components/CategoryCard.astro";
 
 import { SITE_CONFIG } from "@/consts/site";
 ---
@@ -12,28 +15,70 @@ import { SITE_CONFIG } from "@/consts/site";
 <html lang={SITE_CONFIG.lang} class="bg-[var(--page-bg)] transition">
   <head>
     <script is:inline>
-      const theme = localStorage.getItem("theme") || "light";
-      const hue = localStorage.getItem("hue") || 250;
-      document.documentElement.style.setProperty("--hue", hue);
-      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.style.setProperty(
+        "--hue",
+        localStorage.getItem("hue") || "250",
+      );
+      document.documentElement.setAttribute(
+        "data-theme",
+        localStorage.getItem("theme") || "light",
+      );
     </script>
     <slot name="head" />
   </head>
   <body class="min-h-screen">
-    <div class="mx-auto max-w-[var(--page-width)]">
-      <Header />
-    </div>
-    <div class="pointer-events-none absolute top-0 -z-10 w-full select-none">
+    <div
+      class="animate-reveal-center pointer-events-none absolute top-0 -z-10 w-full select-none"
+    >
       <Img
         src="/src/assets/demo-banner.jpg"
         alt="banner"
         class="h-[var(--banner-height)]"
       />
     </div>
-    <main
-      class="onload-animation relative top-[calc(var(--banner-height)_-_10rem)] mx-auto max-w-[var(--page-width)]"
-    >
-      <slot />
-    </main>
+    <div class="relative mx-auto h-full max-w-[var(--page-width)]">
+      <div class="onload-animation" data-emerge-direction="down">
+        <Header />
+      </div>
+      <main
+        class="onload-animation absolute top-[calc(var(--banner-height)_-_var(--banner-overlap))] grid w-full grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] gap-2"
+        data-emerge-direction="up"
+      >
+        <div class="onload-animation flex flex-col gap-2">
+          <AvatarCard />
+          <CategoryCard style="animation-delay: 100ms" />
+          <TagCard style="animation-delay: 200ms" />
+          <slot name="side-left" />
+        </div>
+        <slot />
+      </main>
+    </div>
   </body>
 </html>
+<script>
+  const swupSetup = () => {
+    console.log("Start Swup Setup");
+
+    window.swup.hooks.on("animation:out:start", () => {
+      console.log("Animation out start");
+    });
+
+    window.swup.hooks.on("visit:start", (visit) => {
+      console.log("Visit start: ", visit);
+    });
+
+    window.swup.hooks.on("page:view", () => {
+      console.log("Page View");
+    });
+
+    window.swup.hooks.on("visit:end", (visit) => {
+      console.log("Visit end: ", visit);
+    });
+  };
+
+  if (window?.swup?.hooks) {
+    swupSetup();
+  } else {
+    document.addEventListener("swup:enable", swupSetup);
+  }
+</script>

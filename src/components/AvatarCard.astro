@@ -1,0 +1,13 @@
+---
+import Img from "@/components/ui/Img.astro";
+import { SITE_CONFIG } from "@/consts/site";
+import DecorateText from "./ui/DecorateText.astro";
+---
+
+<div class="card flex flex-col gap-2">
+  <div class="overflow-hidden rounded-lg">
+    <Img src="/src/assets/demo-profile.jpg" alt="profile" />
+  </div>
+  <DecorateText>{SITE_CONFIG.author}</DecorateText>
+  <DecorateText>{SITE_CONFIG.description}</DecorateText>
+</div>

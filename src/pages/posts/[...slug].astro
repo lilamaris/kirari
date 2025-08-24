@@ -4,8 +4,12 @@ import { render } from "astro:content";
 
 import Layout from "@/layouts/Layout.astro";
 import PostMetadata from "@/components/PostMetadata.astro";
+import CategoryCard from "@/components/CategoryCard.astro";
+import TagCard from "@/components/TagCard.astro";
+import TableOfContent from "@/components/TableOfContent.astro";
 
 import { getAllPosts } from "@/lib/post";
+import AnimDelayInjector from "@/components/ui/AnimDelayInjector.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getAllPosts();
@@ -16,19 +20,20 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
 <Layout>
-  <div class="grid grid-cols-[auto_1fr_auto] gap-2">
-    <div class="card">This is tag, categories area</div>
-    <div class="card">
-      <h1>{post.data.title}</h1>
-      <PostMetadata post={post} />
-      <article class="prose">
-        <Content />
-      </article>
-    </div>
-    <div class="card">This is TOC Area</div>
+  <div slot="side-left">
+    <CategoryCard />
+    <TagCard />
   </div>
+  <div class="card">
+    <h1>{post.data.title}</h1>
+    <PostMetadata post={post} />
+    <article class="prose">
+      <Content />
+    </article>
+  </div>
+  <TableOfContent slot="side-right" headings={headings} />
 </Layout>

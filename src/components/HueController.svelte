@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { Palette } from "@lucide/svelte";
-
+  import Icon from "@iconify/svelte";
   import { getHue, setHue } from "@/lib/utils";
 
   let hue = $state(getHue());
@@ -10,13 +9,24 @@
   });
 </script>
 
-<div role="menu" class="floating-menu" style="--gap: 1rem">
-  <button class="btn" data-float-menu-role="trigger" aria-haspopup="menu">
-    <Palette />
+<div role="menu" class="floating-menu" style="--gap: 1.25rem">
+  <button
+    class="btn btn-icon"
+    data-float-menu-role="trigger"
+    aria-haspopup="menu"
+  >
+    <Icon icon="lucide:palette" class="text-[1.25rem]" />
   </button>
 
   <div class="card w-80" data-float-menu-role="content">
-    <input id="hueHandle" type="range" bind:value={hue} />
+    <input
+      max="360"
+      min="0"
+      step="5"
+      id="hueHandle"
+      type="range"
+      bind:value={hue}
+    />
   </div>
 </div>
 

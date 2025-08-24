@@ -1,46 +1,12 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Img from "@/components/ui/Img.astro";
-import PostMetadata from "@/components/PostMetadata.astro";
+import PostList from "@/components/PostList.astro";
 
-import { SITE_CONFIG } from "@/consts/site";
 import { getAllPosts } from "@/lib/post";
 
 const recentPosts = (await getAllPosts()).slice(0, 3);
 ---
 
 <Layout>
-  <div
-    class="bg-sidebar grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] gap-4"
-  >
-    <div class="flex flex-col gap-2">
-      <div class="card flex flex-col gap-2">
-        <div class="overflow-hidden rounded-lg">
-          <Img src="/src/assets/demo-profile.jpg" alt="profile" />
-        </div>
-        <h1>{SITE_CONFIG.author}</h1>
-        <p>{SITE_CONFIG.description}</p>
-      </div>
-
-      <div class="card flex flex-col gap-2">Tags</div>
-
-      <div class="card flex flex-col gap-2">Categories</div>
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <div class="card flex flex-col gap-2">Git Activity Calendar</div>
-      <ul class="flex gap-2">
-        {
-          recentPosts.map((post) => (
-            <li class="card flex-1">
-              <a href={`/posts/${post.data.slug}`}>{post.data.title}</a>
-              <PostMetadata post={post} />
-              <p class="mb-3.5 line-clamp-2 pr-4">{post.data.description}</p>
-            </li>
-          ))
-        }
-      </ul>
-      <div class="card flex flex-col gap-2">Git Activity Calendar</div>
-    </div>
-  </div>
+  <PostList posts={recentPosts} />
 </Layout>

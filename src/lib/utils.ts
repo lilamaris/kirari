@@ -1,5 +1,14 @@
 import type { SiteTheme } from "@/types/config";
 
+export const joinUrl = (...parts: string[]) => {
+  const joined = parts.join("/");
+  return joined.replace(/\/+/g, "/");
+};
+
+export const createUrl = (path: string) => {
+  return joinUrl("", import.meta.env.BASE_URL, path);
+};
+
 export const formatDate = (date: Date) => {
   return date.toISOString().slice(0, 10);
 };

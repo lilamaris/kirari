@@ -1,38 +1,34 @@
 ---
-import { CalendarDays, BookMarked, Bookmark, Tag } from "@lucide/svelte"
-
-import IconText from "@/components/ui/IconText.astro";
+import DecorateText from "@/components/ui/DecorateText.astro";
 
 import { formatDate } from "@/lib/utils";
 import type { Post } from "@/types/post";
 
 interface Props {
   post: Post
+  class?: string
 }
 
-const { post }: Props = Astro.props;
+const { post, class: className }: Props = Astro.props;
 ---
-<IconText>
-  <CalendarDays slot="icon" />
-  {formatDate(post.data.published)}
-</IconText>
+<div class:list={[className, "flex items-center gap-2"]}>
+  <DecorateText icon="lucide:calendar">
+    {formatDate(post.data.published)}
+  </DecorateText>
 
-<IconText>
-  <BookMarked slot="icon" />
-  {post.data.seriesName}
-</IconText>
-{post.data.seriesName && (
-  <IconText>
-    <Bookmark slot="icon" />
-    {post.data.category}
-  </IconText>
-)}
-<IconText>
-  <Tag slot="icon" />
-  <div class="flex gap-2 flex-nowrap">
-    {(post.data.tags.map((tag,i) => (
+  {post.data.seriesName && (
+  <DecorateText icon="lucide:book-marked">
+    {post.data.seriesName}
+  </DecorateText>
+
+  )}
+  <DecorateText icon="lucide:tags">
+    <div class="flex gap-2 flex-nowrap">
+      {post.data.category}
+      {(post.data.tags.map((tag,i) => (
       <div class:list={[{"hidden": i==0}, "mx-1.5 text-sm"]}>/</div>
       <a href={""}>{tag.trim()}</a>
-    )))}
-  </div>
-</IconText>
+      )))}
+    </div>
+  </DecorateText>
+</div>

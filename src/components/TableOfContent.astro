@@ -1,0 +1,20 @@
+---
+import { type MarkdownHeading } from "astro";
+
+interface Props {
+  class?: string;
+  headings: MarkdownHeading[];
+}
+
+const { class: className, headings }: Props = Astro.props;
+---
+
+<div class:list={["card", className]}>
+  <ul>
+    {
+      headings.map((heading) => (
+        <li style={`margin-left: ${heading.depth * 2}rem`}>{heading.text}</li>
+      ))
+    }
+  </ul>
+</div>

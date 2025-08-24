@@ -1,0 +1,31 @@
+---
+import Link from "@/components/ui/Link.astro";
+import DecorateText from "@/components/ui/DecorateText.astro";
+import PostMetadata from "@/components/PostMetadata.astro";
+
+import type { Post } from "@/types/post";
+import { Icon } from "astro-icon/components";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  post: Post;
+}
+
+const { post, class: className, ...props }: Props = Astro.props;
+---
+
+<div class:list={[className, "card flex flex-col gap-1"]} {...props}>
+  <Link class="text-2lg w-full" href={`/posts/${post.data.slug}/`}>
+    <DecorateText
+      class="group text-xl capitalize transition hover:text-[var(--primary)]"
+    >
+      {post.data.title}
+      <Icon
+        name="lucide:chevron-right"
+        class="translate-x-0 opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"
+      />
+    </DecorateText>
+  </Link>
+  <PostMetadata class="flex" post={post} />
+  <p class="mb-3.5 line-clamp-2 pr-4">{post.data.description}</p>
+</div>

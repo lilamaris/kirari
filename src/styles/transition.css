@@ -8,22 +8,57 @@ html.is-animating .transition-swup-fade {
   @apply translate-y-4 opacity-0;
 }
 
-@keyframes fade-in-up {
-  0% {
-    transform: translateY(2rem);
-    opacity: 0;
+@layer utilities {
+  @keyframes reveal-center {
+    0% {
+      clip-path: inset(50% 0 50% 0);
+      opacity: 0;
+    }
+    100% {
+      clip-path: inset(0 0 0 0);
+      opacity: 1;
+    }
   }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes emergeFrom {
+    0% {
+      transform: translateY(var(--direction));
+    }
+    100% {
+      transform: translateY(0);
+    }
   }
 }
-
 @layer components {
-  /* Main components */
   .onload-animation {
+    &[data-emerge-direction="up"] {
+      --direction: 2rem;
+    }
+    &[data-emerge-direction="down"] {
+      --direction: -2rem;
+    }
+
+    & > * {
+      opacity: 0;
+      animation:
+        400ms fade-in,
+        300ms emergeFrom;
+      animation-fill-mode: forwards;
+    }
+  }
+
+  .animate-reveal-center {
     opacity: 0;
-    animation: 300ms fade-in-up;
-    animation-fill-mode: forwards;
+    animation: reveal-center 900ms cubic-bezier(0.4, 0.2, 0, 0.9) forwards;
+    will-change: clip-path;
   }
 }
