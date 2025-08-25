@@ -1,16 +1,13 @@
 ---
 import type { GetStaticPaths } from "astro";
-import { render } from "astro:content";
+import { render, getEntry } from "astro:content";
 
 import Layout from "@/layouts/Layout.astro";
-import PostMetadata from "@/components/PostMetadata.astro";
-import TableOfContent from "@/components/TableOfContent.astro";
-
-import { getAllPosts } from "@/lib/post";
 import PostCard from "@/components/PostCard.astro";
+import { getSortedPosts } from "@/lib/content-util";
 
 export const getStaticPaths = (async () => {
-  const posts = await getAllPosts();
+  const posts = await getSortedPosts();
   return posts.map((post) => ({
     params: { slug: post.data.slug },
     props: { post },
@@ -19,19 +16,35 @@ export const getStaticPaths = (async () => {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
+const previousPost =
+  post.data.previousPostSlug &&
+  (await getEntry("post", post.data.previousPostSlug));
+
+const nextPost =
+  post.data.nextPostSlug && (await getEntry("post", post.data.nextPostSlug));
 ---
 
 <Layout>
-  <div class="onload-animation card p-6">
-    <div class="flex flex-col gap-1">
-      <PostCard post={post} />
+  <div class="flex flex-col gap-2">
+    <div class="onload-animation card p-6">
+      <div class="flex flex-col gap-1">
+        <PostCard post={post} />
+      </div>
+      <div
+        class="relative py-4 before:absolute before:w-full before:border-t before:border-dashed"
+      >
+      </div>
+      <article class="prose onload-animation">
+        <Content />
+      </article>
     </div>
-    <div
-      class="relative py-4 before:absolute before:w-full before:border-t before:border-dashed"
-    >
+    <div class="grid grid-cols-[1fr_1fr]">
+      {
+        previousPost && (
+          <PostCard post={previousPost} class="flex-1 columns-1" />
+        )
+      }
+      {nextPost && <PostCard post={nextPost} class="flex-1 columns-2" />}
     </div>
-    <article class="prose onload-animation">
-      <Content />
-    </article>
   </div>
 </Layout>

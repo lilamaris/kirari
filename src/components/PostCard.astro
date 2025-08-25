@@ -1,11 +1,11 @@
 ---
 import Link from "@/components/ui/Link.astro";
 import DecorateText from "@/components/ui/DecorateText.astro";
-import PostMetadata from "@/components/PostMetadata.astro";
 
-import type { Post } from "@/types/post";
 import { Icon } from "astro-icon/components";
 import type { HTMLAttributes } from "astro/types";
+import type { Post } from "@/lib/content-util";
+import { formatDate } from "@/lib/utils";
 
 interface Props extends HTMLAttributes<"div"> {
   post: Post;
@@ -26,6 +26,25 @@ const { post, class: className, ...props }: Props = Astro.props;
       />
     </DecorateText>
   </Link>
-  <PostMetadata class="flex" post={post} />
-  <p class="mb-3.5 line-clamp-2 pr-4">{post.data.description}</p>
+  <div class:list={[className, "flex items-center gap-2"]}>
+    <DecorateText icon="lucide:calendar">
+      {formatDate(post.data.published)}
+    </DecorateText>
+
+    {post.data.series && (
+    <DecorateText icon="lucide:book-marked">
+      {post.data.series}
+    </DecorateText>
+
+    )}
+    <DecorateText icon="lucide:tags">
+      <div class="flex gap-2 flex-nowrap">
+        {post.data.category}
+        {(post.data.tags.map((tag,i) => (
+        <div class:list={[{"hidden": i==0}, "mx-1.5 text-sm"]}>/</div>
+        <a href={""}>{tag.trim()}</a>
+        )))}
+      </div>
+    </DecorateText>
+  </div>
 </div>
