@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource/roboto";
+
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme inline {
@@ -64,6 +67,12 @@
   --btn-bg-hover: oklch(0.4 0.015 var(--hue));
   --border: oklch(1 0 0 / 10%);
   --ring: oklch(0.556 0 var(--hue));
+}
+
+@layer base {
+  body {
+    font-family: "Roboto", sans-serif;
+  }
 }
 
 @layer components {
@@ -139,6 +148,46 @@
         &::before {
           @apply absolute right-0 bottom-full left-0 h-[var(--menu-gap)] content-[''];
         }
+      }
+    }
+  }
+}
+
+@layer utilities {
+  .prose {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply text-black dark:text-white;
+
+      .anchor {
+        @apply -m-0.5 ml-[0.2ch] p-0.5 opacity-0 transition select-none;
+
+        .anchor-icon {
+          @apply mx-[0.45ch];
+        }
+      }
+
+      &:hover {
+        .anchor {
+          @apply opacity-100;
+        }
+      }
+    }
+
+    a {
+      @apply relative bg-none font-medium text-[var(--primary)] underline decoration-white decoration-dashed decoration-1 underline-offset-6;
+
+      &:hover,
+      &:active {
+        @apply overflow-hidden rounded-md bg-[var(--btn-bg)] decoration-transparent;
+      }
+
+      &:active {
+        @apply bg-[var(--btn-bg-hover)];
       }
     }
   }

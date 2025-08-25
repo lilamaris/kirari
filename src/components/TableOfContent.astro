@@ -1,5 +1,7 @@
 ---
 import { type MarkdownHeading } from "astro";
+import Link from "./ui/Link.astro";
+import DecorateText from "@/components/ui/DecorateText.astro";
 
 interface Props {
   class?: string;
@@ -9,12 +11,14 @@ interface Props {
 const { class: className, headings }: Props = Astro.props;
 ---
 
-<ul class:list={["card w-max p-4", className]}>
+<table-of-contents class:list={["card w-max p-8", className]}>
   {
     headings.map((heading) => (
-      <li style={`margin-left: ${(heading.depth - 1) * 2}rem`}>
-        {heading.text}
+      <li style={`margin-left: ${(heading.depth - 1) * 1}rem`}>
+        <Link href={`#${heading.slug}`}>
+          <DecorateText>{heading.text}</DecorateText>
+        </Link>
       </li>
     ))
   }
-</ul>
+</table-of-contents>
