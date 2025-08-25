@@ -1,7 +1,7 @@
 ---
-import type { Post } from "@/types/post";
 import type { HTMLAttributes } from "astro/types";
 import PostCard from "./PostCard.astro";
+import type { Post } from "@/lib/content-util";
 
 interface Props extends HTMLAttributes<"ul"> {
   posts: Post[];
@@ -16,6 +16,18 @@ const { posts, class:className, ...props }: Props = Astro.props;
     posts.map((post, i) => (
         <li  style=`animation-delay: ${i * 100}ms` >
       <PostCard post={post}/>
+    <div class="card">
+      <div>
+        Series: {post.data.series}
+      </div>
+      <div>
+        Next: {post.data.nextPostSlug ?? "Not found"}
+      </div>
+
+      <div>
+        Prev: {post.data?.previousPostSlug ?? "Not found"}
+      </div>
+    </div>
         </li>
       ))
     }

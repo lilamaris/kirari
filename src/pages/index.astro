@@ -2,9 +2,9 @@
 import Layout from "@/layouts/Layout.astro";
 import PostList from "@/components/PostList.astro";
 
-import { getAllPosts } from "@/lib/post";
+import { getSortedPosts } from "@/lib/content-util";
 
-const recentPosts = (await getAllPosts()).slice(0, 3);
+const recentPosts = (await getSortedPosts()).slice(0, 3);
 ---
 
 <Layout>

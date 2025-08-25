@@ -5,11 +5,12 @@ import Layout from "@/layouts/Layout.astro";
 import PostList from "@/components/PostList.astro";
 
 import { SITE_APPEARANCE_CONFIG } from "@/consts/site";
-import { getAllPosts } from "@/lib/post";
+import { getSortedPosts } from "@/lib/content-util";
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const posts = await getAllPosts();
-  return paginate(posts, { pageSize: SITE_APPEARANCE_CONFIG.postPerPageCount });
+  const posts = await getSortedPosts();
+  // return paginate(posts, { pageSize: SITE_APPEARANCE_CONFIG.postPerPageCount });
+  return paginate(posts, { pageSize: 50 });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
