@@ -10,7 +10,7 @@ const { icon, class: className, ...props }: Props = Astro.props;
 
 const decoratorClass = icon
   ? ""
-  : "flex before:w-1 before:left-0 before:mr-2 before:h-5 before:my-auto before:rounded-md before:bg-[var(--primary)]";
+  : "flex items-center before:w-1 before:left-0 before:mr-2 before:h-5 before:my-auto before:rounded-md before:bg-[var(--primary)]";
 ---
 
 <div class:list={[className, "flex items-center"]} {...props}>
