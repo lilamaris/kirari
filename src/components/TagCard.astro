@@ -17,7 +17,7 @@ const tags = await getAllTags();
   <div class="flex flex-wrap gap-1">
     {
       Object.entries(tags).map(([canonical, tag]) => (
-        <Link class="btn" href={`/archive?tag=${canonical}`}>
+        <Link class="btn" data-size="md" href={`/archive?tag=${canonical}`}>
           {tag.label}
         </Link>
       ))

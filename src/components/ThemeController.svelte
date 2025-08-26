@@ -1,8 +1,8 @@
 <script lang="ts">
   import Icon from "@iconify/svelte";
-  import type { SiteTheme } from "@/types/config";
 
   import { getTheme, setTheme } from "@/lib/utils";
+  import type { SiteTheme } from "@/types";
 
   const themes: SiteTheme[] = ["light", "dark", "system"];
   let curIdx = $state(themes.indexOf(getTheme()));
@@ -19,19 +19,19 @@
 
 {#snippet ThemeIcon(theme: SiteTheme)}
   {#if theme === "light"}
-    <Icon icon="lucide:sun" class="text-[1.25rem]" />
+    <Icon icon="lucide:sun" class="icon" data-size="md" />
   {:else if theme === "dark"}
-    <Icon icon="lucide:moon" class="text-[1.25rem]" />
+    <Icon icon="lucide:moon" class="icon" data-size="md" />
   {:else}
-    <Icon icon="lucide:contrast" class="text-[1.25rem]" />
+    <Icon icon="lucide:contrast" class="icon" data-size="md" />
   {/if}
 {/snippet}
 
-<div role="menu" class="floating-menu" style="--gap: 1.25rem">
+<div role="menu" class="floating-menu flex" style="--gap: 1.25rem">
   <button
-    class="btn btn-icon"
-    data-float-menu-role="trigger"
-    aria-haspopup="menu"
+    class="btn"
+    data-variant="ghost"
+    aria-haspopup="dialog"
     onclick={() => handleChangeTheme()}
   >
     {@render ThemeIcon(themes[curIdx])}

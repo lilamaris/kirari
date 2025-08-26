@@ -17,12 +17,14 @@
 
 :root {
   --primary: oklch(0.7 0.14 var(--hue));
+
   --page-bg: oklch(0.97 0.01 var(--hue));
+
   --card-bg: var(--color-white);
+  --card-fg: var(--color-black);
+
   --btn-bg: oklch(0.8 0.015 var(--hue));
   --btn-bg-hover: oklch(0.9 0.015 var(--hue));
-  --border: oklch(0.922 0 var(--hue));
-  --ring: oklch(0.708 0 var(--hue));
 
   --rainbow: linear-gradient(
     to right,
@@ -43,10 +45,17 @@
 }
 
 [data-theme="dark"] {
-  --primary: oklch(0.75 0.14 var(--hue));
-  --page-bg: oklch(0.16 0.014 var(--hue));
+  --primary: oklch(0.7 0.14 var(--hue));
+
+  --page-bg: oklch(0.15 0.015 var(--hue));
+
   --card-bg: oklch(0.23 0.015 var(--hue));
+  --card-fg: var(--color-white);
+
   --btn-bg: oklch(0.3 0.015 var(--hue));
+  --btn-bg-hover: oklch(0.35 0.015 var(--hue));
+  --btn-bg-active: oklch(0.25 0.015 var(--hue));
+  --btn-fg: oklch(0.75 0.1 var(--hue));
 
   --rainbow: linear-gradient(
     to right,
@@ -64,9 +73,6 @@
     oklch(0.7 0.1 330),
     oklch(0.7 0.1 360)
   );
-  --btn-bg-hover: oklch(0.4 0.015 var(--hue));
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.556 0 var(--hue));
 }
 
 @layer base {
@@ -76,19 +82,61 @@
 }
 
 @layer components {
+  .icon {
+    @apply inline-flex aspect-square items-center justify-center rounded-lg p-1;
+
+    &[data-size="sm"] {
+      @apply size-6;
+    }
+
+    &[data-size="md"] {
+      @apply size-7;
+    }
+
+    &[data-size="lg"] {
+      @apply size-8;
+    }
+  }
+
   .btn {
-    @apply rounded-[var(--radius-lg)] bg-[var(--btn-bg)] p-2 text-black/90 transition dark:text-white/90;
+    --bg: var(--btn-bg);
+    --bg-hover: var(--btn-bg-hover);
+    --bg-active: var(--btn-bg-active);
+
+    @apply flex rounded-lg bg-[var(--bg)] transition dark:text-white/90;
 
     &:hover,
     &:focus-visible {
-      @apply bg-[var(--btn-bg-hover)];
+      @apply bg-[var(--bg-hover)];
     }
 
     &:active {
-      @apply scale-90;
+      @apply scale-92 bg-[var(--bg-active)];
     }
-    &.btn-icon {
-      @apply flex h-10 w-10 items-center justify-center;
+
+    &[data-variant="ghost"] {
+      --bg: none;
+      --hover-bg: var(--btn-bg);
+    }
+
+    &[data-variant="outline"] {
+      --bg: none;
+      @apply border-1 border-[var(--bg)];
+    }
+
+    &[data-size="icon"] {
+      @apply aspect-square size-max p-1;
+    }
+
+    &[data-size="sm"] {
+      @apply size-max p-0.5;
+    }
+    &[data-size="md"] {
+      @apply size-max p-1;
+    }
+
+    &[data-size="md"] {
+      @apply size-max px-2 py-0.5;
     }
   }
 

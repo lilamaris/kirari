@@ -14,10 +14,10 @@ interface Props extends HTMLAttributes<"div"> {
 const { post, class: className, ...props }: Props = Astro.props;
 ---
 
-<div class:list={[className, "card flex flex-col gap-1"]} {...props}>
-  <Link href={`/posts/${post.data.slug}/`}>
+<div class:list={[className, "card flex flex-col py-6 px-4 gap-3"]} {...props}>
+  <Link href={`/posts/${post.data.slug}`}>
     <DecorateText
-      class="group text-xl  capitalize transition hover:text-[var(--primary)]"
+      class="group text-2xl capitalize transition hover:text-[var(--primary)]"
     >
       {post.data.title}
       <Icon
@@ -25,26 +25,34 @@ const { post, class: className, ...props }: Props = Astro.props;
         class="translate-x-0 opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"
       />
     </DecorateText>
+    <p class="text-white/80">{post.data.description ?? "No description"}</p>
   </Link>
-  <div class:list={[className, "flex items-center gap-2"]}>
+  <div class:list={[className, "flex items-center gap-2 px-4"]}>
     <DecorateText icon="lucide:calendar">
-      {formatDate(post.data.published)}
+      <Link class="btn" data-size="md" data-variant="ghost" href={`/`}>
+        {formatDate(post.data.published)}
+      </Link>
     </DecorateText>
 
     {post.data.series && (
     <DecorateText icon="lucide:book-marked">
-      {post.data.series}
+      <Link class="btn" data-size="md" data-variant="ghost" href={`/posts/series/${post.data.series}`}>
+        {post.data.series}
+      </Link>
     </DecorateText>
-
     )}
+
+    {post.data.tags && post.data.tags.length > 0 && (
     <DecorateText icon="lucide:tags">
-      <div class="flex gap-2 flex-nowrap">
-        {post.data.category}
+      <div class="flex gap-2 flex-nowrap items-center">
         {(post.data.tags.map((tag,i) => (
-        <div class:list={[{"hidden": i==0}, "mx-1.5 text-sm"]}>/</div>
-        <a href={""}>{tag.trim()}</a>
+        <div class:list={[{"hidden": i==0}, "text-sm"]}>/</div>
+        <Link class="btn" data-size="md" data-variant="ghost" href={""}>
+          {tag.trim()}
+        </Link>
         )))}
       </div>
     </DecorateText>
+    )}
   </div>
 </div>
