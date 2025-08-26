@@ -3,9 +3,12 @@ import type { GetStaticPaths } from "astro";
 import { render, getEntry } from "astro:content";
 
 import Layout from "@/layouts/Layout.astro";
+import PostTitle from "@/components/post/PostTitle.astro";
+import PostMetadata from "@/components/post/PostMetadata.astro";
+import PostDescription from "@/components/post/PostDescription.astro";
 import PostCard from "@/components/PostCard.astro";
+
 import { getSortedPosts } from "@/lib/content-util";
-import Link from "@/components/ui/Link.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getSortedPosts();
@@ -16,6 +19,7 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
+const { title, description, published, series, tags } = post.data;
 const { Content, headings } = await render(post);
 const previousPost =
   post.data.previousPostSlug &&
@@ -26,37 +30,24 @@ const nextPost =
 ---
 
 <Layout>
-  <div class="flex flex-col gap-2">
-    <div class="onload-animation card p-6">
-      <div class="flex flex-col gap-1">
-        <PostCard post={post} />
-      </div>
-      <div
-        class="relative py-4 before:absolute before:w-full before:border-t before:border-dashed"
-      >
-      </div>
-      <article class="prose onload-animation">
-        <Content />
-      </article>
+  <div
+    class="onload-animation card flex flex-col p-6"
+    style="--content-delay: 50ms"
+  >
+    <PostTitle title={title} />
+    <PostDescription description={description} />
+    <div class="flex items-center gap-2">
+      <PostMetadata published={published} series={series} tags={tags} />
     </div>
-    <div class="grid grid-cols-[1fr_1fr] gap-2">
-      {
-        previousPost && (
-          <Link
-            class="btn col-start-1"
-            href={`/posts/${previousPost.data.slug}`}
-          >
-            {previousPost.data.title}
-          </Link>
-        )
-      }
-      {
-        nextPost && (
-          <Link class="btn col-start-2" href={`/posts/${nextPost.data.slug}`}>
-            {nextPost.data.title}
-          </Link>
-        )
-      }
+    <div
+      class="relative py-4 before:absolute before:w-full before:border-t before:border-dashed"
+    >
     </div>
+    <article class="prose">
+      <Content />
+    </article>
+  </div>
+  <div class="grid basis-12 grid-cols-[1fr_1fr] gap-2">
+    {previousPost && <PostCard post={previousPost} />}
   </div>
 </Layout>

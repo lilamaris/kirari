@@ -41,15 +41,16 @@ import { SITE_CONFIG } from "@/consts/site";
         <Header />
       </div>
       <main
-        class="onload-animation absolute top-[calc(var(--banner-height)_-_var(--banner-overlap))] grid w-full grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] gap-2"
-        data-emerge-direction="up"
+        class="absolute top-[calc(var(--banner-height)_-_var(--banner-overlap))] grid w-full grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] gap-2"
       >
         <div class="onload-animation flex flex-col gap-2">
           <AvatarCard />
-          <TagCard style="animation-delay: 200ms" />
+          <TagCard />
           <slot name="side-left" />
         </div>
-        <slot />
+        <div>
+          <slot />
+        </div>
       </main>
     </div>
   </body>

@@ -86,11 +86,11 @@
     @apply inline-flex aspect-square items-center justify-center rounded-lg p-1;
 
     &[data-size="sm"] {
-      @apply size-6;
+      @apply size-7;
     }
 
     &[data-size="md"] {
-      @apply size-7;
+      @apply size-8;
     }
 
     &[data-size="lg"] {
@@ -103,7 +103,7 @@
     --bg-hover: var(--btn-bg-hover);
     --bg-active: var(--btn-bg-active);
 
-    @apply flex rounded-lg bg-[var(--bg)] transition dark:text-white/90;
+    @apply flex rounded-lg bg-[var(--bg)] px-2 py-0.5 transition dark:text-white/90;
 
     &:hover,
     &:focus-visible {
@@ -111,12 +111,12 @@
     }
 
     &:active {
-      @apply scale-92 bg-[var(--bg-active)];
+      @apply scale-97 bg-[var(--bg-active)];
     }
 
     &[data-variant="ghost"] {
       --bg: none;
-      --hover-bg: var(--btn-bg);
+      --bg-hover: var(--btn-bg);
     }
 
     &[data-variant="outline"] {
@@ -126,17 +126,6 @@
 
     &[data-size="icon"] {
       @apply aspect-square size-max p-1;
-    }
-
-    &[data-size="sm"] {
-      @apply size-max p-0.5;
-    }
-    &[data-size="md"] {
-      @apply size-max p-1;
-    }
-
-    &[data-size="md"] {
-      @apply size-max px-2 py-0.5;
     }
   }
 
