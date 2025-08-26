@@ -1,58 +1,26 @@
 ---
-import Link from "@/components/ui/Link.astro";
-import DecorateText from "@/components/ui/DecorateText.astro";
-
-import { Icon } from "astro-icon/components";
-import type { HTMLAttributes } from "astro/types";
 import type { Post } from "@/lib/content-util";
-import { formatDate } from "@/lib/utils";
-
-interface Props extends HTMLAttributes<"div"> {
+import PostTitle from "@/components/post/PostTitle.astro";
+import PostDescription from "@/components/post/PostDescription.astro";
+import PostMetadata from "@/components/post/PostMetadata.astro";
+interface Props {
+  class?: string;
   post: Post;
+  dense?: boolean;
 }
 
-const { post, class: className, ...props }: Props = Astro.props;
+const { class: className, post, dense = false }: Props = Astro.props;
+const { published, series, tags } = post.data;
 ---
 
-<div class:list={[className, "card flex flex-col py-6 px-4 gap-3"]} {...props}>
-  <Link href={`/posts/${post.data.slug}`}>
-    <DecorateText
-      class="group text-2xl capitalize transition hover:text-[var(--primary)]"
-    >
-      {post.data.title}
-      <Icon
-        name="lucide:chevron-right"
-        class="translate-x-0 opacity-0 transition group-hover:translate-x-1 group-hover:opacity-100"
-      />
-    </DecorateText>
-    <p class="text-white/80">{post.data.description ?? "No description"}</p>
-  </Link>
-  <div class:list={[className, "flex items-center gap-2 px-4"]}>
-    <DecorateText icon="lucide:calendar">
-      <Link class="btn" data-size="md" data-variant="ghost" href={`/`}>
-        {formatDate(post.data.published)}
-      </Link>
-    </DecorateText>
-
-    {post.data.series && (
-    <DecorateText icon="lucide:book-marked">
-      <Link class="btn" data-size="md" data-variant="ghost" href={`/posts/series/${post.data.series}`}>
-        {post.data.series}
-      </Link>
-    </DecorateText>
-    )}
-
-    {post.data.tags && post.data.tags.length > 0 && (
-    <DecorateText icon="lucide:tags">
-      <div class="flex gap-2 flex-nowrap items-center">
-        {(post.data.tags.map((tag,i) => (
-        <div class:list={[{"hidden": i==0}, "text-sm"]}>/</div>
-        <Link class="btn" data-size="md" data-variant="ghost" href={""}>
-          {tag.trim()}
-        </Link>
-        )))}
+<div class:list={[className, "flex flex-col gap-2"]}>
+  <PostTitle href={`/posts/${post.data.slug}`} title={post.data.title} />
+  <PostDescription description={post.data.description} />
+  {
+    !dense && (
+      <div class="flex items-center gap-3">
+        <PostMetadata published={published} series={series} tags={tags} />
       </div>
-    </DecorateText>
-    )}
-  </div>
+    )
+  }
 </div>

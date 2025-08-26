@@ -16,7 +16,12 @@
 </script>
 
 <div role="dialog" class="floating-menu flex" style="--gap: 1.25rem">
-  <button class="btn" data-variant="ghost" aria-haspopup="dialog">
+  <button
+    class="btn"
+    data-size="icon"
+    data-variant="ghost"
+    aria-haspopup="dialog"
+  >
     <Icon icon="lucide:palette" class="icon" data-size="md" />
   </button>
 
