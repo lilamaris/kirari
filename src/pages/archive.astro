@@ -1,0 +1,15 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import DecorateText from "@/components/ui/DecorateText.astro";
+
+const urlSearchParams = Astro.url.searchParams.get("tag");
+export const prerender = false;
+---
+
+<Layout>
+  <div class="card">
+    <DecorateText>
+      This page is about archive that you selected topic.
+    </DecorateText>
+  </div>
+</Layout>
