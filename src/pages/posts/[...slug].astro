@@ -5,6 +5,7 @@ import { render, getEntry } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import PostCard from "@/components/PostCard.astro";
 import { getSortedPosts } from "@/lib/content-util";
+import Link from "@/components/ui/Link.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getSortedPosts();
@@ -38,13 +39,24 @@ const nextPost =
         <Content />
       </article>
     </div>
-    <div class="grid grid-cols-[1fr_1fr]">
+    <div class="grid grid-cols-[1fr_1fr] gap-2">
       {
         previousPost && (
-          <PostCard post={previousPost} class="flex-1 columns-1" />
+          <Link
+            class="btn col-start-1"
+            href={`/posts/${previousPost.data.slug}`}
+          >
+            {previousPost.data.title}
+          </Link>
         )
       }
-      {nextPost && <PostCard post={nextPost} class="flex-1 columns-2" />}
+      {
+        nextPost && (
+          <Link class="btn col-start-2" href={`/posts/${nextPost.data.slug}`}>
+            {nextPost.data.title}
+          </Link>
+        )
+      }
     </div>
   </div>
 </Layout>
