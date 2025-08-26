@@ -98,10 +98,3 @@ export const getAllTags = async (): Promise<Record<string, Tag>> => {
   }
   return result;
 };
-
-// NOTE: Return all series in key value data
-// key is canonical id of series
-// value is an array of the posts included in it's series.
-export const getAllSeries = async (): Promise<Record<string, Series>> => {
-  const rawSortedPosts = await getSortedPosts();
-};
