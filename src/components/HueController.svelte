@@ -15,13 +15,9 @@
   });
 </script>
 
-<div role="menu" class="floating-menu" style="--gap: 1.25rem">
-  <button
-    class="btn btn-icon"
-    data-float-menu-role="trigger"
-    aria-haspopup="menu"
-  >
-    <Icon icon="lucide:palette" class="text-[1.25rem]" />
+<div role="dialog" class="floating-menu flex" style="--gap: 1.25rem">
+  <button class="btn" data-variant="ghost" aria-haspopup="dialog">
+    <Icon icon="lucide:palette" class="icon" data-size="md" />
   </button>
 
   <div class="card w-80" data-float-menu-role="content">
