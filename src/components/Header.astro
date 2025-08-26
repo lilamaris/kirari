@@ -1,8 +1,10 @@
 ---
-import { Icon } from "astro-icon/components";
 import Link from "@/components/ui/Link.astro";
+import DecorateText from "@/components/ui/DecorateText.astro";
+
 import ThemeController from "@/components/ThemeController.svelte";
 import HueController from "@/components/HueController.svelte";
+
 import { SITE_CONFIG } from "@/consts/site";
 
 interface Props {
@@ -19,14 +21,15 @@ const { class: className } = Astro.props;
   ]}
 >
   <div class="flex items-center gap-1 px-5 text-xl">
-    <Icon name="lucide:house" class="icon mr-2 mb-1 text-[1.75rem]" />
-    {SITE_CONFIG.author}
+    <DecorateText
+      class="capitalize"
+      icon="lucide:house"
+      text={SITE_CONFIG.author}
+    />
   </div>
   <div class="flex flex-1 gap-1">
-    <Link class="btn" data-variant="ghost" data-size="md" href="/"> Home </Link>
-    <Link class="btn" data-variant="ghost" data-size="md" href="/posts">
-      Posts
-    </Link>
+    <Link class="btn text-lg" data-variant="ghost" href="/"> Home </Link>
+    <Link class="btn text-lg" data-variant="ghost" href="/posts"> Posts </Link>
   </div>
   <div class="flex items-center gap-1">
     <HueController client:only="svelte" />
