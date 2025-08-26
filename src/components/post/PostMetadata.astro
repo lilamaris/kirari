@@ -1,0 +1,54 @@
+---
+import DecorateText from "@/components/ui/DecorateText.astro";
+import Link from "@/components/ui/Link.astro";
+
+import { formatDate } from "@/lib/utils";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  published: Date;
+  series?: string;
+  tags: string[];
+}
+
+const { published, series, tags } = Astro.props;
+const publishedDateString = formatDate(published);
+---
+
+{
+  published && (
+    <DecorateText icon="lucide:calendar">
+      <Link class="btn" data-size="sm" data-variant="ghost" href={`/`}>
+        {publishedDateString}
+      </Link>
+    </DecorateText>
+  )
+}
+
+{
+  series && (
+    <DecorateText icon="lucide:book-marked">
+      <Link
+        class="btn"
+        data-size="md"
+        data-variant="ghost"
+        href={`/posts/series/${series}`}
+      >
+        {series}
+      </Link>
+    </DecorateText>
+  )
+}
+
+{
+  tags && tags.length > 0 && (
+    <DecorateText as="div" class="flex flex-row items-center" icon="lucide:tags">
+      {(tags.map((tag,i) => (
+        <Icon name="lucide:dot" class:list={[{"hidden": i==0}, "text-sm"]} />
+        <Link class="btn" data-size="md" data-variant="ghost" href={""}>
+          {tag.trim()}
+        </Link>
+      )))}
+    </DecorateText>
+  )
+}

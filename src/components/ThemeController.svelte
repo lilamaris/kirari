@@ -27,10 +27,11 @@
   {/if}
 {/snippet}
 
-<div role="menu" class="floating-menu flex" style="--gap: 1.25rem">
+<div role="menu" class="floating-menu flextems-center" style="--gap: 1.25rem">
   <button
     class="btn"
     data-variant="ghost"
+    data-size="icon"
     aria-haspopup="dialog"
     onclick={() => handleChangeTheme()}
   >
