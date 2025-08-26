@@ -1,7 +1,8 @@
 ---
 import Link from "@/components/ui/Link.astro";
-import { getAllTags } from "@/lib/post";
+import { getAllTags } from "@/lib/content-util";
 import type { HTMLAttributes } from "astro/types";
+import DecorateText from "./ui/DecorateText.astro";
 interface Props extends HTMLAttributes<"div"> {
   class?: string;
 }
@@ -11,7 +12,15 @@ const { class: className, ...props } = Astro.props;
 const tags = await getAllTags();
 ---
 
-<div class:list={["card", className]} {...props}>
-  <h1>Tags</h1>
-  {tags.map((tag) => <Link href={`archive/?tag=${tag}`}>{tag}</Link>)}
+<div class:list={["card flex flex-col gap-2", className]} {...props}>
+  <DecorateText>Tags</DecorateText>
+  <div class="flex flex-wrap gap-1">
+    {
+      Object.entries(tags).map(([canonical, tag]) => (
+        <Link class="btn" href={`/archive?tag=${canonical}`}>
+          {tag.label}
+        </Link>
+      ))
+    }
+  </div>
 </div>

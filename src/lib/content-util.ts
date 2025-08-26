@@ -1,24 +1,5 @@
-import type { CollectionEntry, SchemaContext } from "astro:content";
-import { z, getCollection } from "astro:content";
-
-// content.config.ts import this schema
-export const postSchema = ({ image }: SchemaContext) =>
-  z.object({
-    title: z.string(),
-    slug: z.string(),
-    series: z.string().optional(),
-    seriesOrder: z.number().optional(),
-    tags: z.array(z.string()).default([]),
-    category: z.string().default("general"),
-    published: z.coerce.date(),
-    draft: z.boolean().default(false),
-    image: image().optional(),
-
-    // NOTE: Refer to post located before and after the relevant post
-    // Use this field as an ID to retrieve data from collection using 'getEntry' in 'astro:content'
-    previousPostSlug: z.string().optional(),
-    nextPostSlug: z.string().optional(),
-  });
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 
 export type Post = CollectionEntry<"post">;
 
@@ -94,7 +75,9 @@ export const getPostsGroupBySeries = async (): Promise<
   return result;
 };
 
-// NOTE: Return all tags
+// NOTE: Return all tags as key-value record data.
+// key is canonical id of tag
+// value is array of object that conform to the Tag interface.
 export const getAllTags = async (): Promise<Record<string, Tag>> => {
   const rawSortedPosts = await getSortedPosts();
 
@@ -113,7 +96,12 @@ export const getAllTags = async (): Promise<Record<string, Tag>> => {
 
     result[tagName] = tag;
   }
-
-  console.log(result);
   return result;
+};
+
+// NOTE: Return all series in key value data
+// key is canonical id of series
+// value is an array of the posts included in it's series.
+export const getAllSeries = async (): Promise<Record<string, Series>> => {
+  const rawSortedPosts = await getSortedPosts();
 };
