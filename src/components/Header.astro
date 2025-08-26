@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 import Link from "@/components/ui/Link.astro";
 import ThemeController from "@/components/ThemeController.svelte";
 import HueController from "@/components/HueController.svelte";
+import { SITE_CONFIG } from "@/consts/site";
 
 interface Props {
   class?: string;
@@ -17,15 +18,17 @@ const { class: className } = Astro.props;
     "card flex items-center justify-between rounded-t-none rounded-b-xl p-4",
   ]}
 >
-  <div class="flex gap-1 px-5 text-xl">
-    <Icon name="lucide:house" class="mr-2 mb-1 text-[1.75rem]" />
-    lilamaris
+  <div class="flex items-center gap-1 px-5 text-xl">
+    <Icon name="lucide:house" class="icon mr-2 mb-1 text-[1.75rem]" />
+    {SITE_CONFIG.author}
   </div>
-  <div class="flex gap-1">
-    <Link href="/">Home</Link>
-    <Link href="/posts">Post</Link>
+  <div class="flex flex-1 gap-1">
+    <Link class="btn" data-variant="ghost" data-size="md" href="/"> Home </Link>
+    <Link class="btn" data-variant="ghost" data-size="md" href="/posts">
+      Posts
+    </Link>
   </div>
-  <div class="flex gap-1">
+  <div class="flex items-center gap-1">
     <HueController client:only="svelte" />
     <ThemeController client:only="svelte" />
   </div>
