@@ -7,6 +7,7 @@ import PostPagination from "@/components/PostPagination.astro";
 
 import { SITE_APPEARANCE_CONFIG } from "@/consts/site";
 import { getSortedPosts } from "@/lib/content-util";
+import AnimationSequence from "@/components/extra/AnimationSequence.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getSortedPosts();
@@ -14,13 +15,17 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-
-console.log(page);
 ---
 
 <Layout>
-  <div class="onload-animation flex flex-col gap-2">
+  <AnimationSequence
+    as="ul"
+    class="flex flex-col gap-2"
+    animationClass="onload-animation"
+    initialDelay={100}
+    effectDepth={2}
+  >
     <PostList posts={page.data} />
     <PostPagination page={page} />
-  </div>
+  </AnimationSequence>
 </Layout>

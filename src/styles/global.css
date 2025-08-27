@@ -130,7 +130,7 @@
   }
 
   .card {
-    @apply rounded-[var(--radius)] bg-[var(--card-bg)] p-2 text-black/90 shadow-xs transition dark:text-white/90;
+    @apply overflow-hidden rounded-[var(--radius)] bg-[var(--card-bg)] p-2 text-black/90 shadow-xs transition dark:text-white/90;
   }
 
   .hueHandle {

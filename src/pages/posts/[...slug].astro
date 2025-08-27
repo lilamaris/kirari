@@ -9,6 +9,7 @@ import PostDescription from "@/components/post/PostDescription.astro";
 import PostCard from "@/components/PostCard.astro";
 
 import { getSortedPosts } from "@/lib/content-util";
+import AnimationSequence from "@/components/extra/AnimationSequence.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getSortedPosts();
@@ -30,24 +31,31 @@ const nextPost =
 ---
 
 <Layout>
-  <div
-    class="onload-animation card flex flex-col p-6"
-    style="--content-delay: 50ms"
+  <AnimationSequence
+    as="div"
+    class="flex flex-col gap-2"
+    animationClass="onload-animation"
+    effectDepth={2}
+    delay={75}
+    initialDelay={200}
   >
-    <PostTitle title={title} />
-    <PostDescription description={description} />
-    <div class="flex items-center gap-2">
-      <PostMetadata published={published} series={series} tags={tags} />
+    <div class="card flex flex-col p-6" ]>
+      <PostTitle title={title} />
+      <PostDescription description={description} />
+      <div class="flex items-center gap-2">
+        <PostMetadata published={published} series={series} tags={tags} />
+      </div>
+      <div
+        class="relative py-4 before:absolute before:w-full before:border-t before:border-dashed"
+      >
+      </div>
+      <article class="prose">
+        <Content />
+      </article>
     </div>
-    <div
-      class="relative py-4 before:absolute before:w-full before:border-t before:border-dashed"
-    >
+    <div class="grid basis-12 grid-cols-[1fr_1fr] gap-2">
+      {previousPost && <PostCard class="btn" post={previousPost} dense />}
+      {nextPost && <PostCard class="btn" post={nextPost} dense />}
     </div>
-    <article class="prose">
-      <Content />
-    </article>
-  </div>
-  <div class="grid basis-12 grid-cols-[1fr_1fr] gap-2">
-    {previousPost && <PostCard post={previousPost} />}
-  </div>
+  </AnimationSequence>
 </Layout>

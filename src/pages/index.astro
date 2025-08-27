@@ -3,10 +3,19 @@ import Layout from "@/layouts/Layout.astro";
 import PostList from "@/components/PostList.astro";
 
 import { getSortedPosts } from "@/lib/content-util";
+import AnimationSequence from "@/components/extra/AnimationSequence.astro";
 
 const recentPosts = (await getSortedPosts()).slice(0, 3);
 ---
 
 <Layout>
-  <PostList posts={recentPosts} />
+  <AnimationSequence
+    as="ul"
+    class="flex flex-col gap-2"
+    animationClass="onload-animation"
+    initialDelay={100}
+    effectDepth={2}
+  >
+    <PostList posts={recentPosts} />
+  </AnimationSequence>
 </Layout>
