@@ -2,12 +2,12 @@
 import type { GetStaticPaths } from "astro";
 
 import Layout from "@/layouts/Layout.astro";
-import PostList from "@/components/PostList.astro";
-import PostPagination from "@/components/PostPagination.astro";
+import AnimationSequence from "@/components/extra/AnimationSequence.astro";
+import PostPagination from "@/components/post/PostPagination.astro";
+import PostCard from "@/components/post/PostCard.astro";
 
 import { SITE_APPEARANCE_CONFIG } from "@/consts/site";
 import { getSortedPosts } from "@/lib/content-util";
-import AnimationSequence from "@/components/extra/AnimationSequence.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getSortedPosts();
@@ -25,7 +25,13 @@ const { page } = Astro.props;
     initialDelay={100}
     effectDepth={2}
   >
-    <PostList posts={page.data} />
+    {
+      page.data.map((post) => (
+        <li>
+          <PostCard class="card" post={post} />
+        </li>
+      ))
+    }
     <PostPagination page={page} />
   </AnimationSequence>
 </Layout>

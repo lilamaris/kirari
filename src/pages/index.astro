@@ -1,9 +1,10 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import PostList from "@/components/PostList.astro";
+
+import AnimationSequence from "@/components/extra/AnimationSequence.astro";
+import PostCard from "@/components/post/PostCard.astro";
 
 import { getSortedPosts } from "@/lib/content-util";
-import AnimationSequence from "@/components/extra/AnimationSequence.astro";
 
 const recentPosts = (await getSortedPosts()).slice(0, 3);
 ---
@@ -16,6 +17,12 @@ const recentPosts = (await getSortedPosts()).slice(0, 3);
     initialDelay={100}
     effectDepth={2}
   >
-    <PostList posts={recentPosts} />
+    {
+      recentPosts.map((post) => (
+        <li>
+          <PostCard class="card" post={post} />
+        </li>
+      ))
+    }
   </AnimationSequence>
 </Layout>
