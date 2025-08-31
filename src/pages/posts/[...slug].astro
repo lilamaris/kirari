@@ -3,13 +3,14 @@ import type { GetStaticPaths } from "astro";
 import { render, getEntry } from "astro:content";
 
 import Layout from "@/layouts/Layout.astro";
+import AnimationSequence from "@/components/extra/AnimationSequence.astro";
+import Link from "@/components/ui/Link.astro";
 import PostTitle from "@/components/post/PostTitle.astro";
 import PostMetadata from "@/components/post/PostMetadata.astro";
 import PostDescription from "@/components/post/PostDescription.astro";
-import PostCard from "@/components/PostCard.astro";
+import PostCard from "@/components/post/PostCard.astro";
 
 import { getSortedPosts } from "@/lib/content-util";
-import AnimationSequence from "@/components/extra/AnimationSequence.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getSortedPosts();
@@ -33,7 +34,7 @@ const nextPost =
 <Layout>
   <AnimationSequence
     as="div"
-    class="flex flex-col gap-2"
+    class="flex min-w-0 flex-col gap-2"
     animationClass="onload-animation"
     effectDepth={2}
     delay={75}
@@ -53,9 +54,31 @@ const nextPost =
         <Content />
       </article>
     </div>
-    <div class="grid basis-12 grid-cols-[1fr_1fr] gap-2">
-      {previousPost && <PostCard class="btn" post={previousPost} dense />}
-      {nextPost && <PostCard class="btn" post={nextPost} dense />}
+    <div class="flex basis-12 gap-2">
+      {
+        previousPost && (
+          <Link
+            href={previousPost.data.slug}
+            class="btn min-w-0 flex-1 flex-col p-4"
+            data-variant="outline"
+          >
+            <PostTitle class="truncate" title={previousPost.data.title} />
+            <PostDescription description={previousPost.data.description} />
+          </Link>
+        )
+      }
+      {
+        nextPost && (
+          <Link
+            href={nextPost.data.slug}
+            class="btn min-w-0 flex-1 flex-col p-4"
+            data-variant="outline"
+          >
+            <PostTitle class="truncate" title={nextPost.data.title} />
+            <PostDescription description={nextPost.data.description} />
+          </Link>
+        )
+      }
     </div>
   </AnimationSequence>
 </Layout>
