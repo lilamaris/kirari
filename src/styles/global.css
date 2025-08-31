@@ -102,6 +102,7 @@
     --bg: var(--btn-bg);
     --bg-hover: var(--btn-bg-hover);
     --bg-active: var(--btn-bg-active);
+    --border: none;
 
     @apply flex rounded-lg bg-[var(--bg)] px-2 py-0.5 transition dark:text-white/90;
 
@@ -121,7 +122,9 @@
 
     &[data-variant="outline"] {
       --bg: none;
-      @apply border-1 border-[var(--bg)];
+      --border: var(--primary);
+
+      @apply border-1 border-[var(--border)];
     }
 
     &[data-size="icon"] {
