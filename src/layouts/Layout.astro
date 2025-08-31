@@ -49,7 +49,6 @@ import AnimationSequence from "@/components/extra/AnimationSequence.astro";
           class="flex flex-col gap-2"
           animationClass="onload-animation"
           delay={75}
-          effectDepth={2}
           ignoreRootAnimate
         >
           <AvatarCard />
@@ -84,9 +83,9 @@ import AnimationSequence from "@/components/extra/AnimationSequence.astro";
     });
   };
 
-  // if (window?.swup?.hooks) {
-  //   swupSetup();
-  // } else {
-  //   document.addEventListener("swup:enable", swupSetup);
-  // }
+  if (window?.swup?.hooks) {
+    swupSetup();
+  } else {
+    document.addEventListener("swup:enable", swupSetup);
+  }
 </script>
