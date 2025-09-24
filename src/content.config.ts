@@ -1,25 +1,30 @@
-import { glob } from "astro/loaders";
 import { z, defineCollection } from "astro:content";
+import { postIndexLoader, postWithAdjacentLinkLoader } from "./lib/loader";
 
-const post = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/post" }),
-  schema: ({ image }) =>
+const postIndex = defineCollection({
+  loader: postIndexLoader,
+  schema: () =>
     z.object({
-      slug: z.string(),
-      title: z.string(),
-      description: z.string().optional(),
-      series: z.string().optional(),
-      seriesOrder: z.number().optional(),
-      tags: z.array(z.string()).default([]),
-      published: z.coerce.date(),
-      draft: z.boolean().default(false),
-      image: image().optional(),
-
-      // NOTE: Refer to post located before and after the relevant post
-      // Use this field as an ID to retrieve data from collection using 'getEntry' in 'astro:content'
-      previousPostSlug: z.string().optional(),
-      nextPostSlug: z.string().optional(),
+      name: z.string(),
+      count: z.number(),
+      items: z.array(z.string()).default([]),
     }),
 });
 
-export const collections = { post };
+const posts = defineCollection({
+  loader: postWithAdjacentLinkLoader(),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string().optional(),
+      tags: z.array(z.string()).default([]),
+      categories: z.string(),
+      published: z.coerce.date(),
+      draft: z.boolean().default(false),
+      image: image().optional(),
+      newerPostRef: z.string().optional(),
+      olderPostRef: z.string().optional(),
+    }),
+});
+
+export const collections = { posts, postIndex };
