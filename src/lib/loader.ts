@@ -37,6 +37,9 @@ export const postWithAdjacentLinkLoader = (): Loader => {
         });
 
       for (const [index, post] of sorted.entries()) {
+        const parts = post.id.split("/");
+        const series = parts.length > 1 ? parts[0] : "standalone";
+        post.data.series = series;
         if (index > 0) {
           post.data.newerPostRef = sorted[index - 1].id;
         }
@@ -48,15 +51,6 @@ export const postWithAdjacentLinkLoader = (): Loader => {
   );
 };
 
-const groupBy = <T extends Record<string, any>>(arr: T[], key: keyof T) => {
-  const m = new Map<string, T[]>();
-  for (const item of arr) {
-    const values: string[] = Array.isArray(item[key]) ? item[key] : [item[key]];
-    for (const v of values) m.set(v, [...(m.get(v) ?? []), item]);
-  }
-  return [...m.entries()];
-};
-
 export const postIndexLoader: Loader = {
   name: "post-index",
   load: async ({ store, parseData }) => {
@@ -66,12 +60,11 @@ export const postIndexLoader: Loader = {
         eager: true,
       },
     );
+    const toArray = (v: unknown): string[] =>
+      Array.isArray(v) ? v.filter(Boolean) : v == null ? [] : [String(v)];
 
     const toId = (id: string) =>
       id.replace(/^\.\.\/content\/posts\//, "").replace(/\.(md|mdx)$/i, "");
-
-    const toArray = (v: unknown): string[] =>
-      Array.isArray(v) ? v.filter(Boolean) : v == null ? [] : [String(v)];
 
     const posts = Object.entries(module).map(([k, v]) => {
       const id = toId(k);
