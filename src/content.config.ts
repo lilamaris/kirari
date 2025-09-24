@@ -22,6 +22,7 @@ const posts = defineCollection({
       published: z.coerce.date(),
       draft: z.boolean().default(false),
       image: image().optional(),
+      series: z.string().optional(),
       newerPostRef: z.string().optional(),
       olderPostRef: z.string().optional(),
     }),
