@@ -1,6 +1,6 @@
 import { type MarkdownInstance } from "astro";
 import { glob, type Loader } from "astro/loaders";
-import type { CollectionEntry } from "astro:content";
+import type { Post } from "@/types";
 
 const globWithLoader = (
   options: Parameters<typeof glob>[0],
@@ -18,21 +18,9 @@ const globWithLoader = (
   };
 };
 
-const sortByPublished = (
-  a: CollectionEntry<"posts">,
-  b: CollectionEntry<"posts">,
-): number => {
+const sortByPublished = (a: Post, b: Post): number => {
   const compare = b.data.published.getTime() - a.data.published.getTime();
   return compare !== 0 ? compare : a.id.localeCompare(b.id);
-};
-
-const groupBy = <T extends Record<string, any>>(arr: T[], key: keyof T) => {
-  const m = new Map<string, T[]>();
-  for (const item of arr) {
-    const values: string[] = Array.isArray(item[key]) ? item[key] : [item[key]];
-    for (const v of values) m.set(v, [...(m.get(v) ?? []), item]);
-  }
-  return [...m.entries()];
 };
 
 export const postWithAdjacentLinkLoader = (): Loader => {
@@ -42,7 +30,7 @@ export const postWithAdjacentLinkLoader = (): Loader => {
       base: "./src/content/posts",
     },
     async (context) => {
-      const all = context.store.values() as CollectionEntry<"posts">[];
+      const all = context.store.values() as Post[];
       const sorted = all.filter((e) => !e.data.draft).sort(sortByPublished);
 
       for (const [index, post] of sorted.entries()) {
@@ -57,17 +45,29 @@ export const postWithAdjacentLinkLoader = (): Loader => {
   );
 };
 
+const groupBy = <T extends Record<string, any>>(arr: T[], key: keyof T) => {
+  const m = new Map<string, T[]>();
+  for (const item of arr) {
+    const values: string[] = Array.isArray(item[key]) ? item[key] : [item[key]];
+    for (const v of values) m.set(v, [...(m.get(v) ?? []), item]);
+  }
+  return [...m.entries()];
+};
+
 export const postIndexLoader: Loader = {
   name: "post-index",
   load: async ({ store, parseData }) => {
-    const module = import.meta.glob<
-      MarkdownInstance<CollectionEntry<"posts">["data"]>
-    >("../content/posts/**/*.{md,mdx}", {
-      eager: true,
-    });
+    const module = import.meta.glob<MarkdownInstance<Post["data"]>>(
+      "../content/posts/**/*.{md,mdx}",
+      {
+        eager: true,
+      },
+    );
 
     const posts = Object.entries(module).map(([k, v]) => {
-      const newKey = k.replace(/^\.\.\/content\/posts\//, "");
+      const newKey = k
+        .replace(/^\.\.\/content\/posts\//, "")
+        .replace(/\.(md|mdx)$/i, "");
       const split = newKey.split("/");
       return {
         id: newKey,
@@ -75,6 +75,8 @@ export const postIndexLoader: Loader = {
         ...v.frontmatter,
       };
     });
+
+    console.log(posts);
 
     const visible = posts.filter((e) => !e.draft);
 
