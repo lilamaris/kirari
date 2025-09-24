@@ -18,11 +18,6 @@ const globWithLoader = (
   };
 };
 
-const sortByPublished = (a: Post, b: Post): number => {
-  const compare = b.data.published.getTime() - a.data.published.getTime();
-  return compare !== 0 ? compare : a.id.localeCompare(b.id);
-};
-
 export const postWithAdjacentLinkLoader = (): Loader => {
   return globWithLoader(
     {
@@ -31,7 +26,15 @@ export const postWithAdjacentLinkLoader = (): Loader => {
     },
     async (context) => {
       const all = context.store.values() as Post[];
-      const sorted = all.filter((e) => !e.data.draft).sort(sortByPublished);
+      const sorted = all
+        .filter((e) => !e.data.draft)
+        .sort((a, b) => {
+          const compare =
+            +new Date(b.data.published ?? 0) - +new Date(a.data.published);
+          return compare !== 0
+            ? compare
+            : (a.data.title ?? a.id).localeCompare(b.data.title ?? b.id);
+        });
 
       for (const [index, post] of sorted.entries()) {
         if (index > 0) {
@@ -64,45 +67,77 @@ export const postIndexLoader: Loader = {
       },
     );
 
+    const toId = (id: string) =>
+      id.replace(/^\.\.\/content\/posts\//, "").replace(/\.(md|mdx)$/i, "");
+
+    const toArray = (v: unknown): string[] =>
+      Array.isArray(v) ? v.filter(Boolean) : v == null ? [] : [String(v)];
+
     const posts = Object.entries(module).map(([k, v]) => {
-      const newKey = k
-        .replace(/^\.\.\/content\/posts\//, "")
-        .replace(/\.(md|mdx)$/i, "");
-      const split = newKey.split("/");
+      const id = toId(k);
+      const parts = id.split("/");
+      const series = parts.length > 1 ? parts[0] : "standalone";
+
       return {
-        id: newKey,
-        series: split.length > 1 ? split[0] : "standalone",
-        ...v.frontmatter,
+        id,
+        title: v.frontmatter.title,
+        published: v.frontmatter.published,
+        draft: v.frontmatter.draft,
+        tags: toArray(v.frontmatter.tags),
+        categories: toArray(v.frontmatter.categories),
+        series,
       };
     });
 
-    console.log(posts);
+    const visible = posts
+      .filter((e) => !e.draft)
+      .sort((a, b) => {
+        const compare =
+          +new Date(b.published ?? 0) - +new Date(a.published ?? 0);
+        return compare !== 0
+          ? compare
+          : (a.title ?? a.id).localeCompare(b.title ?? b.id);
+      });
 
-    const visible = posts.filter((e) => !e.draft);
+    const indexKeys = ["tags", "categories", "series"] as const;
+    type IndexKey = (typeof indexKeys)[number];
 
-    type AvailableKeys = keyof (typeof visible)[number];
-    const groupKey: AvailableKeys[] = ["tags", "categories", "series"];
+    type IndexBucket = Map<string, { name: string; items: string[] }>;
+    const buckets: Record<IndexKey, IndexBucket> = {
+      tags: new Map(),
+      categories: new Map(),
+      series: new Map(),
+    };
 
-    for (const key of groupKey) {
-      const groups = groupBy(visible, key).map(([k, v]) => ({
-        id: `${key}/${k}`,
-        name: k,
-        count: v.length,
-        items: v.map((v) => v.id),
-      }));
+    for (const post of visible) {
+      for (const key of indexKeys) {
+        const values = key == "series" ? [post.series] : post[key];
 
-      for (const group of groups) {
-        const { id, ...d } = group;
-        const data = await parseData({
-          id,
-          data: d,
-        });
-
-        store.set({
-          id,
-          data,
-        });
+        for (const raw of values) {
+          const id = `${key}/${raw}`;
+          const bucket = buckets[key];
+          const rec = bucket.get(id) ?? { name: raw, items: [] };
+          rec.items.push(post.id);
+          bucket.set(id, rec);
+        }
       }
     }
+
+    await Promise.all(
+      indexKeys.flatMap((key) =>
+        [...buckets[key].entries()].map(async ([id, { name, items }]) => {
+          const unique = [...new Set(items)];
+          const data = await parseData({
+            id,
+            data: {
+              name,
+              count: unique.length,
+              itmes: unique,
+            },
+          });
+          store.set({ id, data });
+        }),
+      ),
+    );
   },
 };
