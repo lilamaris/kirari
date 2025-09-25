@@ -1,16 +1,18 @@
-import type { SiteAppearanceConfig, SiteConfig } from "@/types/config";
+import type { SiteAppearanceConfig, SiteConfig } from "@/types";
 
-export const SITE_CONFIG: SiteConfig = {
-  title: "astro-blog-template",
-  description: "goot blog template",
+export const SITE: SiteConfig = {
+  title: "Kirari",
+  description: "kirari astro blog",
   author: "lilamaris",
   lang: "en",
-  theme: "light",
-  hue: 270,
 };
-export const SITE_APPEARANCE_CONFIG: SiteAppearanceConfig = {
-  bannerHeight: 75,
-  bannerOverlap: 5,
+
+export const APPEARANCE: SiteAppearanceConfig = {
+  hue: 270,
+  theme: "light",
+  bannerHeight: 30,
+  bannerOverlap: -2,
+  pageWidth: 75,
   showRecentPost: true,
   recentPostCount: 3,
   postPerPageCount: 4,

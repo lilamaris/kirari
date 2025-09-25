@@ -8,11 +8,12 @@ export interface SiteConfig {
   description: string;
   author: string;
   lang: string;
-  theme: SiteTheme;
-  hue: number;
 }
 
 export interface SiteAppearanceConfig {
+  hue: number;
+  theme: SiteTheme;
+  pageWidth: number;
   bannerHeight: number;
   bannerOverlap: number;
   showRecentPost: boolean;
