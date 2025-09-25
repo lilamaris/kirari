@@ -1,4 +1,4 @@
-import type { SiteTheme } from "@/types/config";
+import type { SiteTheme } from "@/types";
 
 export const joinUrl = (...parts: string[]) => {
   const joined = parts.join("/");
