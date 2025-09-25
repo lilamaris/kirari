@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+.icon {
+  @apply inline-flex aspect-square items-center justify-center rounded-lg;
+
+  &[data-size="sm"] {
+    @apply size-7;
+  }
+
+  &[data-size="md"] {
+    @apply size-8;
+  }
+
+  &[data-size="lg"] {
+    @apply size-8;
+  }
+}
