@@ -1,0 +1,27 @@
+---
+import Decorator from "@/components/atom/common/Decorator.astro";
+import Link from "@/components/atom/common/Link.astro";
+import { SITE } from "@/consts/site";
+import { Icon } from "astro-icon/components";
+
+const routes = [
+  { href: "/", name: SITE.title, icon: "lucide:house" },
+  { href: "/blog", name: "Blog" },
+  { href: "/index", name: "Index" },
+];
+---
+
+<header class="card flex items-center justify-between gap-4 p-2">
+  <div class="flex items-center gap-4">
+    {
+      routes.map((route) => (
+        <Link class="btn" href={route.href}>
+          <Decorator enableBackground>
+            {route.icon && <Icon name={route.icon} slot="deco" />}
+            <span class="font-semibold">{route.name}</span>
+          </Decorator>
+        </Link>
+      ))
+    }
+  </div>
+</header>

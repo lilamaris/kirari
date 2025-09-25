@@ -1,0 +1,16 @@
+---
+import Img from "@/components/ui/Img.astro";
+import { APPEARANCE } from "@/consts/site";
+const bannerHeight = APPEARANCE.bannerHeight;
+---
+
+<div
+  class="animate-reveal-center pointer-events-none absolute top-0 -z-10 w-full select-none"
+  style={`height: ${bannerHeight}rem`}
+>
+  <Img
+    src="/src/assets/demo-banner.jpg"
+    alt="banner"
+    class="object-cover object-center"
+  />
+</div>
