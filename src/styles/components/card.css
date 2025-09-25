@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.card {
+  @apply text-foreground bg-surface border-border rounded-surface border select-none;
+}

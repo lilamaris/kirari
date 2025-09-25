@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --page-bg: oklch(0.97 0.01 var(--hue));
+
+  --card-bg: var(--color-white);
+  --card-fg: var(--color-black);
+}
+
+@layer base {
+  html,
+  body {
+    font-family: "Roboto", sans-serif;
+  }
+}
+
+@theme inline {
+  --color-white: oklch(1 0 0);
+  --color-black: oklch(0 0 0);
+  --radius: 0.625rem;
+  --page-width: 75rem;
+  --banner-height: 40vh;
+  --banner-overlap: 2rem;
+}
+
+:root {
+  --page-bg: oklch(0.97 0.01 var(--hue));
+
+  --btn-bg: oklch(0.8 0.015 var(--hue));
+  --btn-bg-hover: oklch(0.9 0.015 var(--hue));
+
+  --rainbow: linear-gradient(
+    to right,
+    oklch(0.8 0.1 0),
+    oklch(0.8 0.1 30),
+    oklch(0.8 0.1 60),
+    oklch(0.8 0.1 90),
+    oklch(0.8 0.1 120),
+    oklch(0.8 0.1 150),
+    oklch(0.8 0.1 180),
+    oklch(0.8 0.1 210),
+    oklch(0.8 0.1 240),
+    oklch(0.8 0.1 270),
+    oklch(0.8 0.1 300),
+    oklch(0.8 0.1 330),
+    oklch(0.8 0.1 360)
+  );
+}
+
+[data-theme="dark"] {
+  --primary: oklch(0.7 0.14 var(--hue));
+
+  --page-bg: oklch(0.15 0.015 var(--hue));
+
+  --card-bg: oklch(0.23 0.015 var(--hue));
+  --card-fg: var(--color-white);
+
+  --btn-bg: oklch(0.3 0.015 var(--hue));
+  --btn-bg-hover: oklch(0.35 0.015 var(--hue));
+  --btn-bg-active: oklch(0.25 0.015 var(--hue));
+  --btn-fg: oklch(0.75 0.1 var(--hue));
+
+  --rainbow: linear-gradient(
+    to right,
+    oklch(0.7 0.1 0),
+    oklch(0.7 0.1 30),
+    oklch(0.7 0.1 60),
+    oklch(0.7 0.1 90),
+    oklch(0.7 0.1 120),
+    oklch(0.7 0.1 150),
+    oklch(0.7 0.1 180),
+    oklch(0.7 0.1 210),
+    oklch(0.7 0.1 240),
+    oklch(0.7 0.1 270),
+    oklch(0.7 0.1 300),
+    oklch(0.7 0.1 330),
+    oklch(0.7 0.1 360)
+  );
+}
