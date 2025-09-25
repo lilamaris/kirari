@@ -1,0 +1,23 @@
+---
+import Img from "@/components/ui/Img.astro";
+import { SITE } from "@/consts/site";
+import { Icon } from "astro-icon/components";
+import Link from "@/components/atom/common/Link.astro";
+---
+
+<div class="card flex flex-col gap-2 p-2">
+  <Img
+    src="/src/assets/demo-profile.jpg"
+    alt="profile"
+    class="rounded-surface border-border/50 border"
+  />
+  <div class="px-1">
+    <h1 class="font-bold">{SITE.author}</h1>
+    <p class="text-foreground/50 text-sm">{SITE.description}</p>
+  </div>
+  <div>
+    <Link>
+      <Icon name="fa6-brands:github" />
+    </Link>
+  </div>
+</div>
