@@ -1,234 +1,51 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@import "@fontsource-variable/jetbrains-mono";
-@import "@fontsource/roboto";
-
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+@theme {
+  --hue: 250;
+  --radius-surface: 0.625rem;
+  --radius-select: 0.5rem;
+}
+
 @theme inline {
-  --color-white: oklch(1 0 0);
-  --color-black: oklch(0 0 0);
-  --radius: 0.625rem;
-  --page-width: 75rem;
-  --banner-height: 40vh;
-  --banner-overlap: 2rem;
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-select: var(--select);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
 }
 
-:root {
-  --primary: oklch(0.7 0.14 var(--hue));
+@layer theme {
+  :root {
+    --background: oklch(1 0 var(--hue));
+    --surface: oklch(1 0 var(--hue));
+    --select: oklch(0.92 0.01 var(--hue));
+    --accent: oklch(0.95 0.02 var(--hue));
+    --accent-foreground: oklch(0.55 0.12 var(--hue));
+    --border: oklch(0 0 0 / 0.1);
+    --foreground: oklch(0.15 0 0);
+  }
 
-  --page-bg: oklch(0.97 0.01 var(--hue));
-
-  --card-bg: var(--color-white);
-  --card-fg: var(--color-black);
-
-  --btn-bg: oklch(0.8 0.015 var(--hue));
-  --btn-bg-hover: oklch(0.9 0.015 var(--hue));
-
-  --rainbow: linear-gradient(
-    to right,
-    oklch(0.8 0.1 0),
-    oklch(0.8 0.1 30),
-    oklch(0.8 0.1 60),
-    oklch(0.8 0.1 90),
-    oklch(0.8 0.1 120),
-    oklch(0.8 0.1 150),
-    oklch(0.8 0.1 180),
-    oklch(0.8 0.1 210),
-    oklch(0.8 0.1 240),
-    oklch(0.8 0.1 270),
-    oklch(0.8 0.1 300),
-    oklch(0.8 0.1 330),
-    oklch(0.8 0.1 360)
-  );
-}
-
-[data-theme="dark"] {
-  --primary: oklch(0.7 0.14 var(--hue));
-
-  --page-bg: oklch(0.15 0.015 var(--hue));
-
-  --card-bg: oklch(0.23 0.015 var(--hue));
-  --card-fg: var(--color-white);
-
-  --btn-bg: oklch(0.3 0.015 var(--hue));
-  --btn-bg-hover: oklch(0.35 0.015 var(--hue));
-  --btn-bg-active: oklch(0.25 0.015 var(--hue));
-  --btn-fg: oklch(0.75 0.1 var(--hue));
-
-  --rainbow: linear-gradient(
-    to right,
-    oklch(0.7 0.1 0),
-    oklch(0.7 0.1 30),
-    oklch(0.7 0.1 60),
-    oklch(0.7 0.1 90),
-    oklch(0.7 0.1 120),
-    oklch(0.7 0.1 150),
-    oklch(0.7 0.1 180),
-    oklch(0.7 0.1 210),
-    oklch(0.7 0.1 240),
-    oklch(0.7 0.1 270),
-    oklch(0.7 0.1 300),
-    oklch(0.7 0.1 330),
-    oklch(0.7 0.1 360)
-  );
+  [data-theme="dark"] {
+    --background: oklch(0.1 0.01 var(--hue));
+    --surface: oklch(0.15 0.01 var(--hue));
+    --select: oklch(0.2 0.01 var(--hue));
+    --accent: oklch(0.38 0.1 var(--hue));
+    --accent-foreground: oklch(0.88 0.01 var(--hue));
+    --border: oklch(1 0 0 / 0.1);
+    --foreground: oklch(0.97 0 0);
+  }
 }
 
 @layer base {
   body {
-    font-family: "Roboto", sans-serif;
+    @apply bg-background transition;
   }
 }
 
-@layer components {
-  .icon {
-    @apply inline-flex aspect-square items-center justify-center rounded-lg p-1;
-
-    &[data-size="sm"] {
-      @apply size-7;
-    }
-
-    &[data-size="md"] {
-      @apply size-8;
-    }
-
-    &[data-size="lg"] {
-      @apply size-8;
-    }
-  }
-
-  .btn {
-    --bg: var(--btn-bg);
-    --bg-hover: var(--btn-bg-hover);
-    --bg-active: var(--btn-bg-active);
-    --border: none;
-
-    @apply flex rounded-lg bg-[var(--bg)] px-2 py-0.5 transition dark:text-white/90;
-
-    &:hover,
-    &:focus-visible {
-      @apply bg-[var(--bg-hover)];
-    }
-
-    &:active {
-      @apply scale-97 bg-[var(--bg-active)];
-    }
-
-    &[data-variant="ghost"] {
-      --bg: none;
-      --bg-hover: var(--btn-bg);
-    }
-
-    &[data-variant="outline"] {
-      --bg: none;
-      --border: var(--primary);
-
-      @apply border-1 border-[var(--border)];
-    }
-
-    &[data-size="icon"] {
-      @apply aspect-square size-max p-1;
-    }
-  }
-
-  .card {
-    @apply overflow-hidden rounded-[var(--radius)] bg-[var(--card-bg)] p-2 text-black/90 shadow-xs transition dark:text-white/90;
-  }
-
-  .hueHandle {
-    border-radius: 0.125rem;
-    padding: 0 5px 0 5px;
-    appearance: none;
-    height: 1.5rem;
-    background-image: var(--rainbow);
-    width: 100%;
-
-    &::-moz-range-thumb,
-    &::-webkit-slider-thumb {
-      appearance: none;
-      width: 0.5rem;
-      height: 1rem;
-      border: none;
-      border-radius: 0.125rem;
-      background: rgba(255, 255, 255, 0.7);
-      box-shadow: none;
-    }
-
-    &::-moz-range-thumb:hover {
-      background-color: rgba(255, 255, 255, 0.8);
-    }
-
-    &::-webkit-slider-thumb:hover {
-      background-color: rgba(255, 255, 255, 0.8);
-    }
-
-    &::-moz-range-thumb:active {
-      background-color: rgba(255, 255, 255, 0.6);
-    }
-
-    &::-webkit-slider-thumb:active {
-      background-color: rgba(255, 255, 255, 0.6);
-    }
-  }
-
-  .floating-menu {
-    --menu-gap: var(--gap, 1rem);
-    --align: var(--content-align, "center");
-    @apply relative z-50;
-
-    :where([data-float-menu-role="content"]) {
-      @apply pointer-events-none invisible absolute top-full right-0 mt-[var(--menu-gap)] -translate-y-5 opacity-0 transition;
-    }
-
-    &:has([data-float-menu-role="content"]:focus-visible),
-    &:hover {
-      :where([data-float-menu-role="content"]) {
-        @apply pointer-events-auto visible translate-y-0 opacity-100;
-        &::before {
-          @apply absolute right-0 bottom-full left-0 h-[var(--menu-gap)] content-[''];
-        }
-      }
-    }
-  }
-}
-
-@layer utilities {
-  .prose {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      @apply text-black dark:text-white;
-
-      .anchor {
-        @apply -m-0.5 ml-[0.2ch] p-0.5 opacity-0 transition select-none;
-
-        .anchor-icon {
-          @apply mx-[0.45ch];
-        }
-      }
-
-      &:hover {
-        .anchor {
-          @apply opacity-100;
-        }
-      }
-    }
-
-    a {
-      @apply relative bg-none font-medium text-[var(--primary)] underline decoration-white decoration-dashed decoration-1 underline-offset-6;
-
-      &:hover,
-      &:active {
-        @apply overflow-hidden rounded-md bg-[var(--btn-bg)] decoration-transparent;
-      }
-
-      &:active {
-        @apply bg-[var(--btn-bg-hover)];
-      }
-    }
-  }
-}
+@import "./components/index.css";
+@import "./utilities/index.css";

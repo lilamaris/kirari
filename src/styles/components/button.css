@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+.btn {
+  --background: var(--select);
+  @apply rounded-select bg-[var(--background)] px-2 py-1 transition;
+
+  &:is(:hover, :focus-visible) {
+    --background: oklch(from var(--select) calc(l + 0.03) c h);
+
+    @variant dark {
+      --backdround: oklch(from var(--select) calc(l - 0.03) c h);
+    }
+  }
+
+  &:active {
+    @apply scale-97 bg-[var(--bg-active)];
+  }
+
+  &[variant="ghost"] {
+    --bg: none;
+    --bg-hover: var(--btn-bg);
+  }
+
+  &[variant="outline"] {
+    --bg: none;
+    --border: var(--primary);
+
+    @apply border-1 border-[var(--border)];
+  }
+}
