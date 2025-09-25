@@ -1,0 +1,35 @@
+---
+import type { HTMLTag, Polymorphic } from "astro/types";
+
+interface ExtraProps {
+  class?: string;
+  enableBackground?: boolean;
+}
+
+export type props<tag extends HTMLTag> = Polymorphic<{ as: tag }> & ExtraProps;
+
+const {
+  as: tag = "span",
+  class: classname = "",
+  enableBackground = false,
+  ...props
+} = Astro.props;
+
+const deco = await Astro.slots.render("deco");
+---
+
+<tag class:list={[classname, "relative flex items-center"]} {...props}>
+  {
+    !!deco && (
+      <span
+        class:list={[
+          "icon text-accent-foreground mr-1",
+          { "bg-accent": enableBackground },
+        ]}
+      >
+        <Fragment set:html={deco} />
+      </span>
+    )
+  }
+  <slot />
+</tag>
