@@ -1,0 +1,19 @@
+---
+
+---
+
+<head>
+  <script is:inline>
+    document.documentElement.style.setProperty(
+      "--hue",
+      localStorage.getItem("hue") || "250",
+    );
+    document.documentElement.setAttribute(
+      "data-theme",
+      localStorage.getItem("theme") || "light",
+    );
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <slot />
+</head>
