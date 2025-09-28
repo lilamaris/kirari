@@ -10,7 +10,11 @@ export const createUrl = (path: string) => {
 };
 
 export const formatDate = (date: Date) => {
-  return date.toISOString().slice(0, 10);
+  return Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
 };
 
 export const getTheme = (): SiteTheme => {
