@@ -1,0 +1,13 @@
+---
+import Link from "@/components/atom/common/Link.astro";
+import { formatDate } from "@/lib/utils";
+interface Props {
+  published: Date;
+}
+
+const { published } = Astro.props;
+---
+
+<span>
+  {formatDate(published)}
+</span>
