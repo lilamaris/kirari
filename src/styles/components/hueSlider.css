@@ -1,6 +1,42 @@
 @import "tailwindcss";
 
 .hueHandle {
+  --rainbow: linear-gradient(
+    to right,
+    oklch(0.8 0.1 0),
+    oklch(0.8 0.1 30),
+    oklch(0.8 0.1 60),
+    oklch(0.8 0.1 90),
+    oklch(0.8 0.1 120),
+    oklch(0.8 0.1 150),
+    oklch(0.8 0.1 180),
+    oklch(0.8 0.1 210),
+    oklch(0.8 0.1 240),
+    oklch(0.8 0.1 270),
+    oklch(0.8 0.1 300),
+    oklch(0.8 0.1 330),
+    oklch(0.8 0.1 360)
+  );
+
+  @variant dark {
+    --rainbow: linear-gradient(
+      to right,
+      oklch(0.7 0.1 0),
+      oklch(0.7 0.1 30),
+      oklch(0.7 0.1 60),
+      oklch(0.7 0.1 90),
+      oklch(0.7 0.1 120),
+      oklch(0.7 0.1 150),
+      oklch(0.7 0.1 180),
+      oklch(0.7 0.1 210),
+      oklch(0.7 0.1 240),
+      oklch(0.7 0.1 270),
+      oklch(0.7 0.1 300),
+      oklch(0.7 0.1 330),
+      oklch(0.7 0.1 360)
+    );
+  }
+
   border-radius: 0.125rem;
   padding: 0 5px 0 5px;
   appearance: none;
