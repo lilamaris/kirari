@@ -1,0 +1,23 @@
+---
+import { type CollectionEntry } from "astro:content";
+import { SITE } from "@/consts/site";
+import { formatDate } from "@/lib/utils";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { published } = post.data;
+---
+
+<div
+  class="text-foreground/60 divide-border text-md mb-1 flex flex-row divide-x text-xs [&>*]:px-2 [&>*:first-child]:pl-0 [&>*:last-child]:pr-0"
+>
+  <div>
+    <span class="text-foreground">{SITE.author}</span>
+  </div>
+  <div>
+    <span>{formatDate(published)}</span>
+  </div>
+</div>

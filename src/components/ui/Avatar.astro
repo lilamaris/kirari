@@ -1,23 +1,29 @@
 ---
-import Img from "@/components/ui/Img.astro";
+import Img from "@/components/atom/common/Img.astro";
 import { SITE } from "@/consts/site";
 import { Icon } from "astro-icon/components";
 import Link from "@/components/atom/common/Link.astro";
 ---
 
-<div class="card flex flex-col gap-2 p-2">
+<div class="card bg-surface flex flex-col gap-2 p-2">
   <Img
     src="/src/assets/demo-profile.jpg"
     alt="profile"
     class="rounded-surface border-border/50 border"
   />
-  <div class="px-1">
+  <div class="mb-2 px-1">
     <h1 class="font-bold">{SITE.author}</h1>
     <p class="text-foreground/50 text-sm">{SITE.description}</p>
   </div>
-  <div>
-    <Link>
+  <div class="flex justify-center gap-px">
+    <Link class="btn icon">
       <Icon name="fa6-brands:github" />
+    </Link>
+    <Link class="btn icon">
+      <Icon name="fa6-brands:twitter" />
+    </Link>
+    <Link class="btn icon">
+      <Icon name="fa6-brands:steam" />
     </Link>
   </div>
 </div>
