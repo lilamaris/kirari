@@ -1,17 +1,16 @@
 @import "tailwindcss";
 
-.floating-menu {
+.hoverdown {
   --menu-gap: var(--gap, 1rem);
-  --align: var(--content-align, "center");
   @apply relative z-50;
 
-  :where([data-float-menu-role="content"]) {
+  :where(.content) {
     @apply pointer-events-none invisible absolute top-full right-0 mt-[var(--menu-gap)] -translate-y-5 opacity-0 transition;
   }
 
-  &:has([data-float-menu-role="content"]:focus-visible),
+  &:has(.content:focus-visible),
   &:hover {
-    :where([data-float-menu-role="content"]) {
+    :where(.content) {
       @apply pointer-events-auto visible translate-y-0 opacity-100;
       &::before {
         @apply absolute right-0 bottom-full left-0 h-[var(--menu-gap)] content-[''];
