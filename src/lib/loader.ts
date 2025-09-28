@@ -125,9 +125,10 @@ export const postIndexLoader: Loader = {
             data: {
               name,
               count: unique.length,
-              itmes: unique,
+              items: unique,
             },
           });
+
           store.set({ id, data });
         }),
       ),
