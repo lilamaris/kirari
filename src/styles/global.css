@@ -1,9 +1,19 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/geist";
+
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 @theme {
+  --font-sans:
+    "Geist Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "Geist Variable Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
   --hue: 250;
   --radius-surface: 0.625rem;
   --radius-select: 0.5rem;
@@ -11,6 +21,7 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-neutral: var(--neutral);
   --color-surface: var(--surface);
   --color-select: var(--select);
   --color-accent: var(--accent);
@@ -21,21 +32,23 @@
 
 @layer theme {
   :root {
-    --background: oklch(1 0 var(--hue));
-    --surface: oklch(1 0 var(--hue));
-    --select: oklch(0.92 0.01 var(--hue));
+    --background: oklch(1 0.008 var(--hue));
+    --neutral: oklch(0.97 0 0);
+    --surface: oklch(1 0.004 var(--hue));
+    --select: oklch(0.97 0.01 var(--hue));
     --accent: oklch(0.95 0.02 var(--hue));
     --accent-foreground: oklch(0.55 0.12 var(--hue));
     --border: oklch(0 0 0 / 0.1);
-    --foreground: oklch(0.15 0 0);
+    --foreground: oklch(0.2 0 0);
   }
 
   [data-theme="dark"] {
-    --background: oklch(0.1 0.01 var(--hue));
-    --surface: oklch(0.15 0.01 var(--hue));
+    --background: oklch(0.1 0.008 var(--hue));
+    --neutral: oklch(0.2 0 var(--hue));
+    --surface: oklch(0.15 0.004 var(--hue));
     --select: oklch(0.2 0.01 var(--hue));
-    --accent: oklch(0.38 0.1 var(--hue));
-    --accent-foreground: oklch(0.88 0.01 var(--hue));
+    --accent: oklch(0.38 0.2 var(--hue));
+    --accent-foreground: oklch(0.88 0.12 var(--hue));
     --border: oklch(1 0 0 / 0.1);
     --foreground: oklch(0.97 0 0);
   }
