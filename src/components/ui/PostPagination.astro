@@ -12,10 +12,10 @@ const { class: className, page }: Props = Astro.props;
 ---
 
 <div class:list={[className, "flex justify-center gap-2"]}>
-  <Link class="btn" data-size="icon" href={page.url.prev}>
+  <Link class="btn icon" href={page.url.prev}>
     <Icon name="lucide:chevron-left" class="icon" data-size="sm" />
   </Link>
-  <Link class="btn" data-size="icon" href={page.url.next}>
+  <Link class="btn icon" href={page.url.next}>
     <Icon name="lucide:chevron-right" class="icon" data-size="sm" />
   </Link>
 </div>
