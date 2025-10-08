@@ -1,5 +1,6 @@
 ---
 import { type MarkdownHeading } from "astro";
+import Link from "@/components/atom/common/Link.astro";
 
 interface Props {
   headings: MarkdownHeading[];
@@ -7,8 +8,7 @@ interface Props {
 
 const { headings } = Astro.props;
 ---
-
-<div class="text-foreground">
+<div class="text-foreground sticky top-0">
   <span class="text-foreground text-lg">Table of Contents</span>
   <ul class="flex flex-col gap-1">
     {
@@ -17,7 +17,9 @@ const { headings } = Astro.props;
           class:list={["text-foreground/70"]}
           style={`margin-left: ${heading.depth / 2}rem`}
         >
-          {heading.text}
+          <Link href=`#${heading.slug}`>
+            {heading.text}
+          </Link>
         </li>
       ))
     }

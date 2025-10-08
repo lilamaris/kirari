@@ -2,7 +2,6 @@
 import { defineConfig } from "astro/config";
 import svelte from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
-import swup from "@swup/astro";
 import icon from "astro-icon";
 
 import rehypeSlug from "rehype-slug";
@@ -49,10 +48,6 @@ export default defineConfig({
         "fa6-brands": ["*"],
         lucide: ["*"],
       },
-    }),
-    swup({
-      globalInstance: true,
-      smoothScrolling: true,
     }),
   ],
 });

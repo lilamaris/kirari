@@ -2,29 +2,33 @@
 
 .btn {
   --background: var(--select);
-  @apply rounded-select bg-[var(--background)] px-2 py-1 transition;
+  --hover-background: oklch(from var(--background) calc(l + 0.03) c h / 100%);
+  --active-background: oklch(from var(--background) calc(l + 0.01) c h / 100%);
+
+  @apply rounded-select flex items-center justify-center bg-[var(--background)] px-2 py-1 transition select-none;
 
   &:is(:hover, :focus-visible) {
-    --background: oklch(from var(--select) calc(l + 0.03) c h);
-
-    @variant dark {
-      --backdround: oklch(from var(--select) calc(l - 0.03) c h);
-    }
+    @apply bg-[var(--hover-background)];
   }
 
-  &:active {
-    @apply scale-97 bg-[var(--bg-active)];
+  &.icon {
+    @apply text-foreground p-1.5;
+  }
+  &.disabled {
+    @apply pointer-events-none cursor-not-allowed opacity-50;
   }
 
-  &[variant="ghost"] {
-    --bg: none;
-    --bg-hover: var(--btn-bg);
+  &:is(:active) {
+    @apply bg-[var(--active-background)];
   }
 
-  &[variant="outline"] {
-    --bg: none;
-    --border: var(--primary);
+  &[data-variant="ghost"] {
+    --background: oklch(from var(--select) l c h / 0%);
+  }
 
-    @apply border-1 border-[var(--border)];
+  &[data-variant="outline"] {
+    --background: oklch(from var(--select) l c h / 0%);
+
+    @apply border-border border;
   }
 }
