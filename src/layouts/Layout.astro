@@ -19,23 +19,24 @@ const pageWidth = APPEARANCE.pageWidth;
     <Banner />
 
     <main
-      class="relative mx-auto grid grid-cols-[14rem_1fr_auto]"
+      class:list={[
+        "relative mx-auto grid",
+        Astro.slots.has("side-right")
+          ? "grid-cols-[14rem_1fr_14rem]"
+          : "grid-cols-[14rem_1fr]",
+      ]}
       style={`top: ${bannerOffset}rem; max-width: ${pageWidth}rem`}
     >
       <aside class="mr-4 flex flex-col gap-4">
         {Astro.slots.has("side-left") ? <slot name="side-left" /> : <Avatar />}
       </aside>
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 overflow-hidden">
         <Navigation />
         <slot />
       </div>
-      {
-        Astro.slots.has("side-right") && (
-          <aside class="ml-4 flex max-w-[14rem] flex-col gap-4">
-            <slot name="side-right" />
-          </aside>
-        )
-      }
+      <aside class="sticky top-0 ml-4 flex flex-col gap-4">
+        <slot name="side-right" />
+      </aside>
     </main>
   </body>
 </html>

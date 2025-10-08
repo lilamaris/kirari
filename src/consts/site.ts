@@ -12,7 +12,7 @@ export const APPEARANCE: SiteAppearanceConfig = {
   theme: "light",
   bannerHeight: 30,
   bannerOverlap: -2,
-  pageWidth: 75,
+  pageWidth: 60,
   showRecentPost: true,
   recentPostCount: 3,
   postPerPageCount: 4,
