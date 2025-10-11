@@ -5,6 +5,7 @@ const postIndex = defineCollection({
   loader: postIndexLoader,
   schema: () =>
     z.object({
+      type: z.string(),
       name: z.string(),
       count: z.number(),
       items: z.array(z.string()).default([]),
