@@ -1,0 +1,30 @@
+---
+import Link from "@/components/common/Link.astro";
+
+import { getUrl } from "@/lib/utils";
+import type { Post, StyledProps, AstroComponentWithProps } from "@/types";
+
+interface Props extends StyledProps {
+  posts: Post[];
+  renderer: AstroComponentWithProps<{ post: Post }>;
+}
+
+const {
+  class: className,
+  style: styleAttr,
+  posts,
+  renderer: Item,
+} = Astro.props;
+---
+
+<ul class:list={[className]} style={styleAttr}>
+  {
+    posts.map((post) => (
+      <li>
+        <Link href={getUrl("blog", post.id)}>
+          <Item post={post} />
+        </Link>
+      </li>
+    ))
+  }
+</ul>

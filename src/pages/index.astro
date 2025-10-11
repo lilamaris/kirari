@@ -1,4 +1,6 @@
 ---
+import PostList from "@/components/ui/post/PostList.astro";
+import PostItem from "@/components/ui/post/PostItem.astro";
 import HomeLayout from "@/layouts/HomeLayout.astro";
 
 import { getCollection } from "astro:content";
@@ -7,7 +9,9 @@ const recentPosts = (await getCollection("posts")).slice(0, 3);
 ---
 
 <HomeLayout>
-  <div>
-    {recentPosts.map((post) => <div>{post.data.title}</div>)}
-  </div>
+  <PostList
+    class:list={["flex flex-col gap-2"]}
+    posts={recentPosts}
+    renderer={PostItem}
+  />
 </HomeLayout>
