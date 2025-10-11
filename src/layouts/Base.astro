@@ -3,7 +3,9 @@ import "@/styles/global.css";
 import { SITE } from "@/consts/site";
 import type { StyledProps } from "@/types";
 
-interface Props extends StyledProps {}
+interface Props extends StyledProps {
+  contentWidth?: number;
+}
 
 const { class: className, style: styleAttr } = Astro.props;
 ---
@@ -24,15 +26,20 @@ const { class: className, style: styleAttr } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <slot name="head" />
   </head>
-  <body class="min-h-screen">
+  <body class="flex min-h-screen flex-col">
     <div class="absolute -z-10 w-full">
       <slot name="background" />
     </div>
-    <header class="text-foreground sticky min-h-0">
+    <header class="fixed inset-x-0 z-10">
       <slot name="header" />
     </header>
-    <main class:list={[className]} style={styleAttr}>
-      <slot />
-    </main>
+    <div class="flex-1">
+      <main class:list={[className]} style={styleAttr}>
+        <slot />
+      </main>
+    </div>
+    <footer>
+      <slot name="footer" />
+    </footer>
   </body>
 </html>

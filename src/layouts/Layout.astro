@@ -1,69 +1,39 @@
 ---
 import "@/styles/global.css";
 
+import Base from "@/layouts/Base.astro";
 import Avatar from "@/components/ui/Avatar.astro";
-import Head from "@/components/Head.astro";
 import Banner from "@/components/ui/Banner.astro";
 import Navigation from "@/components/ui/Navigation.astro";
-import { SITE, APPEARANCE } from "@/consts/site";
+import type { StyledProps } from "@/lib/types";
 
-const bannerOffset = APPEARANCE.bannerHeight - APPEARANCE.bannerOverlap;
-const pageWidth = APPEARANCE.pageWidth;
+interface Props extends StyledProps {}
+
+const { class: className, style: styleAttr } = Astro.props;
+
+const mainPageWidth = 75;
 ---
 
-<html lang={SITE.lang}>
-  <Head>
-    <slot name="head" />
-  </Head>
-  <body class="min-h-screen">
-    <Banner />
+<Base>
+  <slot slot="head" name="head" />
+  <Banner />
 
-    <main
-      class:list={[
-        "relative mx-auto grid",
-        Astro.slots.has("side-right")
-          ? "grid-cols-[14rem_1fr_14rem]"
-          : "grid-cols-[14rem_1fr]",
-      ]}
-      style={`top: ${bannerOffset}rem; max-width: ${pageWidth}rem`}
-    >
-      <aside class="mr-4 flex flex-col gap-4">
-        {Astro.slots.has("side-left") ? <slot name="side-left" /> : <Avatar />}
-      </aside>
-      <div class="flex flex-col gap-4 overflow-hidden">
-        <Navigation />
-        <slot />
-      </div>
-      <aside class="sticky top-0 ml-4 flex flex-col gap-4">
-        <slot name="side-right" />
-      </aside>
-    </main>
-  </body>
-</html>
-<script>
-  const swupSetup = () => {
-    console.log("Start Swup Setup");
-
-    window.swup.hooks.on("animation:out:start", () => {
-      console.log("Animation out start");
-    });
-
-    window.swup.hooks.on("visit:start", (visit) => {
-      console.log("Visit start: ", visit);
-    });
-
-    window.swup.hooks.on("page:view", () => {
-      console.log("Page View");
-    });
-
-    window.swup.hooks.on("visit:end", (visit) => {
-      console.log("Visit end: ", visit);
-    });
-  };
-
-  if (window?.swup?.hooks) {
-    swupSetup();
-  } else {
-    document.addEventListener("swup:enable", swupSetup);
-  }
-</script>
+  <main
+    class:list={[
+      className,
+      "relative mx-auto grid",
+      `max-w-[${mainPageWidth}rem] top-14`,
+    ]}
+  >
+    <aside class="mr-4 flex flex-col gap-4">
+      {Astro.slots.has("side-left") ? <slot name="side-left" /> : <Avatar />}
+    </aside>
+    <div class="flex flex-col gap-4 overflow-hidden">
+      <Navigation />
+      <slot />
+    </div>
+    <aside class="sticky top-0 ml-4 flex flex-col gap-4">
+      <slot name="side-right" />
+    </aside>
+  </main>
+</Base>
