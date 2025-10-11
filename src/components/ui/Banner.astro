@@ -1,12 +1,19 @@
 ---
 import Img from "@/components/atom/common/Img.astro";
-import { APPEARANCE } from "@/consts/site";
-const bannerHeight = APPEARANCE.bannerHeight;
+import type { StyledProps } from "@/types";
+interface Props extends StyledProps {
+  bannerUrl: string;
+}
+
+const { class: className, style: styleAttr, bannerUrl } = Astro.props;
 ---
 
 <div
-  class="animate-reveal-center pointer-events-none absolute top-0 -z-10 w-full overflow-hidden select-none"
-  style={`height: ${bannerHeight}rem`}
+  class:list={[
+    className,
+    "animate-reveal-center pointer-events-none overflow-hidden select-none",
+  ]}
+  style={styleAttr}
 >
-  <Img src="/src/assets/demo-banner.jpg" alt="banner" class="object-center" />
+  <Img src={bannerUrl} alt="banner" class="object-center opacity-70" />
 </div>
