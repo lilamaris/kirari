@@ -1,0 +1,49 @@
+---
+import { Icon } from "astro-icon/components";
+
+import type { Post } from "@/types";
+import Decorator from "@/components/common/Decorator.astro";
+import Img from "@/components/common/Img.astro";
+import { SITE } from "@/consts/site";
+import { formatDate } from "@/lib/utils";
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+---
+
+<div
+  class="card bg-surface/70 hover:bg-surface active:bg-surface/50 group flex p-2 transition"
+>
+  <div class="flex flex-1 flex-col">
+    <Decorator>
+      <Icon name="lucide:file" size="14" slot="deco" />
+      <span
+        class="text-foreground group-hover:text-accent-foreground font-medium transition"
+      >
+        {post.data.title}
+      </span>
+    </Decorator>
+    <span class="text-foreground/80 mb-2 text-sm">{post.data.description}</span>
+    <div
+      class="divide-neutral text-foreground/60 flex divide-x-1 text-xs [&>*]:flex [&>*]:items-center [&>*]:px-2 [&>*:first-child]:pl-0 [&>*:last-child]:pr-0"
+    >
+      <div class="gap-1">
+        <Img
+          class="aspect-square size-4 rounded-full"
+          src="/src/assets/demo-profile.jpg"
+        />
+        <span>{SITE.author}</span>
+      </div>
+      <span>{formatDate(post.data.published)}</span>
+      <span>{post.data.categories}</span>
+    </div>
+  </div>
+  <div
+    class="group-hover:text-accent-foreground text-foreground flex basis-8 items-center justify-center transition group-hover:translate-x-1"
+  >
+    <Icon name="lucide:chevron-right" />
+  </div>
+</div>
