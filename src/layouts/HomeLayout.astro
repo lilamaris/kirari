@@ -1,0 +1,40 @@
+---
+import Author from "@/components/ui/Author.astro";
+import Banner from "@/components/ui/Banner.astro";
+import GithubCalendar from "@/components/ui/GithubCalendar.svelte";
+import Base from "@/layouts/Base.astro";
+import type { StyledProps } from "@/types";
+
+import { APPEARANCE } from "@/consts/site";
+interface Props extends StyledProps {}
+
+const { class: className, style: styleAttr } = Astro.props;
+
+const pageWidth = 35;
+---
+
+<Base
+  class={`relative mx-auto grid top-14`}
+  style={`max-width: ${pageWidth}rem`}
+>
+  <div slot="header">lilamaris.dev</div>
+  <Banner
+    class:list={["animate-reveal-center bg-black"]}
+    style={`height: ${APPEARANCE.bannerHeight}rem`}
+    bannerUrl="/src/assets/demo-banner.jpg"
+    slot="background"
+  />
+  <section class="flex flex-col gap-2">
+    <Author
+      class="card bg-surface/80 flex gap-2 p-2 backdrop-blur-sm"
+      avatarUrl="/src/assets/demo-profile.jpg"
+    />
+    <GithubCalendar
+      class="card bg-surface/80 flex flex-col gap-2 p-2 backdrop-blur-sm"
+      client:only="svelte"
+    />
+  </section>
+  <section class:list={[className]} style={styleAttr}>
+    <slot />
+  </section>
+</Base>
