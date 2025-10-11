@@ -1,0 +1,46 @@
+---
+import Img from "@/components/atom/common/Img.astro";
+import { SITE } from "@/consts/site";
+import { Icon } from "astro-icon/components";
+import Link from "@/components/atom/common/Link.astro";
+import type { StyledProps } from "@/types";
+
+interface Props extends StyledProps {
+  avatarUrl: string;
+}
+
+const { class: className, avatarUrl } = Astro.props;
+const externalLinks = [
+  { href: "https://github.com/lilamaris", icon: "fa6-brands:github" },
+  { href: "https://x.com/_lilamaris", icon: "fa6-brands:twitter" },
+  {
+    href: "https://steamcommunity.com/profiles/76561198072587653",
+    icon: "fa6-brands:steam",
+  },
+];
+---
+
+<div class:list={[className]}>
+  <Img
+    src={avatarUrl}
+    alt="profile"
+    class="rounded-surface border-border/50 aspect-square max-w-24 border"
+  />
+  <div class="flex flex-col">
+    <div class="mb-2 flex-1 px-1">
+      <h1 class="font-bold">{SITE.author}</h1>
+      <p class="text-foreground/50 text-sm">{SITE.description}</p>
+    </div>
+    <ul class="flex flex-wrap gap-px">
+      {
+        externalLinks.map((link) => (
+          <li>
+            <Link href={link.href} class="btn icon">
+              <Icon name={link.icon} />
+            </Link>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
