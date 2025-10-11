@@ -9,7 +9,7 @@ interface Props extends StyledProps {
   avatarUrl: string;
 }
 
-const { class: className, avatarUrl } = Astro.props;
+const { class: className, style: styleAttr, avatarUrl } = Astro.props;
 const externalLinks = [
   { href: "https://github.com/lilamaris", icon: "fa6-brands:github" },
   { href: "https://x.com/_lilamaris", icon: "fa6-brands:twitter" },
@@ -20,7 +20,7 @@ const externalLinks = [
 ];
 ---
 
-<div class:list={[className]}>
+<div class:list={[className]} style={styleAttr}>
   <Img
     src={avatarUrl}
     alt="profile"
