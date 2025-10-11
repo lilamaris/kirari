@@ -34,7 +34,7 @@
 @layer theme {
   :root {
     --background: oklch(1 0.008 var(--hue));
-    --neutral: oklch(0.97 0 0);
+    --neutral: oklch(0.6 0 0);
     --surface: oklch(1 0.004 var(--hue));
     --select: oklch(0.97 0.01 var(--hue));
     --accent: oklch(0.95 0.02 var(--hue));
@@ -45,7 +45,7 @@
 
   [data-theme="dark"] {
     --background: oklch(0.1 0.008 var(--hue));
-    --neutral: oklch(0.2 0 var(--hue));
+    --neutral: oklch(0.4 0 var(--hue));
     --surface: oklch(0.15 0.004 var(--hue));
     --select: oklch(0.2 0.01 var(--hue));
     --accent: oklch(0.38 0.2 var(--hue));
