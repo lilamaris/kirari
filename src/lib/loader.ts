@@ -95,7 +95,10 @@ export const postIndexLoader: Loader = {
     const indexKeys = ["tags", "categories", "series"] as const;
     type IndexKey = (typeof indexKeys)[number];
 
-    type IndexBucket = Map<string, { name: string; items: string[] }>;
+    type IndexBucket = Map<
+      string,
+      { type: string; name: string; items: string[] }
+    >;
     const buckets: Record<IndexKey, IndexBucket> = {
       tags: new Map(),
       categories: new Map(),
@@ -109,7 +112,7 @@ export const postIndexLoader: Loader = {
         for (const raw of values) {
           const id = `${key}/${raw}`;
           const bucket = buckets[key];
-          const rec = bucket.get(id) ?? { name: raw, items: [] };
+          const rec = bucket.get(id) ?? { type: key, name: raw, items: [] };
           rec.items.push(post.id);
           bucket.set(id, rec);
         }
@@ -118,11 +121,12 @@ export const postIndexLoader: Loader = {
 
     await Promise.all(
       indexKeys.flatMap((key) =>
-        [...buckets[key].entries()].map(async ([id, { name, items }]) => {
+        [...buckets[key].entries()].map(async ([id, { type, name, items }]) => {
           const unique = [...new Set(items)];
           const data = await parseData({
             id,
             data: {
+              type,
               name,
               count: unique.length,
               items: unique,
