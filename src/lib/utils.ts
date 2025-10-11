@@ -1,4 +1,22 @@
-import type { SiteTheme } from "@/types";
+import { ROUTE } from "@/consts/site";
+import type { AvailableRoute, Theme } from "@/types";
+
+export const objectValues = <T extends object>(obj: T) =>
+  Object.values(obj) as T[keyof T][];
+
+export const toInlineStyle = (rules: string[]): string =>
+  rules
+    .filter(Boolean)
+    .map((r) => r.trim().replace(/;?$/, ";"))
+    .join(" ");
+
+export const toStyleVars = (vars: Record<string, string | number>): string =>
+  Object.entries(vars)
+    .map(([k, v]) => `--${k}:${typeof v === "number" ? `${v}rem` : v};`)
+    .join("");
+
+export const getUrl = (prefix: AvailableRoute, ...parts: string[]): string =>
+  joinUrl(ROUTE[prefix]?.href ?? "/", ...parts);
 
 export const joinUrl = (...parts: string[]) => {
   const joined = parts.join("/");
@@ -17,14 +35,14 @@ export const formatDate = (date: Date) => {
   }).format(date);
 };
 
-export const getTheme = (): SiteTheme => {
+export const getTheme = (): Theme => {
   // TODO: Read default theme from site config
   const fallback = "light";
-  const storedTheme = localStorage.getItem("theme") as SiteTheme;
+  const storedTheme = localStorage.getItem("theme") as Theme;
   return storedTheme || fallback;
 };
 
-export const setTheme = (theme: SiteTheme) => {
+export const setTheme = (theme: Theme) => {
   localStorage.setItem("theme", theme);
   document.documentElement.setAttribute("data-theme", theme);
 };
