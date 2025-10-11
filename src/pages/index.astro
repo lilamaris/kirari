@@ -1,9 +1,13 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import HomeLayout from "@/layouts/HomeLayout.astro";
 
 import { getCollection } from "astro:content";
 
 const recentPosts = (await getCollection("posts")).slice(0, 3);
 ---
 
-<Layout />
+<HomeLayout>
+  <div>
+    {recentPosts.map((post) => <div>{post.data.title}</div>)}
+  </div>
+</HomeLayout>
