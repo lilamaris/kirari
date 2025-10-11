@@ -1,0 +1,17 @@
+---
+import { Icon } from "astro-icon/components";
+
+import Item from "./Item.astro";
+
+import type { PostIndex } from "@/types";
+
+interface Props {
+  index: PostIndex;
+}
+
+const { index } = Astro.props;
+---
+
+<Item index={index} showCount>
+  <Icon name="lucide:folder" slot="icon" />
+</Item>

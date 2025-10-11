@@ -1,0 +1,15 @@
+---
+import Item from "@/components/atom/index/Item.astro";
+import type { PostIndex } from "@/types";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  index: PostIndex;
+}
+
+const { index } = Astro.props;
+---
+
+<Item index={index}>
+  <Icon name="lucide:tag" slot="icon" />
+</Item>
