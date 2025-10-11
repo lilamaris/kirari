@@ -2,9 +2,9 @@
   import Icon from "@iconify/svelte";
 
   import { getTheme, setTheme } from "@/lib/utils";
-  import type { SiteTheme } from "@/types";
+  import type { Theme } from "@/types";
 
-  const themes: SiteTheme[] = ["light", "dark", "system"];
+  const themes: Theme[] = ["light", "dark", "system"];
   let curIdx = $state(themes.indexOf(getTheme()));
   let nextIdx = $derived.by(() => {
     if (curIdx >= themes.length - 1) return 0;
@@ -22,7 +22,7 @@
   };
 </script>
 
-{#snippet ThemeIcon(theme: SiteTheme)}
+{#snippet ThemeIcon(theme: Theme)}
   {#if theme === "light"}
     <Icon icon="lucide:sun" class="icon" />
   {:else if theme === "dark"}

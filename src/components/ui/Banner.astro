@@ -1,19 +1,32 @@
 ---
-import Img from "@/components/atom/common/Img.astro";
+import Img from "@/components/common/Img.astro";
+
+import { toInlineStyle, toStyleVars } from "@/lib/utils";
 import type { StyledProps } from "@/types";
+
 interface Props extends StyledProps {
   bannerUrl: string;
+  bannerHeight: number;
 }
 
-const { class: className, style: styleAttr, bannerUrl } = Astro.props;
+const {
+  class: className = "",
+  style: styleAttr = "",
+  bannerUrl,
+  bannerHeight,
+} = Astro.props;
 ---
 
 <div
   class:list={[
     className,
-    "animate-reveal-center pointer-events-none overflow-hidden select-none",
+    "pointer-events-none h-[var(--bannerHeight)] overflow-hidden select-none",
   ]}
-  style={styleAttr}
+  style={toInlineStyle([styleAttr, toStyleVars({ bannerHeight })])}
 >
-  <Img src={bannerUrl} alt="banner" class="object-center opacity-70" />
+  <Img
+    src={bannerUrl}
+    alt="banner"
+    class="h-full w-full object-cover object-center"
+  />
 </div>
