@@ -36,16 +36,16 @@
   let { class: className, style: styleAttr }: Props = $props();
 </script>
 
-<div class={[className]} bind:clientWidth>
+<div class={[className]} style={styleAttr} bind:clientWidth>
   {#if loading}
     <div
-      class="w-full bg-select rounded-select animate-pulse"
+      class="w-full bg-select animate-pulse"
       style={`min-height: ${clientWidth * 0.13207547169}px`}
     ></div>
   {:else if error}
     <p>Error</p>
   {:else if calendar}
-    <div class="w-full grid grid-cols-53 rounded-select overflow-hidden">
+    <div class="w-full grid grid-cols-53">
       {#each calendar.weeks as week}
         <div class="grid grid-rows-7">
           {#each week.contributionDays as day}
