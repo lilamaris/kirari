@@ -15,8 +15,4 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 if (!images[src]) throw new Error(`"/src/assets/${src}" does not exists`);
 ---
 
-<Image
-  src={images[src]()}
-  alt={alt || ""}
-  class:list={["h-full w-full object-cover", className]}
-/>
+<Image src={images[src]()} alt={alt || ""} class:list={[className]} />
