@@ -22,3 +22,9 @@ export interface SiteAppearanceConfig {
 }
 
 export type SiteTheme = "light" | "dark" | "system";
+
+export interface StyledProps {
+  class?: string;
+  "class:list"?: string[];
+  style?: string;
+}
