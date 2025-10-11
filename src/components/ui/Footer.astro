@@ -1,0 +1,22 @@
+---
+import { APPEARANCE } from "@/consts/site";
+import { toInlineStyle, toStyleVars } from "@/lib/utils";
+import type { StyledProps } from "@/types";
+
+interface Props extends StyledProps {
+  contentWidth?: number;
+}
+
+const {
+  class: className = "",
+  style: styleAttr = "",
+  contentWidth = APPEARANCE.pageWidth,
+} = Astro.props;
+---
+
+<p
+  class:list={[className, "max-w-[var(--contentWidth)]"]}
+  style={toInlineStyle([styleAttr, toStyleVars({ contentWidth })])}
+>
+  &copy; 2025 All Rights Reserved. Made with 🤍 by lilamaris
+</p>
