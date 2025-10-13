@@ -10,9 +10,10 @@ export type AstroComponentWithProps<P> = AstroComponentFactory &
     slots: Record<string, any>,
   ) => AsyncGenerator<string | void | unknown>);
 
-export type Theme = "light" | "dark" | "system";
-export type AvailableRoute = "home" | "blog" | "index" | "about";
-export type AvailableSocial = "github" | "steam" | "twitter";
+export const theme = ["light", "dark", "system"] as const;
+export type Theme = (typeof theme)[number];
+export const availableIndexType = ["categories", "tags", "series"] as const;
+export type AvailableIndexType = (typeof availableIndexType)[number];
 
 export interface StyledProps {
   class?: string;
@@ -29,37 +30,6 @@ export interface IterableRenderer<T> {
   id: string;
   index: number;
   item: T;
-}
-
-export interface Site {
-  title: string;
-  description: string;
-  author: string;
-  lang: string;
-}
-
-export interface Appearance {
-  hue: number;
-  theme: Theme;
-  pageWidth: number;
-  bannerHeight: number;
-  bannerOverlap: number;
-  showRecentPost: boolean;
-  recentPostCount: number;
-  postPerPageCount: number;
-}
-
-export interface Route {
-  href: string;
-  label: string;
-}
-
-export interface Routes extends Record<AvailableRoute, Route> {}
-
-export interface SocialLink {
-  href: string;
-  label: string;
-  icon: string;
 }
 
 export interface Breadcrumb {
