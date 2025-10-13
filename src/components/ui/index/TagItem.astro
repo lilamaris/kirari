@@ -1,15 +1,13 @@
 ---
-import Item from "@/components/atom/index/Item.astro";
-import type { PostIndex } from "@/types";
+import type { IterableRenderer, PostIndex } from "@/types";
 import { Icon } from "astro-icon/components";
+import Item from "./Item.astro";
 
-interface Props {
-  index: PostIndex;
-}
+interface Props extends IterableRenderer<PostIndex> {}
 
-const { index } = Astro.props;
+const { id, index, item } = Astro.props;
 ---
 
-<Item index={index}>
+<Item id={id} index={index} item={item}>
   <Icon name="lucide:tag" slot="icon" />
 </Item>
