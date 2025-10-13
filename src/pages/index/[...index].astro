@@ -1,15 +1,45 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import DecorateText from "@/components/ui/DecorateText.astro";
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
 
-const urlSearchParams = Astro.url.searchParams.get("tag");
-export const prerender = false;
+import HomeLayout from "@/layouts/HomeLayout.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import Breadcrumb from "@/components/ui/Breadcrumb.astro";
+import PostList from "@/components/ui/post/PostList.astro";
+import PostItem from "@/components/ui/post/PostItem.astro";
+import { Icon } from "astro-icon/components";
+
+export const getStaticPaths = (async () => {
+  const indexes = await getCollection("postIndex");
+  return indexes.map((index) => ({
+    params: { index: index.id },
+    props: { index },
+  }));
+}) satisfies GetStaticPaths;
+
+const { index } = Astro.props;
+
+const posts = await getCollection("posts", (post) =>
+  index.data.items.includes(post.id),
+);
 ---
 
-<Layout>
-  <div class="card">
-    <DecorateText>
-      This page is about archive that you selected topic.
-    </DecorateText>
-  </div>
-</Layout>
+<HomeLayout class:list={["flex flex-col gap-2"]}>
+  <Decorator class="text-foreground">
+    <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+    <Breadcrumbs
+      class:list={["flex items-center"]}
+      url={Astro.url.pathname}
+      renderer={Breadcrumb}
+    >
+      <Icon name="lucide:chevron-right" slot="separator" />
+    </Breadcrumbs>
+  </Decorator>
+
+  <PostList
+    class:list={["flex flex-col gap-2"]}
+    items={posts}
+    renderer={PostItem}
+  />
+</HomeLayout>
