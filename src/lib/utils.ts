@@ -1,4 +1,4 @@
-import { ROUTE, type AvailableRoute } from "@/consts/site";
+import { ROUTE, type AvailableRoute } from "@/consts";
 import type { Theme } from "@/types";
 
 export const objectKeys = <T extends object>(obj: T) =>
