@@ -6,6 +6,7 @@ import Img from "@/components/common/Img.astro";
 
 import { SITE, SOCIAL } from "@/consts/site";
 import type { StyledProps } from "@/types";
+import { objectEntries } from "@/lib/utils";
 
 interface Props extends StyledProps {
   avatarUrl: string;
@@ -27,7 +28,7 @@ const { class: className = "", style: styleAttr = "", avatarUrl } = Astro.props;
     </div>
     <ul class="flex flex-wrap gap-px">
       {
-        SOCIAL.map((link) => (
+        objectEntries(SOCIAL).map(([key, link]) => (
           <li>
             <Link href={link.href} class="btn icon">
               <Icon name={link.icon} />
