@@ -2,27 +2,24 @@
 import Link from "@/components/common/Link.astro";
 
 import { getUrl } from "@/lib/utils";
-import type { Post, StyledProps, AstroComponentWithProps } from "@/types";
+import type { Post, StyledProps, IterableRenderProps } from "@/types";
 
-interface Props extends StyledProps {
-  posts: Post[];
-  renderer: AstroComponentWithProps<{ post: Post }>;
-}
+interface Props extends StyledProps, IterableRenderProps<Post> {}
 
 const {
   class: className,
   style: styleAttr,
-  posts,
-  renderer: Item,
+  items = [],
+  renderer: Comp,
 } = Astro.props;
 ---
 
 <ul class:list={[className]} style={styleAttr}>
   {
-    posts.map((post) => (
+    items.map((post, index) => (
       <li>
         <Link href={getUrl("blog", post.id)}>
-          <Item post={post} />
+          <Comp id={post.id} index={index} item={post} />
         </Link>
       </li>
     ))

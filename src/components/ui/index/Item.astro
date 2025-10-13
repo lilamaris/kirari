@@ -1,16 +1,15 @@
 ---
 import Decorator from "@/components/common/Decorator.astro";
-import type { PostIndex, StyledProps } from "@/types";
+import type { IterableRenderer, PostIndex, StyledProps } from "@/types";
 
-interface Props extends StyledProps {
-  index: PostIndex;
+interface Props extends StyledProps, IterableRenderer<PostIndex> {
   showCount?: boolean;
 }
 
 const {
   class: className = "",
   style: styleAttr = "",
-  index,
+  item,
   showCount = false,
 } = Astro.props;
 ---
@@ -19,11 +18,11 @@ const {
   <slot name="icon" slot="deco" />
   <Fragment slot="default">
     <span class="text-foreground/80 group-hover:text-foreground transition">
-      {index.data.name}
+      {item.data.name}
     </span>
     {
       showCount && (
-        <span class="text-foreground/50 ml-1"> ({index.data.count})</span>
+        <span class="text-foreground/50 ml-1"> ({item.data.count})</span>
       )
     }
   </Fragment>
