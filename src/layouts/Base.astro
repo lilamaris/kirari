@@ -33,11 +33,9 @@ const { class: className, style: styleAttr } = Astro.props;
     <header class="fixed inset-x-0 z-10">
       <slot name="header" />
     </header>
-    <div class="flex-1">
-      <main class:list={[className]} style={styleAttr}>
-        <slot />
-      </main>
-    </div>
+    <main class:list={[className, "flex-1"]} style={styleAttr}>
+      <slot />
+    </main>
     <footer>
       <slot name="footer" />
     </footer>
