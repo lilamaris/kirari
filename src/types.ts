@@ -4,7 +4,11 @@ import type { CollectionEntry } from "astro:content";
 export type Post = CollectionEntry<"posts">;
 export type PostIndex = CollectionEntry<"postIndex">;
 export type AstroComponentWithProps<P> = AstroComponentFactory &
-  ((result: any, props: P, slots: any) => any);
+  ((
+    result: any,
+    props: P,
+    slots: Record<string, any>,
+  ) => AsyncGenerator<string | void | unknown>);
 
 export type Theme = "light" | "dark" | "system";
 export type AvailableRoute = "home" | "blog" | "index" | "about";
@@ -14,6 +18,17 @@ export interface StyledProps {
   class?: string;
   "class:list"?: string[];
   style?: string;
+}
+
+export interface IterableRenderProps<T> {
+  items?: T[];
+  renderer: AstroComponentWithProps<IterableRenderer<T>>;
+}
+
+export interface IterableRenderer<T> {
+  id: string;
+  index: number;
+  item: T;
 }
 
 export interface Site {

@@ -4,21 +4,20 @@ import { getCollection } from "astro:content";
 import Link from "@/components/common/Link.astro";
 
 import { getUrl } from "@/lib/utils";
-import type { PostIndex, StyledProps, AstroComponentWithProps } from "@/types";
+import type { PostIndex, StyledProps, IterableRenderProps } from "@/types";
 
-interface Props extends StyledProps {
+interface Props extends StyledProps, IterableRenderProps<PostIndex> {
   type: "categories" | "tag" | "series";
-  renderer: AstroComponentWithProps<{ index: PostIndex }>;
 }
 
 const {
   class: className = "",
   style: styleAttr = "",
   type,
-  renderer: Item,
+  renderer: Comp,
 } = Astro.props;
 
-const indexes = await getCollection(
+const items = await getCollection(
   "postIndex",
   (entry) => entry.data.type === type,
 );
@@ -26,10 +25,10 @@ const indexes = await getCollection(
 
 <ul class:list={[className]} style={styleAttr}>
   {
-    indexes.map((index) => (
+    items.map((item, index) => (
       <li class="group">
-        <Link href={getUrl("index", index.id)}>
-          <Item index={index} />
+        <Link href={getUrl("index", item.id)}>
+          <Comp id={item.id} index={index} item={item} />
         </Link>
       </li>
     ))

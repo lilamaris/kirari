@@ -3,15 +3,13 @@ import { Icon } from "astro-icon/components";
 
 import Item from "./Item.astro";
 
-import type { PostIndex } from "@/types";
+import type { IterableRenderer, PostIndex } from "@/types";
 
-interface Props {
-  index: PostIndex;
-}
+interface Props extends IterableRenderer<PostIndex> {}
 
-const { index } = Astro.props;
+const { id, index, item } = Astro.props;
 ---
 
-<Item index={index} showCount>
+<Item id={id} index={index} item={item} showCount>
   <Icon name="lucide:folder" slot="icon" />
 </Item>

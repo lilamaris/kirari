@@ -1,17 +1,15 @@
 ---
 import { Icon } from "astro-icon/components";
 
-import type { Post } from "@/types";
+import type { IterableRenderer, Post } from "@/types";
 import Decorator from "@/components/common/Decorator.astro";
 import Img from "@/components/common/Img.astro";
 import { SITE } from "@/consts/site";
 import { formatDate } from "@/lib/utils";
 
-interface Props {
-  post: Post;
-}
+interface Props extends IterableRenderer<Post> {}
 
-const { post } = Astro.props;
+const { item } = Astro.props;
 ---
 
 <div
@@ -23,10 +21,10 @@ const { post } = Astro.props;
       <span
         class="text-foreground group-hover:text-accent-foreground font-medium transition"
       >
-        {post.data.title}
+        {item.data.title}
       </span>
     </Decorator>
-    <span class="text-foreground/80 mb-2 text-sm">{post.data.description}</span>
+    <span class="text-foreground/80 mb-2 text-sm">{item.data.description}</span>
     <div
       class="divide-neutral text-foreground/60 flex divide-x-1 text-xs [&>*]:flex [&>*]:items-center [&>*]:px-2 [&>*:first-child]:pl-0 [&>*:last-child]:pr-0"
     >
@@ -37,8 +35,8 @@ const { post } = Astro.props;
         />
         <span>{SITE.author}</span>
       </div>
-      <span>{formatDate(post.data.published)}</span>
-      <span>{post.data.categories}</span>
+      <span>{formatDate(item.data.published)}</span>
+      <span>{item.data.categories}</span>
     </div>
   </div>
   <div
