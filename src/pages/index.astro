@@ -4,14 +4,27 @@ import PostItem from "@/components/ui/post/PostItem.astro";
 import HomeLayout from "@/layouts/HomeLayout.astro";
 
 import { getCollection } from "astro:content";
+import Decorator from "@/components/common/Decorator.astro";
+import Link from "@/components/common/Link.astro";
+
+import { getUrl } from "@/lib/utils";
 
 const recentPosts = (await getCollection("posts")).slice(0, 3);
 ---
 
-<HomeLayout>
+<HomeLayout class:list={["flex flex-col gap-2"]}>
+  <Decorator class="text-foreground">
+    <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+    <span>Related Blog</span>
+  </Decorator>
   <PostList
     class:list={["flex flex-col gap-2"]}
-    posts={recentPosts}
+    items={recentPosts}
     renderer={PostItem}
   />
+  <Link
+    class="btn text-foreground mx-auto w-fit"
+    data-variant="ghost"
+    href={getUrl("blog")}>See more blogs</Link
+  >
 </HomeLayout>
