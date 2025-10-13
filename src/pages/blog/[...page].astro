@@ -1,14 +1,15 @@
 ---
 import type { GetStaticPaths } from "astro";
 
-import Layout from "@/layouts/Layout.astro";
-import Link from "@/components/atom/common/Link.astro";
-import Published from "@/components/atom/post/Published.astro";
-import Tags from "@/components/atom/post/Tags.astro";
-
-import { SITE, APPEARANCE } from "@/consts/site";
+import { APPEARANCE } from "@/consts/site";
 import { getCollection } from "astro:content";
-import PostPagination from "@/components/ui/PostPagination.astro";
+
+import HomeLayout from "@/layouts/HomeLayout.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import PostList from "@/components/ui/post/PostList.astro";
+import PostItem from "@/components/ui/post/PostItem.astro";
+import Link from "@/components/common/Link.astro";
+import { Icon } from "astro-icon/components";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts");
@@ -18,40 +19,64 @@ export const getStaticPaths = (async ({ paginate }) => {
 const { page } = Astro.props;
 ---
 
-<Layout>
-  <ul class="flex flex-col gap-2">
-    {
-      page.data.map((post) => (
-        <li>
-          <Link
-            href={`/blog/${post.id}`}
-            class="card flex flex-col p-4 transition"
-          >
-            <h1 class="text-foreground mb-1 text-lg font-medium transition">
-              {post.data.title}
-            </h1>
-            <p class="text-foreground/70 mb-2 text-sm">
-              {post.data.description}
-            </p>
-            <div class="text-foreground/60 mb-2 flex gap-2 text-xs">
-              <p>{SITE.author}</p>
-              <Published published={post.data.published} />
-            </div>
-            <Tags list={post.data.tags} />
-          </Link>
-        </li>
-      ))
-    }
-  </ul>
-  <PostPagination page={page} />
-  <div class="flex flex-col gap-4" slot="side-right">
-    <div class="card bg-surface flex flex-col p-2">
-      <span class="mb-2">Tags</span>
-      <Tags list={["asd", "bbb", "zxczxc", "asd", "123a", "adfzfz"]} />
-    </div>
-    <div class="card bg-surface flex flex-col p-2">
-      <span class="mb-2">Series</span>
-      <Tags list={["series1", "series2"]} />
+<HomeLayout class:list={["flex flex-col gap-2"]}>
+  <div class="flex justify-between">
+    <Decorator class="text-foreground">
+      <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+      <span>Blog</span>
+    </Decorator>
+
+    <div class="text-foreground flex items-center gap-0.5">
+      <Link
+        href={page.url.prev}
+        class:list={["btn icon", !!!page.url.prev && "disabled"]}
+        data-variant="ghost"
+      >
+        <Icon name="lucide:chevron-left" />
+      </Link>
+      <Link
+        href={page.url.next}
+        class:list={["btn icon", !!!page.url.next && "disabled"]}
+        data-variant="ghost"
+      >
+        <Icon name="lucide:chevron-right" />
+      </Link>
     </div>
   </div>
-</Layout>
+  <PostList
+    class:list={["flex flex-col gap-2"]}
+    items={page.data}
+    renderer={PostItem}
+  />
+  <div class="text-foreground mx-auto flex w-fit items-center gap-0.5">
+    <Link
+      href={page.url.first}
+      class:list={["btn icon", !!!page.url.first && "disabled"]}
+      data-variant="ghost"
+    >
+      <Icon name="lucide:chevrons-left" />
+    </Link>
+    <Link
+      href={page.url.prev}
+      class:list={["btn icon", !!!page.url.prev && "disabled"]}
+      data-variant="ghost"
+    >
+      <Icon name="lucide:chevron-left" />
+    </Link>
+    <span class="px-2 text-sm font-medium">{page.currentPage}</span>
+    <Link
+      href={page.url.next}
+      class:list={["btn icon", !!!page.url.next && "disabled"]}
+      data-variant="ghost"
+    >
+      <Icon name="lucide:chevron-right" />
+    </Link>
+    <Link
+      href={page.url.last}
+      class:list={["btn icon", !!!page.url.last && "disabled"]}
+      data-variant="ghost"
+    >
+      <Icon name="lucide:chevrons-right" />
+    </Link>
+  </div>
+</HomeLayout>
