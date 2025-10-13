@@ -1,8 +1,12 @@
-import { ROUTE } from "@/consts/site";
-import type { AvailableRoute, Theme } from "@/types";
+import { ROUTE, type AvailableRoute } from "@/consts/site";
+import type { Theme } from "@/types";
 
+export const objectKeys = <T extends object>(obj: T) =>
+  Object.keys(obj) as (keyof T)[];
 export const objectValues = <T extends object>(obj: T) =>
   Object.values(obj) as T[keyof T][];
+export const objectEntries = <T extends object>(obj: T) =>
+  Object.entries(obj) as [keyof T, T[keyof T]][];
 
 export const toInlineStyle = (rules: string[]): string =>
   rules

@@ -6,7 +6,7 @@ import Link from "@/components/common/Link.astro";
 import ThemeController from "@/components/ui/ThemeController.svelte";
 import HueController from "@/components/ui/HueController.svelte";
 
-import { objectValues, toInlineStyle, toStyleVars } from "@/lib/utils";
+import { objectEntries, toInlineStyle, toStyleVars } from "@/lib/utils";
 import type { StyledProps } from "@/types";
 import Img from "../common/Img.astro";
 
@@ -29,7 +29,7 @@ const {
     <Img src="/src/assets/demo-icon.png" class="size-4 rounded-sm" />
     <ul class="flex gap-4">
       {
-        objectValues(ROUTE).map((route) => (
+        objectEntries(ROUTE).map(([key, route]) => (
           <li>
             <Link href={route.href}>
               <span class="text-foreground/70 hover:text-foreground font-semilight text-sm transition">
