@@ -61,3 +61,9 @@ export interface SocialLink {
   label: string;
   icon: string;
 }
+
+export interface Breadcrumb {
+  href: string;
+  name: string;
+  isLast: boolean;
+}
