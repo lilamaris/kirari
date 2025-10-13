@@ -1,0 +1,45 @@
+---
+import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
+import type { GetStaticPaths } from "astro";
+
+import HomeLayout from "@/layouts/HomeLayout.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import Breadcrumb from "@/components/ui/Breadcrumb.astro";
+import IndexList from "@/components/ui/index/IndexList.astro";
+import TagItem from "@/components/ui/index/TagItem.astro";
+import { availableIndexType } from "@/types";
+
+export const getStaticPaths = (async () => {
+  return [undefined, ...availableIndexType].map((type) => ({
+    params: { type: type },
+  }));
+}) satisfies GetStaticPaths;
+
+const { type } = Astro.params;
+---
+
+<HomeLayout class:list={["flex flex-col gap-2"]}>
+  <Decorator class="text-foreground">
+    <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+    <Breadcrumbs
+      class:list={["flex items-center"]}
+      url={Astro.url.pathname}
+      renderer={Breadcrumb}
+    >
+      <Icon name="lucide:chevron-right" slot="separator" />
+    </Breadcrumbs>
+  </Decorator>
+  <div class="card bg-surface/80 p-2">
+    {
+      !!type && (
+        <IndexList
+          class="flex flex-wrap gap-1"
+          type={type}
+          renderer={TagItem}
+        />
+      )
+    }
+  </div>
+</HomeLayout>
