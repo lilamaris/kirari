@@ -1,0 +1,38 @@
+---
+import type { IterableRenderProps, StyledProps, Breadcrumb } from "@/types";
+
+interface Props extends StyledProps, IterableRenderProps<Breadcrumb> {
+  url: string;
+}
+
+const { class: className, style: styleAttr, renderer: Comp, url } = Astro.props;
+
+let cumulative = "";
+const separator = "/";
+
+const split = url.split(separator).filter(Boolean);
+const crumbs = split.map((path, i) => {
+  cumulative += `${separator}${path}`;
+  return {
+    href: cumulative,
+    name: path,
+    isLast: i + 1 == split.length,
+  };
+});
+const items: Breadcrumb[] = [
+  { href: "/", name: "home", isLast: false },
+  ...crumbs,
+];
+---
+
+<ul class:list={[className]} style={styleAttr}>
+  {
+    items.map((item, index) => (
+      <li>
+        <Comp id={item.href} index={index} item={item}>
+          <slot name="separator" slot="separator" />
+        </Comp>
+      </li>
+    ))
+  }
+</ul>
