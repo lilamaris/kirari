@@ -1,0 +1,66 @@
+---
+import type { StyledProps } from "@/types";
+
+import Link from "@/components/common/Link.astro";
+import { Icon } from "astro-icon/components";
+
+interface Props extends StyledProps {
+  current: number;
+  prev?: string | undefined;
+  next?: string | undefined;
+  first?: string | undefined;
+  last?: string | undefined;
+  compact?: boolean;
+}
+
+const {
+  class: className,
+  style: styleAttr,
+  current,
+  prev,
+  next,
+  first,
+  last,
+  compact = false,
+} = Astro.props;
+---
+
+<div class:list={className} style={styleAttr}>
+  {
+    !compact && (
+      <Link
+        href={first}
+        class:list={["btn icon", !!!first && "disabled"]}
+        data-variant="ghost"
+      >
+        <Icon name="lucide:chevrons-left" />
+      </Link>
+    )
+  }
+  <Link
+    href={prev}
+    class:list={["btn icon", !!!prev && "disabled"]}
+    data-variant="ghost"
+  >
+    <Icon name="lucide:chevron-left" />
+  </Link>
+  {!compact && <span class="px-2 text-sm font-medium">{current}</span>}
+  <Link
+    href={next}
+    class:list={["btn icon", !!!next && "disabled"]}
+    data-variant="ghost"
+  >
+    <Icon name="lucide:chevron-right" />
+  </Link>
+  {
+    !compact && (
+      <Link
+        href={last}
+        class:list={["btn icon", !!!last && "disabled"]}
+        data-variant="ghost"
+      >
+        <Icon name="lucide:chevrons-right" />
+      </Link>
+    )
+  }
+</div>
