@@ -1,33 +1,25 @@
 ---
-import { getCollection } from "astro:content";
-
 import Link from "@/components/common/Link.astro";
 
-import { getUrl } from "@/lib/utils";
+import { joinUrl } from "@/lib/utils";
 import type { PostIndex, StyledProps, IterableRenderProps } from "@/types";
+import { ROUTE } from "@/consts";
 
-interface Props extends StyledProps, IterableRenderProps<PostIndex> {
-  type: "categories" | "tags" | "series";
-}
+interface Props extends StyledProps, IterableRenderProps<PostIndex> {}
 
 const {
   class: className = "",
   style: styleAttr = "",
-  type,
+  items = [],
   renderer: Comp,
 } = Astro.props;
-
-const items = await getCollection(
-  "postIndex",
-  (entry) => entry.data.type === type,
-);
 ---
 
 <ul class:list={[className]} style={styleAttr}>
   {
     items.map((item, index) => (
       <li class="group">
-        <Link href={getUrl("index", item.id)}>
+        <Link href={joinUrl(ROUTE["index"].href, item.id)}>
           <Comp id={item.id} index={index} item={item} />
         </Link>
       </li>
