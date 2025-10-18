@@ -2,12 +2,9 @@
 import type { GetStaticPaths } from "astro";
 import { render, getCollection } from "astro:content";
 
-import Layout from "@/layouts/Layout.astro";
-import Tags from "@/components/atom/post/Tags.astro";
-import PostMetadata from "@/components/ui/PostMetadata.astro";
-import PostNavigation from "@/components/ui/PostNavigation.astro";
-import TableOfContents from "@/components/ui/TableOfContents.astro";
-import { getEntry } from "astro:content";
+import MainLayout from "@/layouts/MainLayout.astro";
+import PageSection from "@/layouts/PageSection.astro";
+import Author from "@/components/ui/Author.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
@@ -18,33 +15,21 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
-const {
-  title,
-  tags,
-  series,
-  newerPostRef = "#",
-  olderPostRef = "#",
-} = post.data;
 const { Content, headings } = await render(post);
-
-const data = await getEntry("postIndex", `series/${series}`);
-console.log(data);
 ---
 
-<Layout>
-  <PostNavigation newerRef={newerPostRef} olderRef={olderPostRef} />
-  <div class="card flex flex-col p-6">
-    <header class="mb-4">
-      <h1 class="text-foreground mb-2 text-3xl font-medium">{title}</h1>
-      <PostMetadata post={post} />
-      <Tags list={tags} />
-    </header>
-    <article class="prose">
+<MainLayout contentWidth={50}>
+  <PageSection contentWidth={50} asideWidth={18} gap={0.5}>
+    <Author
+      class="card bg-surface/30 flex gap-2 p-2 backdrop-blur-xs"
+      avatarUrl="/src/assets/demo-profile.jpg"
+      slot="left-aside"
+    />
+  </PageSection>
+  <PageSection contentWidth={50} asideWidth={18} gap={2}>
+    <div class="text-foreground prose">
       <Content />
-    </article>
-  </div>
-  <PostNavigation newerRef={newerPostRef} olderRef={olderPostRef} />
-  <div slot="side-right">
-    <TableOfContents headings={headings} />
-  </div>
-</Layout>
+    </div>
+    <ul class="card" slot="right-aside">Hello!!!</ul>
+  </PageSection>
+</MainLayout>
