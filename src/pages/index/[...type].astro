@@ -1,15 +1,19 @@
 ---
 import { Icon } from "astro-icon/components";
-import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
 
-import HomeLayout from "@/layouts/HomeLayout.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
+import PageSection from "@/layouts/PageSection.astro";
+
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
 import Breadcrumb from "@/components/ui/Breadcrumb.astro";
-import IndexList from "@/components/ui/index/IndexList.astro";
-import TagItem from "@/components/ui/index/TagItem.astro";
+import PostList from "@/components/ui/post/PostList.astro";
+import PostItem from "@/components/ui/post/PostItem.astro";
+
 import { availableIndexType } from "@/types";
+import { APPEARANCE } from "@/consts";
 
 export const getStaticPaths = (async () => {
   return [undefined, ...availableIndexType].map((type) => ({
@@ -18,28 +22,54 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { type } = Astro.params;
+
+const postIndex = await getCollection(
+  "postIndex",
+  (index) => index.data.type === (type || "publishedYear"),
+);
+const posts = await getCollection("posts");
+
+const indexes = postIndex.map((index) => ({
+  ...index,
+  data: {
+    ...index.data,
+    items: posts
+      .filter((post) => index.data.items.includes(post.id))
+      .sort(
+        (a, b) => +new Date(b.data.published) - +new Date(a.data.published),
+      ),
+  },
+}));
+
+const contentWidth = APPEARANCE.contentWidth;
 ---
 
-<HomeLayout class:list={["flex flex-col gap-2"]}>
-  <Decorator class="text-foreground">
-    <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
-    <Breadcrumbs
-      class:list={["flex items-center"]}
-      url={Astro.url.pathname}
-      renderer={Breadcrumb}
-    >
-      <Icon name="lucide:chevron-right" slot="separator" />
-    </Breadcrumbs>
-  </Decorator>
-  <div class="card bg-surface/80 p-2">
-    {
-      !!type && (
-        <IndexList
-          class="flex flex-wrap gap-1"
-          type={type}
-          renderer={TagItem}
+<MainLayout class:list={["flex flex-col gap-6"]} contentWidth={contentWidth}>
+  <PageSection contentWidth={contentWidth}>
+    <Decorator class="text-foreground" slot="header">
+      <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+      <Breadcrumbs
+        class:list={["flex items-center"]}
+        url={Astro.url.pathname}
+        renderer={Breadcrumb}
+      >
+        <Icon name="lucide:chevron-right" slot="separator" />
+      </Breadcrumbs>
+    </Decorator>
+  </PageSection>
+  {
+    indexes.map((index) => (
+      <PageSection contentWidth={contentWidth} asideWidth={12}>
+        <Decorator class="text-foreground" slot="left-aside">
+          <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco" />
+          <h1 class="text-foreground text-lg">{index.data.name}</h1>
+        </Decorator>
+        <PostList
+          class:list={["flex flex-col gap-2"]}
+          items={index.data.items}
+          renderer={PostItem}
         />
-      )
-    }
-  </div>
-</HomeLayout>
+      </PageSection>
+    ))
+  }
+</MainLayout>
