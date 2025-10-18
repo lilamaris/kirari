@@ -1,10 +1,11 @@
-import { ROUTE, type AvailableRoute } from "@/consts";
 import type { Theme } from "@/types";
 
 export const objectKeys = <T extends object>(obj: T) =>
   Object.keys(obj) as (keyof T)[];
+
 export const objectValues = <T extends object>(obj: T) =>
   Object.values(obj) as T[keyof T][];
+
 export const objectEntries = <T extends object>(obj: T) =>
   Object.entries(obj) as [keyof T, T[keyof T]][];
 
@@ -18,9 +19,6 @@ export const toStyleVars = (vars: Record<string, string | number>): string =>
   Object.entries(vars)
     .map(([k, v]) => `--${k}:${typeof v === "number" ? `${v}rem` : v};`)
     .join("");
-
-export const getUrl = (prefix: AvailableRoute, ...parts: string[]): string =>
-  joinUrl(ROUTE[prefix]?.href ?? "/", ...parts);
 
 export const joinUrl = (...parts: string[]) => {
   const joined = parts.join("/");
