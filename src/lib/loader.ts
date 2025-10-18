@@ -79,6 +79,9 @@ export const postIndexLoader: Loader = {
         id,
         title: v.frontmatter.title,
         published: v.frontmatter.published,
+        publishedYear: new Date(v.frontmatter.published)
+          .getFullYear()
+          .toString(),
         draft: v.frontmatter.draft,
         tags: toArray(v.frontmatter.tags),
         categories: toArray(v.frontmatter.categories),
@@ -101,6 +104,7 @@ export const postIndexLoader: Loader = {
       { type: string; name: string; items: string[] }
     >;
     const buckets: Record<AvailableIndexType, IndexBucket> = {
+      publishedYear: new Map(),
       tags: new Map(),
       categories: new Map(),
       series: new Map(),
@@ -108,7 +112,9 @@ export const postIndexLoader: Loader = {
 
     for (const post of visible) {
       for (const key of availableIndexType) {
-        const values = key == "series" ? [post.series] : post[key];
+        const values: string[] = Array.isArray(post[key])
+          ? post[key]
+          : [post[key]];
 
         for (const raw of values) {
           const id = `${key}/${raw}`;
