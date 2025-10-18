@@ -12,7 +12,12 @@ export type AstroComponentWithProps<P> = AstroComponentFactory &
 
 export const theme = ["light", "dark", "system"] as const;
 export type Theme = (typeof theme)[number];
-export const availableIndexType = ["categories", "tags", "series"] as const;
+export const availableIndexType = [
+  "publishedYear",
+  "categories",
+  "tags",
+  "series",
+] as const;
 export type AvailableIndexType = (typeof availableIndexType)[number];
 
 export interface StyledProps {

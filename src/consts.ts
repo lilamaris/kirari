@@ -1,4 +1,4 @@
-import { objectKeys } from "@/lib/utils";
+import { objectKeys } from "./lib/utils";
 
 export const SITE = {
   title: "Kirari",
@@ -13,7 +13,7 @@ export const APPEARANCE = {
   theme: "light",
   bannerHeight: 30,
   bannerOverlap: 5,
-  pageWidth: 60,
+  contentWidth: 35,
   showRecentPost: true,
   recentPostCount: 3,
   postPerPageCount: 4,

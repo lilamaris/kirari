@@ -1,15 +1,19 @@
 ---
+import { Icon } from "astro-icon/components";
 import type { GetStaticPaths } from "astro";
-
-import { APPEARANCE } from "@/consts";
 import { getCollection } from "astro:content";
 
-import HomeLayout from "@/layouts/HomeLayout.astro";
-import Decorator from "@/components/common/Decorator.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
+import PageSection from "@/layouts/PageSection.astro";
+
 import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
-import Link from "@/components/common/Link.astro";
-import { Icon } from "astro-icon/components";
+import Pagination from "@/components/ui/Pagination.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
+import Breadcrumb from "@/components/ui/Breadcrumb.astro";
+
+import { APPEARANCE } from "@/consts";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts");
@@ -17,66 +21,44 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const contentWidth = APPEARANCE.contentWidth;
 ---
 
-<HomeLayout class:list={["flex flex-col gap-2"]}>
-  <div class="flex justify-between">
-    <Decorator class="text-foreground">
-      <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
-      <span>Blog</span>
-    </Decorator>
-
-    <div class="text-foreground flex items-center gap-0.5">
-      <Link
-        href={page.url.prev}
-        class:list={["btn icon", !!!page.url.prev && "disabled"]}
-        data-variant="ghost"
-      >
-        <Icon name="lucide:chevron-left" />
-      </Link>
-      <Link
-        href={page.url.next}
-        class:list={["btn icon", !!!page.url.next && "disabled"]}
-        data-variant="ghost"
-      >
-        <Icon name="lucide:chevron-right" />
-      </Link>
-    </div>
-  </div>
-  <PostList
-    class:list={["flex flex-col gap-2"]}
-    items={page.data}
-    renderer={PostItem}
-  />
-  <div class="text-foreground mx-auto flex w-fit items-center gap-0.5">
-    <Link
-      href={page.url.first}
-      class:list={["btn icon", !!!page.url.first && "disabled"]}
-      data-variant="ghost"
-    >
-      <Icon name="lucide:chevrons-left" />
-    </Link>
-    <Link
-      href={page.url.prev}
-      class:list={["btn icon", !!!page.url.prev && "disabled"]}
-      data-variant="ghost"
-    >
-      <Icon name="lucide:chevron-left" />
-    </Link>
-    <span class="px-2 text-sm font-medium">{page.currentPage}</span>
-    <Link
-      href={page.url.next}
-      class:list={["btn icon", !!!page.url.next && "disabled"]}
-      data-variant="ghost"
-    >
-      <Icon name="lucide:chevron-right" />
-    </Link>
-    <Link
-      href={page.url.last}
-      class:list={["btn icon", !!!page.url.last && "disabled"]}
-      data-variant="ghost"
-    >
-      <Icon name="lucide:chevrons-right" />
-    </Link>
-  </div>
-</HomeLayout>
+<MainLayout contentWidth={contentWidth} class:list={["flex flex-col gap-6"]}>
+  <PageSection class:list={[""]} contentWidth={contentWidth}>
+    <Fragment slot="header">
+      <Decorator class="text-foreground">
+        <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+        <Breadcrumbs
+          class:list={["flex items-center"]}
+          url={Astro.url.pathname}
+          renderer={Breadcrumb}
+        >
+          <Icon name="lucide:chevron-right" slot="separator" />
+        </Breadcrumbs>
+      </Decorator>
+      <Pagination
+        class:list={["text-foreground flex w-fit items-center gap-0.5"]}
+        current={page.currentPage}
+        prev={page.url.prev}
+        next={page.url.next}
+        compact
+      />
+    </Fragment>
+    <PostList
+      class:list={["flex flex-col gap-2"]}
+      items={page.data}
+      renderer={PostItem}
+    />
+    <Pagination
+      class:list={[
+        "text-foreground mx-auto mt-2 flex w-fit items-center gap-0.5",
+      ]}
+      current={page.currentPage}
+      prev={page.url.prev}
+      next={page.url.next}
+      first={page.url.first}
+      last={page.url.last}
+    />
+  </PageSection>
+</MainLayout>

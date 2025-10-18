@@ -1,30 +1,82 @@
 ---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+
+import MainLayout from "@/layouts/MainLayout.astro";
+import PageSection from "@/layouts/PageSection.astro";
+
 import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
-import HomeLayout from "@/layouts/HomeLayout.astro";
-
-import { getCollection } from "astro:content";
+import Author from "@/components/ui/Author.astro";
+import GithubCalendar from "@/components/ui/GithubCalendar.svelte";
+import IndexList from "@/components/ui/index/IndexList.astro";
+import CategoryItem from "@/components/ui/index/CategoryItem.astro";
+import TagItem from "@/components/ui/index/TagItem.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Link from "@/components/common/Link.astro";
 
-import { getUrl } from "@/lib/utils";
+import { APPEARANCE, ROUTE } from "@/consts";
+import { joinUrl, toStyleVars } from "@/lib/utils";
+
+const categories = await getCollection(
+  "postIndex",
+  (index) => index.data.type === "categories",
+);
+const tags = await getCollection(
+  "postIndex",
+  (index) => index.data.type === "tags",
+);
 
 const recentPosts = (await getCollection("posts")).slice(0, 3);
+const contentWidth = APPEARANCE.contentWidth;
+const asideWidth = 12;
 ---
 
-<HomeLayout class:list={["flex flex-col gap-2"]}>
-  <Decorator class="text-foreground">
-    <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
-    <span>Related Blog</span>
-  </Decorator>
-  <PostList
-    class:list={["flex flex-col gap-2"]}
-    items={recentPosts}
-    renderer={PostItem}
-  />
-  <Link
-    class="btn text-foreground mx-auto w-fit"
-    data-variant="ghost"
-    href={getUrl("blog")}>See more blogs</Link
-  >
-</HomeLayout>
+<MainLayout contentWidth={contentWidth} class:list={["flex flex-col gap-6"]}>
+  <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={0.5}>
+    <Author
+      class="card bg-surface/30 flex gap-2 p-2 backdrop-blur-xs"
+      avatarUrl="/src/assets/demo-profile.jpg"
+    />
+    <div
+      class:list={[
+        "card bg-surface flex flex-col gap-2 p-2",
+        "min-h-[var(--height)]",
+      ]}
+      style={toStyleVars({ height: asideWidth * 0.14 })}
+      slot="right-aside"
+    >
+      <Decorator class="text-foreground text-sm">
+        <Icon name="lucide:calendar" slot="deco" />
+        <span>My Github calendar!</span>
+      </Decorator>
+      <GithubCalendar
+        class:list={["bg-surface my-auto overflow-hidden rounded-sm"]}
+        client:only="svelte"
+      />
+    </div>
+  </PageSection>
+
+  <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={0.5}>
+    <Decorator class="text-foreground" slot="header">
+      <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+      <span>Related Blog</span>
+    </Decorator>
+    <Fragment slot="right-aside">
+      <IndexList items={categories} renderer={CategoryItem} />
+      <IndexList class="flex flex-wrap gap-1" items={tags} renderer={TagItem} />
+    </Fragment>
+    <div class:list={["flex flex-col gap-2"]}>
+      <PostList
+        class:list={["flex flex-col gap-2"]}
+        items={recentPosts}
+        renderer={PostItem}
+      />
+      <Link
+        class="btn text-foreground mx-auto w-fit"
+        data-variant="ghost"
+        href={joinUrl(ROUTE["blog"].href)}>See more blogs</Link
+      >
+    </div>
+  </PageSection>
+</MainLayout>
