@@ -23,20 +23,27 @@ export const GET: APIRoute = async () => {
       }
     }`;
 
-  const res = await fetch(GITHUB_API, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query, variables: { userName: username } }),
-  });
+  try {
+    const res = await fetch(GITHUB_API, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ query, variables: { userName: username } }),
+    });
 
-  const data = await res.json();
-  return new Response(
-    JSON.stringify(data.data.user.contributionsCollection.contributionCalendar),
-    {
-      headers: { "Content-Type": "application/json" },
-    },
-  );
+    const data = await res.json();
+    return new Response(
+      JSON.stringify(
+        data.data.user.contributionsCollection.contributionCalendar,
+      ),
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: true }));
+  }
 };
