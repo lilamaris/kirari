@@ -1,7 +1,8 @@
 ---
 import Link from "@/components/common/Link.astro";
+import { ROUTE } from "@/consts";
 
-import { getUrl } from "@/lib/utils";
+import { joinUrl } from "@/lib/utils";
 import type { Post, StyledProps, IterableRenderProps } from "@/types";
 
 interface Props extends StyledProps, IterableRenderProps<Post> {}
@@ -18,7 +19,7 @@ const {
   {
     items.map((post, index) => (
       <li>
-        <Link href={getUrl("blog", post.id)}>
+        <Link href={joinUrl(ROUTE["blog"].href, post.id)}>
           <Comp id={post.id} index={index} item={post} />
         </Link>
       </li>
