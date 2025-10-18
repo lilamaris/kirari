@@ -1,0 +1,63 @@
+---
+import Base from "@/layouts/Base.astro";
+
+import Navigation from "@/components/ui/Navigation.astro";
+import Banner from "@/components/ui/Banner.astro";
+import Footer from "@/components/ui/Footer.astro";
+
+import { APPEARANCE } from "@/consts";
+import type { StyledProps } from "@/types";
+import { toInlineStyle, toStyleVars } from "@/lib/utils";
+
+interface Props extends StyledProps {
+  contentWidth?: number;
+}
+
+const {
+  class: className = "",
+  style: styleAttr = "",
+  contentWidth = APPEARANCE.contentWidth,
+} = Astro.props;
+
+const bannerHeight = APPEARANCE.bannerHeight;
+const bannerOverlap = APPEARANCE.bannerOverlap;
+---
+
+<Base>
+  <!-- Start Base Slots -->
+  <Banner
+    class:list={[
+      "animate-reveal-center mask-b-from-30% hover:mask-b-from-100%",
+    ]}
+    bannerHeight={bannerHeight}
+    bannerUrl="/src/assets/demo-banner.jpg"
+    slot="background"
+  />
+  <Navigation
+    class="bg-surface/80 flex min-h-10 backdrop-blur-sm"
+    contentWidth={contentWidth}
+    slot="header"
+  />
+  <Footer
+    class="text-foreground mx-auto py-0.5 text-center text-xs"
+    contentWidth={contentWidth}
+    slot="footer"
+  />
+  <!-- End Base Slots -->
+
+  <div
+    class:list={[
+      className,
+      "translate-y-[calc(var(--bannerHeight)_-_var(--bannerOverlap))]",
+    ]}
+    style={toInlineStyle([
+      styleAttr,
+      toStyleVars({
+        bannerHeight,
+        bannerOverlap,
+      }),
+    ])}
+  >
+    <slot />
+  </div>
+</Base>
