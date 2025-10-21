@@ -4,7 +4,7 @@ import { render, getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
 import PageSection from "@/layouts/PageSection.astro";
-import Author from "@/components/ui/Author.astro";
+import TableOfContents from "@/components/ui/post/TableOfContents.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
@@ -15,21 +15,20 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
-const { Content, headings } = await render(post);
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const contentWidth = 50;
+const asideWidth = 18;
 ---
 
-<MainLayout contentWidth={50}>
-  <PageSection contentWidth={50} asideWidth={18} gap={0.5}>
-    <Author
-      class="card bg-surface/30 flex gap-2 p-2 backdrop-blur-xs"
-      avatarUrl="/src/assets/demo-profile.jpg"
-      slot="left-aside"
-    />
+<MainLayout contentWidth={contentWidth}>
+  <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={1}>
+    <h1>{post.data.title}</h1>
+    <p>{remarkPluginFrontmatter.minutesRead}</p>
   </PageSection>
-  <PageSection contentWidth={50} asideWidth={18} gap={2}>
-    <div class="text-foreground prose">
+  <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={1}>
+    <div class="prose">
       <Content />
     </div>
-    <ul class="card" slot="right-aside">Hello!!!</ul>
+    <TableOfContents headings={headings} slot="right-aside" />
   </PageSection>
 </MainLayout>
