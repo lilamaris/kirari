@@ -25,7 +25,7 @@
   }
 }
 
-@layer components {
+@layer utilities {
   .prose {
     @apply text-foreground text-base leading-7;
     @apply [&>link[rel="stylesheet"]+*]:mt-0! [&>link[rel="stylesheet"]+*>*]:mt-0!;
@@ -62,7 +62,7 @@
     }
 
     :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-      /* @apply text-foreground decoration-muted-foreground hover:decoration-foreground font-medium break-words underline underline-offset-[3px] transition-colors; */
+      @apply text-foreground decoration-accent-foreground hover:decoration-foreground font-medium break-words underline underline-offset-[3px] transition-colors;
     }
 
     :where(strong):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
@@ -89,14 +89,14 @@
     }
 
     :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-      /* @apply bg-muted/50 text-foreground relative rounded-sm px-[0.3rem] py-[0.2rem] text-sm font-medium break-words; */
+      @apply text-foreground relative rounded-sm px-[0.3rem] py-[0.2rem] text-sm font-medium break-words;
       @apply [&>span[data-line='']>*]:text-(--shiki-light) dark:[&>span[data-line='']>*]:text-(--shiki-dark);
     }
 
     :where(blockquote):not(
       :where([class~="not-prose"], [class~="not-prose"] *)
     ) {
-      /* @apply [&_*]:text-muted-foreground small my-6 border-l-2 pl-6; */
+      @apply [&_*]:text-foreground/50 small my-6 border-l-2 pl-6;
     }
 
     :where(hr):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
@@ -108,16 +108,16 @@
     }
 
     :where(thead):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-      /* @apply border-muted-foreground/30 border-b; */
+      @apply border-border/30 border-b;
     }
 
     :where(th):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
       @apply px-4 py-2 font-medium;
-      @apply text-left [&[align=center]]:text-center [&[align=right]]:text-right;
+      @apply text-accent-foreground text-left [&[align=center]]:text-center [&[align=right]]:text-right;
     }
 
     :where(tr):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-      /* @apply border-muted-foreground/30 border-y first:border-t-0 last:border-b-0; */
+      @apply border-border/30 border-y first:border-t-0 last:border-b-0;
     }
 
     :where(td):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
@@ -140,7 +140,7 @@
     }
 
     :where(kbd):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-      /* @apply text-foreground bg-muted rounded-md border px-2 py-1 text-xs font-medium; */
+      @apply text-foreground bg-background rounded-md border px-2 py-1 text-xs font-medium;
     }
 
     :where(.katex-display):not(

@@ -1,6 +1,7 @@
 ---
 import { type MarkdownHeading } from "astro";
-import Link from "@/components/atom/common/Link.astro";
+import { toStyleVars } from "@/lib/utils";
+import Link from "@/components/common/Link.astro";
 
 interface Props {
   headings: MarkdownHeading[];
@@ -8,20 +9,43 @@ interface Props {
 
 const { headings } = Astro.props;
 ---
-<div class="text-foreground sticky top-0">
-  <span class="text-foreground text-lg">Table of Contents</span>
-  <ul class="flex flex-col gap-1">
-    {
-      headings.map((heading) => (
-        <li
-          class:list={["text-foreground/70"]}
-          style={`margin-left: ${heading.depth / 2}rem`}
+
+<ul class="sticky top-0 overflow-x-scroll" slot="right-aside">
+  {
+    headings.map((heading) => (
+      <li
+        class:list={[
+          "text-foreground btn justify-start px-2 py-1 not-first:mt-1",
+        ]}
+        data-variant="ghost"
+      >
+        <Link
+          href={`#${heading.slug}`}
+          class:list={["ml-[var(--depth)]"]}
+          style={toStyleVars({ depth: heading.depth - 1 })}
         >
-          <Link href=`#${heading.slug}`>
-            {heading.text}
-          </Link>
-        </li>
-      ))
-    }
-  </ul>
-</div>
+          {heading.text}
+        </Link>
+      </li>
+    ))
+  }
+</ul>
+
+<script>
+  const contentHeadings = Array.from(
+    document.querySelectorAll<HTMLElement>(".prose h2"),
+  );
+  const contentHeadingOffset = contentHeadings.forEach((heading, index) => ({
+    id: heading.id,
+    start: heading.offsetTop,
+    end: contentHeadings[index + 1]?.offsetTop || document.body.scrollHeight,
+  }));
+
+  const isVisible = (start, end) => {
+    console.log(window.scrollY);
+  };
+
+  document.addEventListener("scroll", isVisible);
+  console.log(contentHeadings);
+  console.log(contentHeadingOffset);
+</script>
