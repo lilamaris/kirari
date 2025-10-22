@@ -2,50 +2,162 @@
 import { type MarkdownHeading } from "astro";
 import { toStyleVars } from "@/lib/utils";
 import Link from "@/components/common/Link.astro";
+import type { StyledProps } from "@/types";
 
-interface Props {
+interface Props extends StyledProps {
   headings: MarkdownHeading[];
 }
 
-const { headings } = Astro.props;
+const { class: className, style: styleAttr, headings } = Astro.props;
 ---
 
-<ul class="sticky top-0 overflow-x-scroll" slot="right-aside">
-  {
-    headings.map((heading) => (
-      <li
-        class:list={[
-          "text-foreground btn justify-start px-2 py-1 not-first:mt-1",
-        ]}
-        data-variant="ghost"
-      >
-        <Link
-          href={`#${heading.slug}`}
-          class:list={["ml-[var(--depth)]"]}
-          style={toStyleVars({ depth: heading.depth - 1 })}
-        >
-          {heading.text}
-        </Link>
-      </li>
-    ))
-  }
-</ul>
+<table-of-contents
+  class:list={[className]}
+  style={styleAttr}
+  slot="right-aside"
+>
+  <div
+    id="viewport-indicator"
+    class:list={[
+      "bg-accent-foreground rounded-surface absolute left-0 -z-10 w-1 transition-[height,top] duration-100",
+    ]}
+  >
+  </div>
+  <ul id="toc-headings" class="ml-3">
+    {
+      headings.map((heading) => (
+        <li class="text-foreground/50 hover:text-accent-foreground not-first:mt-1">
+          <Link
+            href={`#${heading.slug}`}
+            class:list={["btn justify-start px-2 py-0.5"]}
+            data-variant="ghost"
+          >
+            <span
+              class:list={["pl-[calc(var(--depth)_*_0.7)]"]}
+              style={toStyleVars({ depth: heading.depth - 1 })}
+            >
+              {heading.text}
+            </span>
+          </Link>
+        </li>
+      ))
+    }
+  </ul>
+</table-of-contents>
 
 <script>
-  const contentHeadings = Array.from(
-    document.querySelectorAll<HTMLElement>(".prose h2"),
-  );
-  const contentHeadingOffset = contentHeadings.forEach((heading, index) => ({
-    id: heading.id,
-    start: heading.offsetTop,
-    end: contentHeadings[index + 1]?.offsetTop || document.body.scrollHeight,
-  }));
+  interface Section {
+    id: string;
+    start: number;
+    end: number;
+  }
 
-  const isVisible = (start, end) => {
-    console.log(window.scrollY);
-  };
+  class TableOfContent extends HTMLElement {
+    mdSections: Section[] = [];
+    tocSections: Section[] = [];
+    tocElements: HTMLElement[] = [];
+    viewportIndicator: HTMLElement | null = null;
+    scrollYOffset = 480;
 
-  document.addEventListener("scroll", isVisible);
-  console.log(contentHeadings);
-  console.log(contentHeadingOffset);
+    constructor() {
+      super();
+    }
+
+    getViewportHeight() {
+      const top = window.scrollY;
+      const bottom = top + window.innerHeight;
+
+      return { top, bottom };
+    }
+
+    getVisibleSectionsIndex() {
+      const { top, bottom } = this.getViewportHeight();
+
+      // this code will loop more as the page scrolls down
+      let visibleSectionIdx = [];
+      for (const [index, heading] of this.mdSections.entries()) {
+        const start = heading.start;
+        const end = heading.end;
+        if (start > bottom) break;
+        if (end >= top && start <= bottom) visibleSectionIdx.push(index);
+      }
+
+      return visibleSectionIdx;
+    }
+
+    handleScroll = () => {
+      if (this.mdSections.length === 0) return [];
+      const visibleSectionIdx = this.getVisibleSectionsIndex();
+      const length = visibleSectionIdx.length;
+
+      const startIdx = visibleSectionIdx[0];
+      const endIdx = visibleSectionIdx[length - 1];
+
+      const top = this.tocSections[startIdx].start;
+      const bottom = this.tocSections[endIdx].end;
+
+      this.viewportIndicator?.setAttribute(
+        "style",
+        `top: ${top}px; height: ${bottom - top}px`,
+      );
+
+      this.tocElements.forEach((el, index) => {
+        if (visibleSectionIdx.includes(index)) {
+          el.classList.add("text-foreground/80");
+        } else {
+          el.classList.remove("text-foreground/80");
+        }
+      });
+    };
+
+    handleResize = () => {};
+
+    buildSections(elements: HTMLElement[]) {
+      return elements
+        .map((el, index) => {
+          const end =
+            elements.length > index + 1
+              ? elements[index + 1].offsetTop
+              : el.offsetTop + el.offsetHeight;
+          return {
+            id: el.id,
+            start: el.offsetTop,
+            end: end,
+          };
+        })
+        .sort((a, b) => a.start - b.start);
+    }
+
+    connectedCallback() {
+      const headingElements = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".prose :where(h1, h2, h3, h4, h5, h6)",
+        ),
+      );
+      const tocHeadingElements = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "#toc-headings li:has(a[href^='#'])",
+        ),
+      );
+
+      this.viewportIndicator = document.querySelector("#viewport-indicator");
+      this.mdSections = this.buildSections(headingElements);
+      this.tocSections = this.buildSections(tocHeadingElements);
+      this.tocElements = tocHeadingElements;
+
+      window.addEventListener("scroll", this.handleScroll, { passive: true });
+      window.addEventListener("resize", this.handleResize, { passive: true });
+
+      this.handleScroll();
+    }
+
+    disconnectedCallback() {
+      window.removeEventListener("scroll", this.handleScroll);
+      window.removeEventListener("resize", this.handleResize);
+    }
+  }
+
+  if (!customElements.get("table-of-contents")) {
+    customElements.define("table-of-contents", TableOfContent);
+  }
 </script>

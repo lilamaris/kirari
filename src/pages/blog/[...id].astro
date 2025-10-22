@@ -17,7 +17,7 @@ export const getStaticPaths = (async () => {
 const { post } = Astro.props;
 const { Content, headings, remarkPluginFrontmatter } = await render(post);
 const contentWidth = 50;
-const asideWidth = 18;
+const asideWidth = 20;
 ---
 
 <MainLayout contentWidth={contentWidth}>
@@ -29,6 +29,11 @@ const asideWidth = 18;
     <div class="prose">
       <Content />
     </div>
-    <TableOfContents headings={headings} slot="right-aside" />
+    <div
+      class="sticky top-12 max-h-[40dvh] overflow-y-scroll mask-y-from-90% pr-3"
+      slot="right-aside"
+    >
+      <TableOfContents headings={headings} />
+    </div>
   </PageSection>
 </MainLayout>
