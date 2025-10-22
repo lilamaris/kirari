@@ -59,7 +59,7 @@ const gridTemplate = [
 >
   {
     !!leftAsideWidth && (
-      <aside class:list={["sticky top-0 pt-[var(--headerHeight)]"]}>
+      <aside class:list={["relative pt-[var(--headerHeight)]"]}>
         <slot name="left-aside" />
       </aside>
     )
@@ -72,7 +72,7 @@ const gridTemplate = [
   </div>
   {
     !!rightAsideWidth && (
-      <aside class:list={["sticky top-0 pt-[var(--headerHeight)]"]}>
+      <aside class:list={["relative pt-[var(--headerHeight)]"]}>
         <slot name="right-aside" />
       </aside>
     )

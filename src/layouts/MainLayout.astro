@@ -26,15 +26,13 @@ const bannerOverlap = APPEARANCE.bannerOverlap;
 <Base>
   <!-- Start Base Slots -->
   <Banner
-    class:list={[
-      "animate-reveal-center mask-b-from-30% hover:mask-b-from-100%",
-    ]}
+    class:list={["animate-reveal-center mask-b-from-30%"]}
     bannerHeight={bannerHeight}
     bannerUrl="/src/assets/demo-banner.jpg"
     slot="background"
   />
   <Navigation
-    class="bg-surface/80 flex min-h-10 backdrop-blur-sm"
+    class="bg-surface/80 flex h-full backdrop-blur-sm"
     contentWidth={contentWidth}
     slot="header"
   />
@@ -46,15 +44,11 @@ const bannerOverlap = APPEARANCE.bannerOverlap;
   <!-- End Base Slots -->
 
   <div
-    class:list={[
-      className,
-      "translate-y-[calc(var(--bannerHeight)_-_var(--bannerOverlap))]",
-    ]}
+    class:list={[className, "pt-[var(--bannerGap)]"]}
     style={toInlineStyle([
       styleAttr,
       toStyleVars({
-        bannerHeight,
-        bannerOverlap,
+        bannerGap: bannerHeight - bannerOverlap,
       }),
     ])}
   >
