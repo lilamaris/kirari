@@ -15,25 +15,27 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
-const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const { Content, headings } = await render(post);
 const contentWidth = 50;
 const asideWidth = 20;
 ---
 
-<MainLayout contentWidth={contentWidth}>
+<MainLayout contentWidth={contentWidth} class:list={["flex flex-col gap-6"]}>
   <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={1}>
-    <h1>{post.data.title}</h1>
-    <p>{remarkPluginFrontmatter.minutesRead}</p>
+    <div class:list={["card p-5"]}>
+      <h1 class:list={["text-3xl font-semibold"]}>{post.data.title}</h1>
+    </div>
   </PageSection>
   <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={1}>
-    <div class="prose">
+    <div class="prose mx-5">
       <Content />
     </div>
-    <div
-      class="sticky top-12 max-h-[40dvh] overflow-y-scroll mask-y-from-90% pr-3"
+    <TableOfContents
+      headings={headings}
+      class:list={[
+        "sticky top-20 max-h-[40dvh] overflow-y-scroll mask-y-from-95%",
+      ]}
       slot="right-aside"
-    >
-      <TableOfContents headings={headings} />
-    </div>
+    />
   </PageSection>
 </MainLayout>
