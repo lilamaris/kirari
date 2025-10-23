@@ -11,38 +11,36 @@ interface Props extends StyledProps {
 const { class: className, style: styleAttr, headings } = Astro.props;
 ---
 
-<table-of-contents
-  class:list={[className]}
-  style={styleAttr}
-  slot="right-aside"
->
-  <div
-    id="viewport-indicator"
-    class:list={[
-      "bg-accent-foreground rounded-surface absolute left-0 -z-10 w-1 transition-[height,top] duration-100",
-    ]}
-  >
-  </div>
-  <ul id="toc-headings" class="ml-3">
-    {
-      headings.map((heading) => (
-        <li class="text-foreground/50 hover:text-accent-foreground not-first:mt-1">
-          <Link
-            href={`#${heading.slug}`}
-            class:list={["btn justify-start px-2 py-0.5"]}
-            data-variant="ghost"
-          >
-            <span
-              class:list={["pl-[calc(var(--depth)_*_0.7)]"]}
-              style={toStyleVars({ depth: heading.depth - 1 })}
+<table-of-contents>
+  <div id="toc-wrapper" class:list={[className]} style={styleAttr}>
+    <ul class="mx-4 py-2">
+      {
+        headings.map((heading) => (
+          <li class="text-foreground/50 hover:text-accent-foreground not-first:mt-1">
+            <Link
+              href={`#${heading.slug}`}
+              class:list={["btn justify-start px-2 py-0.5"]}
+              data-variant="ghost"
             >
-              {heading.text}
-            </span>
-          </Link>
-        </li>
-      ))
-    }
-  </ul>
+              <span
+                class:list={["pl-[calc(var(--depth)_*_0.7)]"]}
+                style={toStyleVars({ depth: heading.depth - 1 })}
+              >
+                {heading.text}
+              </span>
+            </Link>
+          </li>
+        ))
+      }
+    </ul>
+    <div
+      id="viewport-indicator"
+      class:list={[
+        "bg-accent-foreground rounded-surface absolute left-0 -z-10 w-1 transition-[height,top] duration-100",
+      ]}
+    >
+    </div>
+  </div>
 </table-of-contents>
 
 <script>
@@ -56,6 +54,7 @@ const { class: className, style: styleAttr, headings } = Astro.props;
     mdSections: Section[] = [];
     tocSections: Section[] = [];
     tocElements: HTMLElement[] = [];
+    tocWrapperElement: HTMLElement | null = null;
     viewportIndicator: HTMLElement | null = null;
     scrollYOffset = 480;
 
@@ -85,7 +84,40 @@ const { class: className, style: styleAttr, headings } = Astro.props;
       return visibleSectionIdx;
     }
 
-    handleScroll = () => {
+    buildSectionOffset(elements: HTMLElement[]) {
+      return elements
+        .map((el, index) => {
+          const end =
+            elements.length > index + 1
+              ? elements[index + 1].offsetTop
+              : el.offsetTop + el.offsetHeight;
+          return {
+            id: el.id,
+            start: el.offsetTop,
+            end: end,
+          };
+        })
+        .sort((a, b) => a.start - b.start);
+    }
+
+    buildSection() {
+      const headingElements = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          ".prose :where(h1, h2, h3, h4, h5, h6)",
+        ),
+      );
+      const tocHeadingElements = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          "#toc-wrapper ul li:has(a[href^='#'])",
+        ),
+      );
+
+      this.mdSections = this.buildSectionOffset(headingElements);
+      this.tocSections = this.buildSectionOffset(tocHeadingElements);
+      this.tocElements = tocHeadingElements;
+    }
+
+    updateIndicator() {
       if (this.mdSections.length === 0) return [];
       const visibleSectionIdx = this.getVisibleSectionsIndex();
       const length = visibleSectionIdx.length;
@@ -108,47 +140,33 @@ const { class: className, style: styleAttr, headings } = Astro.props;
           el.classList.remove("text-foreground/80");
         }
       });
-    };
 
-    handleResize = () => {};
-
-    buildSections(elements: HTMLElement[]) {
-      return elements
-        .map((el, index) => {
-          const end =
-            elements.length > index + 1
-              ? elements[index + 1].offsetTop
-              : el.offsetTop + el.offsetHeight;
-          return {
-            id: el.id,
-            start: el.offsetTop,
-            end: end,
-          };
-        })
-        .sort((a, b) => a.start - b.start);
+      this.tocWrapperElement?.scrollTo({
+        top: top * 0.87,
+        left: 0,
+        behavior: "smooth",
+      });
     }
 
-    connectedCallback() {
-      const headingElements = Array.from(
-        document.querySelectorAll<HTMLElement>(
-          ".prose :where(h1, h2, h3, h4, h5, h6)",
-        ),
-      );
-      const tocHeadingElements = Array.from(
-        document.querySelectorAll<HTMLElement>(
-          "#toc-headings li:has(a[href^='#'])",
-        ),
-      );
+    handleScroll = () => {
+      this.updateIndicator();
+    };
 
+    handleResize = () => {
+      this.buildSection();
+      this.updateIndicator();
+    };
+
+    connectedCallback() {
+      this.buildSection();
+
+      this.tocWrapperElement = document.querySelector("#toc-wrapper");
       this.viewportIndicator = document.querySelector("#viewport-indicator");
-      this.mdSections = this.buildSections(headingElements);
-      this.tocSections = this.buildSections(tocHeadingElements);
-      this.tocElements = tocHeadingElements;
 
       window.addEventListener("scroll", this.handleScroll, { passive: true });
       window.addEventListener("resize", this.handleResize, { passive: true });
 
-      this.handleScroll();
+      this.updateIndicator();
     }
 
     disconnectedCallback() {
