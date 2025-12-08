@@ -10,6 +10,12 @@ interface Props extends IterableRenderer<PostIndex> {}
 const { id, index, item } = Astro.props;
 ---
 
-<Item id={id} index={index} item={item} showCount>
+<Item
+  id={id}
+  class="hover:text-accent-foreground text-sm transition"
+  index={index}
+  item={item}
+  showCount
+>
   <Icon name="lucide:folder" slot="icon" />
 </Item>
