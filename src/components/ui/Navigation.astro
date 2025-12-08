@@ -3,9 +3,6 @@ import { APPEARANCE, ROUTE } from "@/consts";
 
 import Link from "@/components/common/Link.astro";
 
-import ThemeController from "@/components/ui/ThemeController.svelte";
-import HueController from "@/components/ui/HueController.svelte";
-
 import { objectEntries, toInlineStyle, toStyleVars } from "@/lib/utils";
 import type { StyledProps } from "@/types";
 import Img from "../common/Img.astro";
@@ -17,7 +14,7 @@ interface Props extends StyledProps {
 const {
   class: className = "",
   style: styleAttr = "",
-  contentWidth = APPEARANCE.pageWidth,
+  contentWidth = APPEARANCE.contentWidth,
 } = Astro.props;
 ---
 
@@ -41,10 +38,6 @@ const {
           ))
         }
       </ul>
-    </div>
-    <div class="flex items-center gap-px">
-      <HueController client:only="svelte" />
-      <ThemeController client:only="svelte" />
     </div>
   </div>
 </nav>
