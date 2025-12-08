@@ -17,9 +17,7 @@ const {
 <Decorator class:list={[className]} style={styleAttr}>
   <slot name="icon" slot="deco" />
   <Fragment slot="default">
-    <span class="text-foreground/80 group-hover:text-foreground transition">
-      {item.data.name}
-    </span>
+    {item.data.name}
     {
       showCount && (
         <span class="text-foreground/50 ml-1"> ({item.data.count})</span>

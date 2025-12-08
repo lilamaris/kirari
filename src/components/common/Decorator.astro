@@ -20,7 +20,7 @@ const deco = await Astro.slots.render("deco");
 
 <tag class:list={[classname, "relative flex items-center"]} {...props}>
   {
-    !!deco && (
+    deco ? (
       <span
         class:list={[
           "icon text-accent-foreground mr-1",
@@ -29,6 +29,8 @@ const deco = await Astro.slots.render("deco");
       >
         <Fragment set:html={deco} />
       </span>
+    ) : (
+      <span class="bg-accent-foreground mr-2 h-4 w-0.5" />
     )
   }
   <slot />
