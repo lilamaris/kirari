@@ -1,0 +1,28 @@
+---
+import { Icon } from "astro-icon/components";
+import Link from "@/components/common/Link.astro";
+import { objectEntries } from "@/lib/utils";
+
+import { SOCIAL } from "@/consts";
+
+import type { StyledProps } from "@/types";
+
+interface Props extends StyledProps {}
+
+const { class: className = "", style: styleAttr = "" } = Astro.props;
+---
+
+<ul
+  class:list={[className, "flex flex-wrap items-center gap-px"]}
+  style={styleAttr}
+>
+  {
+    objectEntries(SOCIAL).map(([key, link]) => (
+      <li>
+        <Link href={link.href} class="btn icon">
+          <Icon name={link.icon} />
+        </Link>
+      </li>
+    ))
+  }
+</ul>

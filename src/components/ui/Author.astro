@@ -1,12 +1,9 @@
 ---
-import { Icon } from "astro-icon/components";
-
-import Link from "@/components/common/Link.astro";
 import Img from "@/components/common/Img.astro";
+import ExternalSocials from "@/components/ui/ExternalSocials.astro";
 
-import { SITE, SOCIAL } from "@/consts";
+import { SITE } from "@/consts";
 import type { StyledProps } from "@/types";
-import { objectEntries } from "@/lib/utils";
 
 interface Props extends StyledProps {
   avatarUrl: string;
@@ -15,27 +12,19 @@ interface Props extends StyledProps {
 const { class: className = "", style: styleAttr = "", avatarUrl } = Astro.props;
 ---
 
-<div class:list={[className]} style={styleAttr}>
-  <Img
-    src={avatarUrl}
-    alt="profile"
-    class="rounded-surface border-border/50 aspect-square max-w-24 overflow-hidden border"
-  />
-  <div class="flex flex-col">
+<div class:list={[className, "flex flex-col gap-2 p-2"]} style={styleAttr}>
+  <div class="flex gap-2">
+    <div class="flex flex-col items-center gap-2">
+      <Img
+        src={avatarUrl}
+        alt="profile"
+        class="rounded-surface border-border/50 aspect-square size-24 overflow-hidden border"
+      />
+      <ExternalSocials />
+    </div>
     <div class="mb-2 flex-1 px-1">
       <h1 class="font-bold">{SITE.author}</h1>
       <p class="text-foreground/50 text-sm">{SITE.description}</p>
     </div>
-    <ul class="flex flex-wrap gap-px">
-      {
-        objectEntries(SOCIAL).map(([key, link]) => (
-          <li>
-            <Link href={link.href} class="btn icon">
-              <Icon name={link.icon} />
-            </Link>
-          </li>
-        ))
-      }
-    </ul>
   </div>
 </div>
