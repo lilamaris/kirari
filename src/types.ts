@@ -18,6 +18,32 @@ export const availableIndexType = [
   "tags",
   "series",
 ] as const;
+
+export interface SiteInfo {
+  title: string;
+  description: string;
+  author: string;
+  authorComment: string;
+}
+
+export interface SiteConfig {
+  lang: string;
+  recentPostShowAmount: number;
+  postPerPage: number;
+}
+
+export interface ThemeConfig {
+  theme: Theme;
+  initialHue: number;
+}
+
+export interface LayoutConfig {
+  bannerHeight: number;
+  bannerOverlap: number;
+  contentWidth: number;
+  asideWidth: number;
+}
+
 export type AvailableIndexType = (typeof availableIndexType)[number];
 
 export interface StyledProps {
