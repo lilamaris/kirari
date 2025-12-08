@@ -1,5 +1,5 @@
 @import "tailwindcss";
 
 .card {
-  @apply text-foreground border-border rounded-surface border;
+  @apply text-foreground border-border rounded-xs border;
 }

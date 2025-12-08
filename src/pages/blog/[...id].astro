@@ -4,7 +4,17 @@ import { render, getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
 import PageSection from "@/layouts/PageSection.astro";
+
+import Author from "@/components/ui/Author.astro";
+import IndexList from "@/components/ui/index/IndexList.astro";
+import CategoryItem from "@/components/ui/index/CategoryItem.astro";
+import TagItem from "@/components/ui/index/TagItem.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import PostHeader from "@/components/ui/post/PostHeader.astro";
 import TableOfContents from "@/components/ui/post/TableOfContents.astro";
+
+import ThemeController from "@/components/ui/ThemeController.svelte";
+import HueController from "@/components/ui/HueController.svelte";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
@@ -14,21 +24,55 @@ export const getStaticPaths = (async () => {
   }));
 }) satisfies GetStaticPaths;
 
+const categories = await getCollection(
+  "postIndex",
+  (index) => index.data.type === "categories",
+);
+const tags = await getCollection(
+  "postIndex",
+  (index) => index.data.type === "tags",
+);
+
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
-const contentWidth = 50;
-const asideWidth = 20;
 ---
 
-<MainLayout contentWidth={contentWidth} class:list={["flex flex-col gap-6"]}>
-  <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={1}>
-    <div class:list={["card p-5"]}>
-      <h1 class:list={["text-3xl font-semibold"]}>{post.data.title}</h1>
+<MainLayout>
+  <PageSection gap={4}>
+    <div class="sticky top-20 flex flex-col gap-2" slot="left-aside">
+      <div
+        class="bg-surface rounded-surface card absolute -top-2 flex -translate-y-full items-center gap-px"
+      >
+        <HueController client:only="svelte" />
+        <ThemeController client:only="svelte" />
+      </div>
+      <Author
+        class="card bg-surface/30 backdrop-blur-xs"
+        avatarUrl="/src/assets/demo-profile.jpg"
+      />
+
+      <div class="card flex flex-col px-4 py-2">
+        <Decorator class="text-foreground mb-1">
+          <span>Categories</span>
+        </Decorator>
+        <IndexList class="mb-1" items={categories} renderer={CategoryItem} />
+      </div>
+      <div class="card flex flex-col px-4 py-2">
+        <Decorator class="text-foreground mb-1">
+          <span>Tags</span>
+        </Decorator>
+        <IndexList
+          class="mb-1 flex flex-wrap gap-2"
+          items={tags}
+          renderer={TagItem}
+        />
+      </div>
     </div>
-  </PageSection>
-  <PageSection contentWidth={contentWidth} asideWidth={asideWidth} gap={1}>
-    <div class="prose mx-5">
-      <Content />
+    <div class="flex flex-col gap-6">
+      <PostHeader {post} />
+      <div class="prose">
+        <Content />
+      </div>
     </div>
     <TableOfContents
       headings={headings}
