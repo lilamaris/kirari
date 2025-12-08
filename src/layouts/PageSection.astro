@@ -5,76 +5,43 @@ import type { StyledProps } from "@/types";
 
 interface Props extends StyledProps {
   contentWidth?: number;
-  asideWidth?: number | [number?, number?];
   gap?: number;
 }
 
 const {
+  contentWidth = APPEARANCE.contentWidth,
+  gap = 0.5,
   class: className = "",
   style: styleAttr = "",
-  contentWidth = APPEARANCE.contentWidth,
-  asideWidth = [undefined, undefined],
-  gap = 0,
 } = Astro.props;
 
-const asideLayouts = Array.isArray(asideWidth)
-  ? asideWidth
-  : [asideWidth, asideWidth];
+const asideWidth = APPEARANCE.asideWidth;
+const pageWidth = contentWidth + 2 * (gap + asideWidth);
 
-const [leftAsideWidth = 0, rightAsideWidth = 0] = asideLayouts;
-
-const pageWidth =
-  leftAsideWidth +
-  contentWidth +
-  rightAsideWidth +
-  asideLayouts.filter(Boolean).length * gap;
-
-const headerHeight = Astro.slots.has("header") ? 2 : 0;
-
-const gridTemplate = [
-  !!leftAsideWidth && `${leftAsideWidth}rem`,
-  "1fr",
-  !!rightAsideWidth && `${rightAsideWidth}rem`,
-]
-  .filter(Boolean)
-  .join(" ");
+const hasLeftAside = Astro.slots.has("left-aside");
+const hasRightAside = Astro.slots.has("right-aside");
 ---
 
 <section
   class:list={[
     className,
-    "mx-auto grid w-full max-w-[var(--pageWidth)] grid-cols-[var(--gridTemplate)] gap-[var(--gap)]",
+    "mx-auto grid w-full max-w-[var(--pageWidth)] grid-cols-[var(--asideWidth)_1fr_var(--asideWidth)] gap-[var(--gap)]",
   ]}
   style={toInlineStyle([
     styleAttr,
     toStyleVars({
       pageWidth,
-      headerHeight,
-      leftAsideWidth,
-      rightAsideWidth,
-      gridTemplate,
+      asideWidth,
+      contentWidth,
       gap,
     }),
   ])}
 >
-  {
-    !!leftAsideWidth && (
-      <aside class:list={["relative pt-[var(--headerHeight)]"]}>
-        <slot name="left-aside" />
-      </aside>
-    )
-  }
-  <div class="grid grid-rows-[var(--headerHeight)_1fr]">
-    <header class="mb-2 flex items-center justify-between">
-      <slot name="header" />
-    </header>
-    <slot />
-  </div>
-  {
-    !!rightAsideWidth && (
-      <aside class:list={["relative pt-[var(--headerHeight)]"]}>
-        <slot name="right-aside" />
-      </aside>
-    )
-  }
+  <aside class:list={["max-w-[var(--asideWidth)]"]}>
+    <slot name="left-aside" />
+  </aside>
+  <slot />
+  <aside class:list={["min-w-[var(--asideWidth)]"]}>
+    <slot name="right-aside" />
+  </aside>
 </section>

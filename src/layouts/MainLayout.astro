@@ -13,12 +13,9 @@ interface Props extends StyledProps {
   contentWidth?: number;
 }
 
-const {
-  class: className = "",
-  style: styleAttr = "",
-  contentWidth = APPEARANCE.contentWidth,
-} = Astro.props;
+const { class: className = "", style: styleAttr = "" } = Astro.props;
 
+const contentWidth = APPEARANCE.contentWidth;
 const bannerHeight = APPEARANCE.bannerHeight;
 const bannerOverlap = APPEARANCE.bannerOverlap;
 ---
