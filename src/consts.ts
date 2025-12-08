@@ -13,10 +13,11 @@ export const APPEARANCE = {
   theme: "light",
   bannerHeight: 30,
   bannerOverlap: 5,
-  contentWidth: 35,
+  contentWidth: 40,
+  asideWidth: 16,
   showRecentPost: true,
-  recentPostCount: 3,
-  postPerPageCount: 4,
+  recentPostCount: 8,
+  postPerPageCount: 8,
 } as const;
 export type Appearance = typeof APPEARANCE;
 
