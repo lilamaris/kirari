@@ -10,8 +10,11 @@ import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
 import Pagination from "@/components/ui/Pagination.astro";
 import Decorator from "@/components/common/Decorator.astro";
-import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
-import Breadcrumb from "@/components/ui/Breadcrumb.astro";
+
+import Author from "@/components/ui/Author.astro";
+import IndexList from "@/components/ui/index/IndexList.astro";
+import CategoryItem from "@/components/ui/index/CategoryItem.astro";
+import TagItem from "@/components/ui/index/TagItem.astro";
 
 import { APPEARANCE } from "@/consts";
 
@@ -20,31 +23,41 @@ export const getStaticPaths = (async ({ paginate }) => {
   return paginate(posts, { pageSize: APPEARANCE.postPerPageCount });
 }) satisfies GetStaticPaths;
 
+const categories = await getCollection(
+  "postIndex",
+  (index) => index.data.type === "categories",
+);
+const tags = await getCollection(
+  "postIndex",
+  (index) => index.data.type === "tags",
+);
 const { page } = Astro.props;
-const contentWidth = APPEARANCE.contentWidth;
 ---
 
-<MainLayout contentWidth={contentWidth} class:list={["flex flex-col gap-6"]}>
-  <PageSection class:list={[""]} contentWidth={contentWidth}>
-    <Fragment slot="header">
-      <Decorator class="text-foreground">
-        <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
-        <Breadcrumbs
-          class:list={["flex items-center"]}
-          url={Astro.url.pathname}
-          renderer={Breadcrumb}
-        >
-          <Icon name="lucide:chevron-right" slot="separator" />
-        </Breadcrumbs>
-      </Decorator>
-      <Pagination
-        class:list={["text-foreground flex w-fit items-center gap-0.5"]}
-        current={page.currentPage}
-        prev={page.url.prev}
-        next={page.url.next}
-        compact
+<MainLayout>
+  <PageSection>
+    <div class="flex flex-col gap-2" slot="left-aside">
+      <Author
+        class="card bg-surface/30 backdrop-blur-xs"
+        avatarUrl="/src/assets/demo-profile.jpg"
       />
-    </Fragment>
+
+      <div class="card flex flex-col px-4 py-2">
+        <Decorator class="text-foreground mb-1">
+          <span>Categories</span>
+        </Decorator>
+        <IndexList items={categories} renderer={CategoryItem} />
+      </div>
+      <div class="card flex flex-col px-4 py-2">
+        <Decorator class="text-foreground mb-1">
+          <span>Tags</span>
+        </Decorator>
+        <div class="flex flex-wrap gap-2">
+          <IndexList items={tags} renderer={TagItem} />
+        </div>
+      </div>
+    </div>
+
     <PostList
       class:list={["flex flex-col gap-2"]}
       items={page.data}
