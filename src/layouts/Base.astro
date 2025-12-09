@@ -24,14 +24,14 @@ const { class: className, style: styleAttr } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <slot name="head" />
   </head>
-  <body class="relative flex min-h-screen flex-col">
+  <body class="relative grid min-h-screen grid-rows-[auto_1fr_auto]">
     <div class="absolute -z-10 w-full">
       <slot name="background" />
     </div>
-    <header class="sticky inset-x-0 top-0 z-10 h-10">
+    <header class="sticky top-0 z-10 h-10">
       <slot name="header" />
     </header>
-    <main class:list={[className, "flex-1"]} style={styleAttr}>
+    <main class:list={[className]} style={styleAttr}>
       <slot />
     </main>
     <footer>
