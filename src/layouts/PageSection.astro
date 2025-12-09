@@ -17,15 +17,12 @@ const {
 
 const asideWidth = APPEARANCE.asideWidth;
 const pageWidth = contentWidth + 2 * (gap + asideWidth);
-
-const hasLeftAside = Astro.slots.has("left-aside");
-const hasRightAside = Astro.slots.has("right-aside");
 ---
 
 <section
   class:list={[
     className,
-    "mx-auto grid w-full max-w-[var(--pageWidth)] grid-cols-[var(--asideWidth)_1fr_var(--asideWidth)] gap-[var(--gap)]",
+    "mx-auto grid w-full max-w-[var(--pageWidth)] grid-cols-[minmax(0px,var(--asideWidth))_1fr_minmax(0px,var(--asideWidth))] gap-[var(--gap)] px-2",
   ]}
   style={toInlineStyle([
     styleAttr,
@@ -37,11 +34,11 @@ const hasRightAside = Astro.slots.has("right-aside");
     }),
   ])}
 >
-  <aside class:list={["max-w-[var(--asideWidth)]"]}>
+  <aside>
     <slot name="left-aside" />
   </aside>
   <slot />
-  <aside class:list={["min-w-[var(--asideWidth)]"]}>
+  <aside>
     <slot name="right-aside" />
   </aside>
 </section>

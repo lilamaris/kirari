@@ -6,24 +6,11 @@ import PageSection from "@/layouts/PageSection.astro";
 
 import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
-import Author from "@/components/ui/Author.astro";
-import IndexList from "@/components/ui/index/IndexList.astro";
-import CategoryItem from "@/components/ui/index/CategoryItem.astro";
-import TagItem from "@/components/ui/index/TagItem.astro";
-import Decorator from "@/components/common/Decorator.astro";
 import Link from "@/components/common/Link.astro";
 
 import { ROUTE, APPEARANCE } from "@/consts";
 import { joinUrl } from "@/lib/utils";
-
-const categories = await getCollection(
-  "postIndex",
-  (index) => index.data.type === "categories",
-);
-const tags = await getCollection(
-  "postIndex",
-  (index) => index.data.type === "tags",
-);
+import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
 
 const recentPosts = (await getCollection("posts")).slice(
   0,
@@ -33,33 +20,11 @@ const recentPosts = (await getCollection("posts")).slice(
 
 <MainLayout>
   <PageSection>
-    <div class="flex flex-col gap-2" slot="left-aside">
-      <Author
-        class="card bg-surface/30 backdrop-blur-xs"
-        avatarUrl="/src/assets/demo-profile.jpg"
-      />
+    <DefaultLeftAside slot="left-aside" />
 
-      <div class="card flex flex-col px-4 py-2">
-        <Decorator class="text-foreground mb-1">
-          <span>Categories</span>
-        </Decorator>
-        <IndexList class="mb-1" items={categories} renderer={CategoryItem} />
-      </div>
-      <div class="card flex flex-col px-4 py-2">
-        <Decorator class="text-foreground mb-1">
-          <span>Tags</span>
-        </Decorator>
-        <IndexList
-          class="mb-1 flex flex-wrap gap-2"
-          items={tags}
-          renderer={TagItem}
-        />
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-2">
+    <div>
       <PostList
-        class:list={["flex flex-col gap-2"]}
+        class:list={["space-y-2"]}
         items={recentPosts}
         renderer={PostItem}
       />

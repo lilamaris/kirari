@@ -12,9 +12,9 @@ interface Props extends StyledProps {
 const { class: className = "", style: styleAttr = "", avatarUrl } = Astro.props;
 ---
 
-<div class:list={[className, "flex flex-col gap-2 p-2"]} style={styleAttr}>
+<div class:list={[className, "space-y-2 p-2"]} style={styleAttr}>
   <div class="flex gap-2">
-    <div class="flex flex-col items-center gap-2">
+    <div class="items-center space-y-2">
       <Img
         src={avatarUrl}
         alt="profile"

@@ -6,18 +6,12 @@ import Banner from "@/components/ui/Banner.astro";
 import Footer from "@/components/ui/Footer.astro";
 
 import { APPEARANCE } from "@/consts";
-import type { StyledProps } from "@/types";
-import { toInlineStyle, toStyleVars } from "@/lib/utils";
-
-interface Props extends StyledProps {
-  contentWidth?: number;
-}
-
-const { class: className = "", style: styleAttr = "" } = Astro.props;
+import { toStyleVars } from "@/lib/utils";
 
 const contentWidth = APPEARANCE.contentWidth;
 const bannerHeight = APPEARANCE.bannerHeight;
 const bannerOverlap = APPEARANCE.bannerOverlap;
+const bannerGap = bannerHeight - bannerOverlap;
 ---
 
 <Base>
@@ -40,15 +34,7 @@ const bannerOverlap = APPEARANCE.bannerOverlap;
   />
   <!-- End Base Slots -->
 
-  <div
-    class:list={[className, "pt-[var(--bannerGap)]"]}
-    style={toInlineStyle([
-      styleAttr,
-      toStyleVars({
-        bannerGap: bannerHeight - bannerOverlap,
-      }),
-    ])}
-  >
+  <div class="pt-[var(--bannerGap)]" style={toStyleVars({ bannerGap })}>
     <slot />
   </div>
 </Base>
