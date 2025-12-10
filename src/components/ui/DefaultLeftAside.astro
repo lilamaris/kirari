@@ -12,17 +12,14 @@ interface Props extends StyledProps {}
 const { class: className = "", style: styleAttr = "" } = Astro.props;
 ---
 
-<div class:list={[className, "relative flex flex-col gap-2"]} style={styleAttr}>
+<div class:list={[className, "space-y-2"]} style={styleAttr}>
   <div
-    class="bg-surface rounded-surface card absolute -top-2 flex -translate-y-full items-center gap-px"
+    class="rounded-surface card absolute -top-1 flex -translate-y-full items-center gap-px"
   >
     <HueController client:only="svelte" />
     <ThemeController client:only="svelte" />
   </div>
-  <Author
-    class="card bg-surface/30 backdrop-blur-xs"
-    avatarUrl="/src/assets/demo-profile.jpg"
-  />
+  <Author class="card" avatarUrl="/src/assets/demo-profile.jpg" />
   <CategoryList />
   <TagList />
 </div>

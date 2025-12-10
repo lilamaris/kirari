@@ -5,7 +5,6 @@ import { render, getCollection } from "astro:content";
 import MainLayout from "@/layouts/MainLayout.astro";
 import PageSection from "@/layouts/PageSection.astro";
 
-import PostHeader from "@/components/ui/post/PostHeader.astro";
 import TableOfContents from "@/components/ui/post/TableOfContents.astro";
 import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
 
@@ -23,12 +22,9 @@ const { Content, headings } = await render(post);
 
 <MainLayout>
   <PageSection>
-    <DefaultLeftAside slot="left-aside" />
-    <div class="flex flex-col gap-6">
-      <!-- <PostHeader {post} /> -->
-      <div class="prose">
-        <Content />
-      </div>
+    <DefaultLeftAside class="sticky top-20" slot="left-aside" />
+    <div class="card bg-surface/80 prose px-5">
+      <Content />
     </div>
     <TableOfContents
       headings={headings}

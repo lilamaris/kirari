@@ -1,37 +1,68 @@
 ---
+import { ClientRouter } from "astro:transitions";
 import "@/styles/global.css";
-import { SITE } from "@/consts";
-import type { StyledProps } from "@/types";
+import { APPEARANCE, SITE } from "@/consts";
+import { toStyleVars } from "@/lib/utils";
 
-interface Props extends StyledProps {}
-
-const { class: className, style: styleAttr } = Astro.props;
+const isRoot = Astro.url.pathname === "/";
+const bannerExtend = APPEARANCE.bannerHeight * 0.5;
+const bannerHeight = APPEARANCE.bannerHeight;
 ---
 
 <html lang={SITE.lang}>
   <head>
     <script is:inline>
-      document.documentElement.style.setProperty(
-        "--hue",
-        localStorage.getItem("hue") || "250",
-      );
-      document.documentElement.setAttribute(
-        "data-theme",
-        localStorage.getItem("theme") || "light",
-      );
+      function getHue() {
+        const hue = localStorage.getItem("hue") || "250";
+        return hue;
+      }
+      function getTheme() {
+        const theme = localStorage.getItem("theme") || "light";
+        return theme;
+      }
+
+      document.documentElement.style.setProperty("--hue", getHue());
+      document.documentElement.setAttribute("data-theme", getTheme());
+
+      document.addEventListener("astro:before-swap", (event) => {
+        event.newDocument.documentElement.style.setProperty("--hue", getHue());
+        event.newDocument.documentElement.setAttribute(
+          "data-theme",
+          getTheme(),
+        );
+      });
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <slot name="head" />
+    <ClientRouter />
   </head>
-  <body class="relative grid min-h-screen grid-rows-[auto_1fr_auto]">
-    <div class="absolute -z-10 w-full">
+  <body
+    transition:animate="none"
+    class="relative grid min-h-screen grid-rows-[auto_1fr_auto]"
+  >
+    <div
+      transition:name="banner"
+      class:list={[
+        "absolute -z-10 w-full",
+        "h-[calc(var(--bannerHeight)_+_var(--bannerExtend))] overflow-hidden transition",
+        isRoot ? "translate-y-0" : "-translate-y-[var(--bannerExtend)]",
+      ]}
+      style={toStyleVars({ bannerExtend, bannerHeight })}
+    >
       <slot name="background" />
     </div>
-    <header class="sticky top-0 z-10 h-10">
+    <header transition:name="header" class="sticky top-0 z-10 h-10">
       <slot name="header" />
     </header>
-    <main class:list={[className]} style={styleAttr}>
+    <main
+      transition:name="main"
+      class:list={[
+        "relative h-full transition",
+        isRoot ? "top-[var(--bannerHeight)]" : "top-[var(--bannerExtend)]",
+      ]}
+      style={toStyleVars({ bannerHeight, bannerExtend })}
+    >
       <slot />
     </main>
     <footer>
@@ -39,3 +70,14 @@ const { class: className, style: styleAttr } = Astro.props;
     </footer>
   </body>
 </html>
+
+<style is:global>
+  ::view-transition-group(banner) {
+    animation-duration: 700ms;
+    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  }
+  ::view-transition-group(main) {
+    animation-duration: 600ms;
+    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  }
+</style>
