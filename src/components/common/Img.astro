@@ -1,18 +1,27 @@
 ---
+import type { StyledProps } from "@/types";
 import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 
-interface Props {
+interface Props extends StyledProps {
   src: string;
   alt?: string;
-  class?: string;
 }
 
-const { src, alt, class: className } = Astro.props;
+const { src, alt, class: className = "", style: styleAttr = "" } = Astro.props;
 const images = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/*.{jpg,jpeg,png}",
 );
 if (!images[src]) throw new Error(`"/src/assets/${src}" does not exists`);
 ---
 
-<Image src={images[src]()} alt={alt || ""} class:list={[className]} />
+<div
+  class:list={[className, "relative overflow-hidden object-cover"]}
+  style={styleAttr}
+>
+  <Image
+    src={images[src]()}
+    alt={alt || ""}
+    class="size-full object-cover object-center"
+  />
+</div>
