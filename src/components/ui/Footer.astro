@@ -1,22 +1,11 @@
 ---
-import { APPEARANCE } from "@/consts";
-import { toInlineStyle, toStyleVars } from "@/lib/utils";
 import type { StyledProps } from "@/types";
 
-interface Props extends StyledProps {
-  contentWidth?: number;
-}
+interface Props extends StyledProps {}
 
-const {
-  class: className = "",
-  style: styleAttr = "",
-  contentWidth = APPEARANCE.pageWidth,
-} = Astro.props;
+const { class: className = "", style: styleAttr = "" } = Astro.props;
 ---
 
-<p
-  class:list={[className, "max-w-[var(--contentWidth)]"]}
-  style={toInlineStyle([styleAttr, toStyleVars({ contentWidth })])}
->
+<p class:list={[className, "text-foreground"]} style={styleAttr}>
   &copy; 2025 All Rights Reserved. Made with 🤍 by lilamaris
 </p>

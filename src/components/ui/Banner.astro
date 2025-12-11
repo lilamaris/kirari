@@ -9,9 +9,4 @@ interface Props extends StyledProps {}
 const { class: className = "", style: styleAttr = "" } = Astro.props;
 ---
 
-<Img
-  class:list={[className, "h-full mask-b-from-30%"]}
-  style={styleAttr}
-  src={bannerUrl}
-  alt="banner"
-/>
+<Img class={className} style={styleAttr} src={bannerUrl} alt="banner" />
