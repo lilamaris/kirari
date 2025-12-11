@@ -2,29 +2,95 @@
 import Base from "@/layouts/Base.astro";
 
 import Navigation from "@/components/ui/Navigation.astro";
-import Banner from "@/components/ui/Banner.astro";
 import Footer from "@/components/ui/Footer.astro";
+import Img from "@/components/common/Img.astro";
 
 import { APPEARANCE } from "@/consts";
+import { toStyleVars } from "@/lib/utils";
 
-const contentWidth = APPEARANCE.contentWidth;
+const {
+  contentWidth,
+  navigationHeight,
+  bannerHeight,
+  bannerExtend,
+  bannerSrc,
+  asideWidth,
+} = APPEARANCE;
+
+const pageWidth = contentWidth + 2 * asideWidth;
 ---
 
 <Base>
-  <!-- Start Base Slots -->
-  <Navigation
-    transition:persist
-    class="bg-surface/80 z-50 flex h-full backdrop-blur-sm"
-    contentWidth={contentWidth}
-    slot="header"
-  />
-  <Banner slot="background" />
-  <Footer
-    class="text-foreground mx-auto py-0.5 text-center text-xs"
-    contentWidth={contentWidth}
-    slot="footer"
-  />
-  <!-- End Base Slots -->
+  <div
+    class="anim-banner-entering transition-page-banner absolute h-full dark:mask-b-from-10%"
+  >
+    <Img class="h-full" src={bannerSrc} alt="banner" />
+  </div>
 
-  <slot />
+  <Navigation
+    class:list={[
+      "anim-navigation-entering sticky top-0 z-50",
+      "h-[var(--navigationHeight)]",
+    ]}
+    style={toStyleVars({ navigationHeight })}
+  />
+  <Footer class="fixed right-0 bottom-0 text-sm" />
+
+  <main
+    class:list={["anim-main-entering transition-page-main absolute w-full"]}
+  >
+    <div
+      id="swup-target"
+      class:list={[
+        "mx-auto grid gap-2 px-2",
+        "max-w-[var(--pageWidth)] grid-cols-[minmax(0px,var(--asideWidth)))_var(--contentWidth)_minmax(0px,var(--asideWidth))]",
+      ]}
+      style={toStyleVars({ pageWidth, asideWidth, contentWidth })}
+    >
+      <aside class:list={[]}>
+        <slot name="left-aside" />
+      </aside>
+      <div class="transition-swup-page">
+        <slot />
+      </div>
+
+      <aside class="">
+        <slot name="right-aside" />
+      </aside>
+    </div>
+  </main>
+
+  <style
+    is:global
+    define:vars={{
+      bannerHeight: `${bannerHeight}rem`,
+      bannerExtend: `${bannerExtend}rem`,
+    }}
+  >
+    @import "tailwindcss";
+    .transition-page-banner {
+      @apply transition-[max-height] duration-600;
+    }
+    .transition-page-main {
+      @apply transition-[top] duration-600;
+    }
+    html {
+      &:not([data-baseloc="root"]) {
+        .transition-page-banner {
+          @apply max-h-[calc(var(--bannerHeight)_-_var(--bannerExtend))];
+        }
+        .transition-page-main {
+          @apply top-[calc(var(--bannerHeight)_-_var(--bannerExtend))];
+        }
+      }
+      &[data-baseloc="root"] {
+        .transition-page-banner {
+          @apply max-h-[calc(var(--bannerHeight)_+_var(--bannerExtend))];
+        }
+        .transition-page-main {
+          @apply top-[var(--bannerHeight)];
+        }
+      }
+    }
+  </style>
 </Base>

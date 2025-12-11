@@ -20,6 +20,12 @@ export const toStyleVars = (vars: Record<string, string | number>): string =>
     .map(([k, v]) => `--${k}:${typeof v === "number" ? `${v}rem` : v};`)
     .join("");
 
+export const splitUrl = (path: string): string[] => {
+  const ROOT = "root";
+  const part = path.split("/").filter((part) => !!part.trim());
+  return !!part.length ? part : [ROOT];
+};
+
 export const joinUrl = (...parts: string[]) => {
   const joined = parts.join("/");
   return joined.replace(/\/+/g, "/");
