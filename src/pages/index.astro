@@ -19,20 +19,18 @@ const recentPosts = (await getCollection("posts")).slice(
 ---
 
 <MainLayout>
-  <PageSection>
-    <DefaultLeftAside slot="left-aside" />
+  <DefaultLeftAside slot="left-aside" />
 
-    <div>
-      <PostList
-        class:list={["space-y-2"]}
-        items={recentPosts}
-        renderer={PostItem}
-      />
-      <Link
-        class="btn text-foreground mx-auto w-fit"
-        data-variant="ghost"
-        href={joinUrl(ROUTE["blog"].href)}>See more blogs</Link
-      >
-    </div>
-  </PageSection>
+  <div>
+    <PostList
+      class:list={["space-y-2"]}
+      items={recentPosts}
+      renderer={PostItem}
+    />
+    <Link
+      class="btn text-foreground mx-auto w-fit"
+      data-variant="ghost"
+      href={joinUrl(ROUTE["blog"].href)}>See more blogs</Link
+    >
+  </div>
 </MainLayout>
