@@ -9,8 +9,7 @@ import Breadcrumb from "@/components/ui/Breadcrumb.astro";
 import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
 import { Icon } from "astro-icon/components";
-import { APPEARANCE } from "@/consts";
-import PageSection from "@/layouts/PageSection.astro";
+import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
 
 export const getStaticPaths = (async () => {
   const indexes = await getCollection("postIndex");
@@ -25,13 +24,12 @@ const { index } = Astro.props;
 const posts = await getCollection("posts", (post) =>
   index.data.items.includes(post.id),
 );
-
-const contentWidth = APPEARANCE.contentWidth;
 ---
 
-<MainLayout class:list={["flex flex-col gap-6"]} contentWidth={contentWidth}>
-  <PageSection contentWidth={contentWidth}>
-    <Decorator class="text-foreground" slot="header">
+<MainLayout>
+  <DefaultLeftAside slot="left-aside" />
+  <div>
+    <Decorator class="text-foreground">
       <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
       <Breadcrumbs
         class:list={["flex items-center"]}
@@ -47,5 +45,5 @@ const contentWidth = APPEARANCE.contentWidth;
       items={posts}
       renderer={PostItem}
     />
-  </PageSection>
+  </div>
 </MainLayout>

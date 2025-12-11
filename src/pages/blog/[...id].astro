@@ -3,7 +3,6 @@ import type { GetStaticPaths } from "astro";
 import { render, getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
-import PageSection from "@/layouts/PageSection.astro";
 
 import TableOfContents from "@/components/ui/post/TableOfContents.astro";
 import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
@@ -21,17 +20,15 @@ const { Content, headings } = await render(post);
 ---
 
 <MainLayout>
-  <PageSection>
-    <DefaultLeftAside class="sticky top-20" slot="left-aside" />
-    <div class="card bg-surface/80 prose px-5">
-      <Content />
-    </div>
-    <TableOfContents
-      headings={headings}
-      class:list={[
-        "sticky top-20 max-h-[40dvh] overflow-y-scroll mask-y-from-95%",
-      ]}
-      slot="right-aside"
-    />
-  </PageSection>
+  <DefaultLeftAside slot="left-aside" />
+  <div class="card bg-surface/80 prose max-w-[var(--contentWidth)] px-5">
+    <Content />
+  </div>
+  <TableOfContents
+    headings={headings}
+    class:list={[
+      "sticky top-20 max-h-[40dvh] overflow-y-scroll mask-y-from-95%",
+    ]}
+    slot="right-aside"
+  />
 </MainLayout>
