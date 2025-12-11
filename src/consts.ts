@@ -11,12 +11,15 @@ export type Site = typeof SITE;
 export const APPEARANCE = {
   hue: 270,
   theme: "light",
+  bannerSrc: "/src/assets/demo-banner.png",
   bannerHeight: 30,
+  bannerExtend: 10,
   bannerOverlap: 5,
-  contentWidth: 40,
+  contentWidth: 45,
+  navigationHeight: 3,
   asideWidth: 16,
   showRecentPost: true,
-  recentPostCount: 8,
+  recentPostCount: 3,
   postPerPageCount: 8,
 } as const;
 export type Appearance = typeof APPEARANCE;

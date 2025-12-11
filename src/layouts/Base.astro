@@ -1,17 +1,13 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import "@/styles/global.css";
-import { APPEARANCE, SITE } from "@/consts";
-import { toStyleVars } from "@/lib/utils";
-
+import { SITE } from "@/consts";
 const isRoot = Astro.url.pathname === "/";
-const bannerExtend = APPEARANCE.bannerHeight * 0.5;
-const bannerHeight = APPEARANCE.bannerHeight;
 ---
 
 <html lang={SITE.lang}>
   <head>
-    <script is:inline>
+    <script is:inline type="module" src="/src/lib/swup.js"></script>
+    <script is:inline define:vars={{ isRoot }}>
       function getHue() {
         const hue = localStorage.getItem("hue") || "250";
         return hue;
@@ -20,64 +16,17 @@ const bannerHeight = APPEARANCE.bannerHeight;
         const theme = localStorage.getItem("theme") || "light";
         return theme;
       }
-
+      if (isRoot) {
+        document.documentElement.setAttribute("data-baseloc", "root");
+      }
       document.documentElement.style.setProperty("--hue", getHue());
       document.documentElement.setAttribute("data-theme", getTheme());
-
-      document.addEventListener("astro:before-swap", (event) => {
-        event.newDocument.documentElement.style.setProperty("--hue", getHue());
-        event.newDocument.documentElement.setAttribute(
-          "data-theme",
-          getTheme(),
-        );
-      });
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <slot name="head" />
-    <ClientRouter />
   </head>
-  <body
-    transition:animate="none"
-    class="relative grid min-h-screen grid-rows-[auto_1fr_auto]"
-  >
-    <div
-      transition:name="banner"
-      class:list={[
-        "absolute -z-10 w-full",
-        "h-[calc(var(--bannerHeight)_+_var(--bannerExtend))] overflow-hidden transition",
-        isRoot ? "translate-y-0" : "-translate-y-[var(--bannerExtend)]",
-      ]}
-      style={toStyleVars({ bannerExtend, bannerHeight })}
-    >
-      <slot name="background" />
-    </div>
-    <header transition:name="header" class="sticky top-0 z-10 h-10">
-      <slot name="header" />
-    </header>
-    <main
-      transition:name="main"
-      class:list={[
-        "relative h-full transition",
-        isRoot ? "top-[var(--bannerHeight)]" : "top-[var(--bannerExtend)]",
-      ]}
-      style={toStyleVars({ bannerHeight, bannerExtend })}
-    >
-      <slot />
-    </main>
-    <footer>
-      <slot name="footer" />
-    </footer>
+  <body class="relative min-h-screen">
+    <slot />
   </body>
 </html>
-
-<style is:global>
-  ::view-transition-group(banner) {
-    animation-duration: 700ms;
-    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
-  }
-  ::view-transition-group(main) {
-    animation-duration: 600ms;
-    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
-  }
-</style>
