@@ -1,33 +1,69 @@
-import { objectKeys } from "./lib/utils";
+import type {
+  LayoutConfig,
+  RouteRegistry,
+  SiteConfig,
+  SocialRegistry,
+  ThemeConfig,
+} from "./types";
 
-export const SITE = {
+export const siteConfig: SiteConfig = {
   title: "Kirari",
   description: "kirari astro blog",
-  author: "lilamaris",
+  authorName: "lilamaris",
+  authorComment: "haaiii",
   lang: "en",
-} as const;
-export type Site = typeof SITE;
+};
 
-export const APPEARANCE = {
-  hue: 270,
-  theme: "light",
+export const themeConfig: ThemeConfig = {
+  initialHue: 200,
+  initialTheme: "system",
+  enableBanner: true,
+  enableHueControl: true,
+  enableThemeControl: true,
+  recentPostCount: 5,
+  postPerPage: 10,
   siteIconUrl: "/src/assets/demo-icon.png",
-  avatarUrl: "/src/assets/demo-profile.jpg",
-  bannerUrl: "/src/assets/demo-banner2.jpg",
+  avatarImgUrl: "/src/assets/demo-profile.jpg",
+  bannerImgUrl: "/src/assets/demo-banner2.jpg",
+};
+
+export const layoutConfig: LayoutConfig = {
   bannerHeight: 30,
   bannerExtend: 10,
-  bannerOverlap: 5,
-  contentWidth: 45,
   navigationHeight: 3,
+  contentWidth: 45,
   asideWidth: 16,
-  showRecentPost: true,
-  recentPostCount: 3,
-  postPerPageCount: 8,
-} as const;
-export type Appearance = typeof APPEARANCE;
+  layoutGap: 0.5,
+};
 
-export const ROUTE = {
-  home: {
+export const route = {
+  Root: "root",
+  Blog: "blog",
+  Index: "index",
+  About: "about",
+} as const;
+
+export const theme = {
+  Light: "light",
+  Dark: "dark",
+  System: "system",
+} as const;
+
+export const indexType = {
+  PublishedYear: "publishedYear",
+  Categories: "categories",
+  Tags: "tags",
+  Series: "series",
+} as const;
+
+export const social = {
+  GitHub: "github",
+  Twitter: "twitter",
+  Steam: "steam",
+} as const;
+
+export const routeRegistry: RouteRegistry = {
+  root: {
     href: "/",
     label: "/Kirari",
   },
@@ -43,13 +79,9 @@ export const ROUTE = {
     href: "/about",
     label: "/About",
   },
-} as const;
-export type AvailableRoute = keyof typeof ROUTE;
-export type Routes = typeof ROUTE;
-export type Route = Routes[AvailableRoute];
-export const availableRoute = objectKeys(ROUTE);
+};
 
-export const SOCIAL = {
+export const socialRegistry: SocialRegistry = {
   github: {
     href: "https://github.com/lilamaris",
     label: "Github",
@@ -65,8 +97,4 @@ export const SOCIAL = {
     label: "Steam",
     icon: "fa6-brands:steam",
   },
-} as const;
-export type AvailableSocial = keyof typeof SOCIAL;
-export type Socials = typeof SOCIAL;
-export type Social = Socials[AvailableSocial];
-export const availableSocial = objectKeys(SOCIAL);
+};
