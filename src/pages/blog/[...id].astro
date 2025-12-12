@@ -21,8 +21,11 @@ const { Content, headings } = await render(post);
 
 <MainLayout>
   <DefaultLeftAside slot="left-aside" />
-  <div class="card bg-surface/80 prose max-w-[var(--contentWidth)] px-5">
-    <Content />
+  <div class="card bg-surface/80 max-w-[var(--contentWidth)] px-5">
+    <div class="anim-onload card">METADATA</div>
+    <div class="anim-onload prose">
+      <Content />
+    </div>
   </div>
   <TableOfContents
     headings={headings}
