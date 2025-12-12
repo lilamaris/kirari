@@ -1,13 +1,16 @@
 ---
 import "@/styles/global.css";
 import { SITE } from "@/consts";
-const isRoot = Astro.url.pathname === "/";
+import { splitUrl } from "@/lib/utils";
+
+const path = Astro.url.pathname;
+const base = splitUrl(path)[0];
 ---
 
 <html lang={SITE.lang}>
   <head>
     <script is:inline type="module" src="/src/lib/swup.js"></script>
-    <script is:inline define:vars={{ isRoot }}>
+    <script is:inline define:vars={{ base }}>
       function getHue() {
         const hue = localStorage.getItem("hue") || "250";
         return hue;
@@ -16,10 +19,9 @@ const isRoot = Astro.url.pathname === "/";
         const theme = localStorage.getItem("theme") || "light";
         return theme;
       }
-      if (isRoot) {
-        document.documentElement.setAttribute("data-baseloc", "root");
-      }
+
       document.documentElement.style.setProperty("--hue", getHue());
+      document.documentElement.setAttribute("data-baseloc", base);
       document.documentElement.setAttribute("data-theme", getTheme());
     </script>
     <meta charset="UTF-8" />
