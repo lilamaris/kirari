@@ -1,31 +1,33 @@
 ---
 import { APPEARANCE, ROUTE } from "@/consts";
 
+import HueController from "@/components/ui/HueController.svelte";
+import ThemeController from "@/components/ui/ThemeController.svelte";
 import Link from "@/components/common/Link.astro";
+import Img from "@/components/common/Img.astro";
 
-import { objectEntries, toStyleVars } from "@/lib/utils";
+import { objectEntries, toInlineStyle, toStyleVars } from "@/lib/utils";
 import type { StyledProps } from "@/types";
-import Img from "../common/Img.astro";
 
 interface Props extends StyledProps {}
 
 const { class: className = "", style: styleAttr = "" } = Astro.props;
-
-const contentWidth = APPEARANCE.contentWidth;
+const { contentWidth, navigationHeight, siteIconUrl } = APPEARANCE;
 ---
 
 <nav
   class:list={[
     className,
     "bg-surface/60 flex w-full justify-center backdrop-blur-sm",
+    "h-[var(--navigationHeight)]",
   ]}
-  style={styleAttr}
+  style={toInlineStyle([styleAttr, toStyleVars({ navigationHeight })])}
 >
   <div
     class="flex max-w-[var(--contentWidth)] flex-1 items-center gap-4"
     style={toStyleVars({ contentWidth })}
   >
-    <Img src="/src/assets/demo-icon.png" class="size-4 rounded-sm" />
+    <Img src={siteIconUrl} class="size-4 rounded-sm" />
     <ul class="flex gap-4">
       {
         objectEntries(ROUTE).map(([key, route]) => (
@@ -39,5 +41,9 @@ const contentWidth = APPEARANCE.contentWidth;
         ))
       }
     </ul>
+    <div class="ml-auto flex gap-px">
+      <HueController client:only />
+      <ThemeController client:only />
+    </div>
   </div>
 </nav>

@@ -9,7 +9,6 @@ import PostItem from "@/components/ui/post/PostItem.astro";
 import Pagination from "@/components/ui/Pagination.astro";
 
 import { APPEARANCE } from "@/consts";
-import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts");
@@ -20,7 +19,6 @@ const { page } = Astro.props;
 ---
 
 <MainLayout>
-  <DefaultLeftAside slot="left-aside" />
   <div class="text-foreground flex flex-col gap-2">
     <PostList
       class:list={["flex flex-col gap-2"]}
