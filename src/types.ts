@@ -1,5 +1,6 @@
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import type { CollectionEntry } from "astro:content";
+import type { indexType, route, social } from "./consts";
 
 export type Post = CollectionEntry<"posts">;
 export type PostIndex = CollectionEntry<"postIndex">;
@@ -19,31 +20,6 @@ export const availableIndexType = [
   "series",
 ] as const;
 
-export interface SiteInfo {
-  title: string;
-  description: string;
-  author: string;
-  authorComment: string;
-}
-
-export interface SiteConfig {
-  lang: string;
-  recentPostShowAmount: number;
-  postPerPage: number;
-}
-
-export interface ThemeConfig {
-  theme: Theme;
-  initialHue: number;
-}
-
-export interface LayoutConfig {
-  bannerHeight: number;
-  bannerOverlap: number;
-  contentWidth: number;
-  asideWidth: number;
-}
-
 export type AvailableIndexType = (typeof availableIndexType)[number];
 
 export interface StyledProps {
@@ -52,19 +28,58 @@ export interface StyledProps {
   style?: string;
 }
 
-export interface IterableRenderProps<T> {
-  items?: T[];
-  renderer: AstroComponentWithProps<IterableRenderer<T>>;
-}
-
-export interface IterableRenderer<T> {
-  id: string;
-  index: number;
-  item: T;
-}
-
 export interface Breadcrumb {
   href: string;
   name: string;
   isLast: boolean;
 }
+
+export interface SiteConfig {
+  title: string;
+  description: string;
+  authorName: string;
+  authorComment?: string;
+  lang: string;
+}
+
+export interface ThemeConfig {
+  initialHue: number;
+  initialTheme: ThemeEnum;
+  enableBanner: boolean;
+  enableHueControl: boolean;
+  enableThemeControl: boolean;
+  recentPostCount: number;
+  postPerPage: number;
+  siteIconUrl: string;
+  avatarImgUrl: string;
+  bannerImgUrl: string;
+}
+
+export interface LayoutConfig {
+  bannerHeight: number;
+  bannerExtend: number;
+  navigationHeight: number;
+  contentWidth: number;
+  asideWidth: number;
+  layoutGap: number;
+}
+
+export type RouteEnum = (typeof route)[keyof typeof route];
+export type ThemeEnum = (typeof theme)[keyof typeof theme];
+export type IndexEnum = (typeof indexType)[keyof typeof indexType];
+export type SocialEnum = (typeof social)[keyof typeof social];
+
+export interface RouteMeta {
+  href: string;
+  label: string;
+  icon?: string;
+}
+
+export interface SocialMeta {
+  href: string;
+  label: string;
+  icon: string;
+}
+
+export type RouteRegistry = Record<RouteEnum, RouteMeta>;
+export type SocialRegistry = Record<SocialEnum, SocialMeta>;

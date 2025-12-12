@@ -1,26 +1,24 @@
 ---
 import Link from "@/components/common/Link.astro";
-import { ROUTE } from "@/consts";
+import { route } from "@/consts";
 
-import { joinUrl, toStyleVars } from "@/lib/utils";
-import type { Post, StyledProps, IterableRenderProps } from "@/types";
+import { createRouteUrl } from "@/lib/utils";
+import type { Post, StyledProps } from "@/types";
+import PostItem from "./PostItem.astro";
 
-interface Props extends StyledProps, IterableRenderProps<Post> {}
+interface Props extends StyledProps {
+  posts: Post[];
+}
 
-const {
-  class: className,
-  style: styleAttr,
-  items = [],
-  renderer: Comp,
-} = Astro.props;
+const { posts, class: className = "", style: styleAttr = "" } = Astro.props;
 ---
 
 <ul class:list={[className, "anim-delay-sequence"]} style={styleAttr}>
   {
-    items.map((post, index) => (
+    posts.map((post, index) => (
       <li class="anim-onload" style={`--i: ${index}`}>
-        <Link href={joinUrl(ROUTE["blog"].href, post.id)}>
-          <Comp id={post.id} index={index} item={post} />
+        <Link href={createRouteUrl(route.Blog, post.id)}>
+          <PostItem post={post} />
         </Link>
       </li>
     ))

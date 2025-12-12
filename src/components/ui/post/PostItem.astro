@@ -1,19 +1,27 @@
 ---
 import { Icon } from "astro-icon/components";
 
-import type { IterableRenderer, Post } from "@/types";
+import type { Post, StyledProps } from "@/types";
+
 import Decorator from "@/components/common/Decorator.astro";
 import Img from "@/components/common/Img.astro";
-import { SITE } from "@/consts";
+
+import { siteConfig } from "@/consts";
 import { formatDate } from "@/lib/utils";
 
-interface Props extends IterableRenderer<Post> {}
+interface Props extends StyledProps {
+  post: Post;
+}
 
-const { item } = Astro.props;
+const { post, class: className = "", style: styleAttr = "" } = Astro.props;
 ---
 
 <div
-  class="card bg-surface/70 hover:bg-surface active:bg-surface/50 group flex p-2 transition"
+  class:list={[
+    className,
+    "card bg-surface/70 hover:bg-surface active:bg-surface/50 group flex p-2 transition",
+  ]}
+  style={styleAttr}
 >
   <div class="flex flex-1 flex-col">
     <Decorator>
@@ -21,10 +29,10 @@ const { item } = Astro.props;
       <span
         class="text-foreground group-hover:text-accent-foreground font-medium transition"
       >
-        {item.data.title}
+        {post.data.title}
       </span>
     </Decorator>
-    <span class="text-foreground/80 mb-2 text-sm">{item.data.description}</span>
+    <span class="text-foreground/80 mb-2 text-sm">{post.data.description}</span>
     <div
       class="divide-neutral text-foreground/60 flex divide-x-1 text-xs [&>*]:flex [&>*]:items-center [&>*]:px-2 [&>*:first-child]:pl-0 [&>*:last-child]:pr-0"
     >
@@ -33,10 +41,10 @@ const { item } = Astro.props;
           class="aspect-square size-4 rounded-full"
           src="/src/assets/demo-profile.jpg"
         />
-        <span>{SITE.author}</span>
+        <span>{siteConfig.authorName}</span>
       </div>
-      <span>{formatDate(item.data.published)}</span>
-      <span>{item.data.categories}</span>
+      <span>{formatDate(post.data.published)}</span>
+      <span>{post.data.categories}</span>
     </div>
   </div>
   <div

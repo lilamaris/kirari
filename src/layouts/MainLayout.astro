@@ -1,70 +1,67 @@
 ---
 import Base from "@/layouts/Base.astro";
 
+import Img from "@/components/common/Img.astro";
 import Navigation from "@/components/ui/Navigation.astro";
 import Footer from "@/components/ui/Footer.astro";
-import Author from "@/components/ui/Author.astro";
+import Profile from "@/components/ui/Profile.astro";
 import CategoryList from "@/components/ui/CategoryList.astro";
 import TagList from "@/components/ui/TagList.astro";
 
-import { APPEARANCE } from "@/consts";
+import { layoutConfig, themeConfig } from "@/consts";
 import { toStyleVars } from "@/lib/utils";
-import Img from "@/components/common/Img.astro";
 
+const { bannerImgUrl } = themeConfig;
 const {
-  contentWidth,
-  navigationHeight,
   bannerHeight,
   bannerExtend,
-  bannerUrl,
+  navigationHeight,
+  contentWidth,
   asideWidth,
-} = APPEARANCE;
+  layoutGap,
+} = layoutConfig;
 
-const pageWidth = contentWidth + 2 * asideWidth;
-const asideGap = 0.5; // rem
-const asideOffset = navigationHeight + asideGap;
+const pageWidth = contentWidth + 2 * (asideWidth + layoutGap);
+const asideOffset = navigationHeight + layoutGap;
 ---
 
 <Base>
   <div
     class="anim-banner-entering transition-page-banner absolute h-full dark:mask-b-from-10%"
+    style={toStyleVars({ bannerHeight, bannerExtend })}
   >
-    <Img class="h-full" src={bannerUrl} alt="banner" />
+    <Img class="h-full" src={bannerImgUrl} alt="banner" />
   </div>
 
   <Navigation class="anim-navigation-entering fixed top-0 z-50" />
-  <Footer class="fixed right-0 bottom-0 text-sm" />
 
   <main
-    class:list={["anim-main-entering transition-page-main absolute w-full"]}
+    class:list={[
+      "anim-main-entering transition-page-main absolute h-full w-full",
+    ]}
+    style={toStyleVars({ ...layoutConfig, pageWidth, asideOffset })}
   >
     <div
       id="swup-target"
       class:list={[
-        "mx-auto grid gap-2 px-2",
-        "max-w-[var(--pageWidth)] grid-cols-[minmax(0px,var(--asideWidth)))_var(--contentWidth)_minmax(0px,var(--asideWidth))]",
+        "mx-auto grid px-2",
+        "max-w-[var(--pageWidth)] grid-cols-[minmax(auto,var(--asideWidth)))_var(--contentWidth)_minmax(auto,var(--asideWidth))] gap-[var(--layoutGap)]",
       ]}
-      style={toStyleVars({
-        pageWidth,
-        asideWidth,
-        asideOffset,
-        contentWidth,
-        navigationHeight,
-      })}
     >
       <aside>
         <div class="sticky top-[var(--asideOffset)]">
           <slot name="left-aside">
             <div class="space-y-2">
-              <Author />
+              <Profile />
               <CategoryList />
               <TagList />
             </div>
           </slot>
         </div>
       </aside>
-      <div class="transition-swup-page">
+      <div class="transition-swup-page relative">
         <slot />
+        <Footer class="text-center text-sm" />
       </div>
 
       <aside class="transition-swup-page">
@@ -75,13 +72,7 @@ const asideOffset = navigationHeight + asideGap;
     </div>
   </main>
 
-  <style
-    is:global
-    define:vars={{
-      bannerHeight: `${bannerHeight}rem`,
-      bannerExtend: `${bannerExtend}rem`,
-    }}
-  >
+  <style>
     @import "tailwindcss";
     .transition-page-banner {
       @apply transition-[max-height] duration-600;

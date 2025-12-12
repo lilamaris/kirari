@@ -3,30 +3,24 @@ import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
-
 import PostList from "@/components/ui/post/PostList.astro";
-import PostItem from "@/components/ui/post/PostItem.astro";
 import Pagination from "@/components/ui/Pagination.astro";
 
-import { APPEARANCE } from "@/consts";
+import { themeConfig } from "@/consts";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts");
-  return paginate(posts, { pageSize: APPEARANCE.postPerPageCount });
+  return paginate(posts, { pageSize: themeConfig.postPerPage });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
 ---
 
 <MainLayout>
-  <div class="text-foreground flex flex-col gap-2">
-    <PostList
-      class:list={["flex flex-col gap-2"]}
-      items={page.data}
-      renderer={PostItem}
-    />
+  <div class="text-foreground">
+    <PostList class:list={["space-y-2"]} posts={page.data} />
     <Pagination
-      class:list={["flex items-center justify-center gap-0.5"]}
+      class:list={["mt-2 flex items-center justify-center gap-0.5"]}
       current={page.currentPage}
       prev={page.url.prev}
       next={page.url.next}

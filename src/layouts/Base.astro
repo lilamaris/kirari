@@ -1,13 +1,13 @@
 ---
 import "@/styles/global.css";
-import { SITE } from "@/consts";
+import { siteConfig } from "@/consts";
 import { splitUrl } from "@/lib/utils";
 
 const path = Astro.url.pathname;
 const base = splitUrl(path)[0];
 ---
 
-<html lang={SITE.lang}>
+<html lang={siteConfig.lang}>
   <head>
     <script is:inline type="module" src="/src/lib/swup.js"></script>
     <script is:inline define:vars={{ base }}>

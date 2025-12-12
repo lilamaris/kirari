@@ -1,14 +1,14 @@
 ---
-import { getCollection } from "astro:content";
 import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+
+import { Icon } from "astro-icon/components";
 
 import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
 import Breadcrumb from "@/components/ui/Breadcrumb.astro";
 import PostList from "@/components/ui/post/PostList.astro";
-import PostItem from "@/components/ui/post/PostItem.astro";
-import { Icon } from "astro-icon/components";
 
 export const getStaticPaths = (async () => {
   const indexes = await getCollection("postIndex");
@@ -38,10 +38,6 @@ const posts = await getCollection("posts", (post) =>
       </Breadcrumbs>
     </Decorator>
 
-    <PostList
-      class:list={["flex flex-col gap-2"]}
-      items={posts}
-      renderer={PostItem}
-    />
+    <PostList class:list={["flex flex-col gap-2"]} posts={posts} />
   </div>
 </MainLayout>

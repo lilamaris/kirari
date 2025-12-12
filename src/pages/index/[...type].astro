@@ -1,15 +1,14 @@
 ---
-import { Icon } from "astro-icon/components";
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 
-import MainLayout from "@/layouts/MainLayout.astro";
+import { Icon } from "astro-icon/components";
 
+import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
 import Breadcrumb from "@/components/ui/Breadcrumb.astro";
 import PostList from "@/components/ui/post/PostList.astro";
-import PostItem from "@/components/ui/post/PostItem.astro";
 
 import { availableIndexType } from "@/types";
 
@@ -61,9 +60,8 @@ const indexes = postIndex.map((index) => ({
           </Decorator>
           <PostList
             class:list={["flex flex-col gap-2"]}
-            style={`--initialDelay: ${i * 150}ms`}
-            items={index.data.items}
-            renderer={PostItem}
+            style={`--initialDelay: ${i * 100}ms`}
+            posts={index.data.items}
           />
         </div>
       ))
