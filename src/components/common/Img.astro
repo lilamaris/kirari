@@ -12,7 +12,7 @@ const { src, alt, class: className = "", style: styleAttr = "" } = Astro.props;
 const images = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/*.{jpg,jpeg,png}",
 );
-if (!images[src]) throw new Error(`"/src/assets/${src}" does not exists`);
+if (!images[src]) throw new Error(`"${src}" does not exists`);
 ---
 
 <div class:list={[className]} style={styleAttr}>
