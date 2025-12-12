@@ -75,9 +75,10 @@
 
   .anim-delay-sequence {
     & > * {
+      --start: var(--initialDelay, 0ms);
       --max: 300ms;
       --delay: calc(var(--max) * (var(--i) / (var(--i) + 4)));
-      animation-delay: var(--delay);
+      animation-delay: calc(var(--start) + var(--delay));
     }
   }
 
