@@ -11,7 +11,9 @@ export type Site = typeof SITE;
 export const APPEARANCE = {
   hue: 270,
   theme: "light",
-  bannerSrc: "/src/assets/demo-banner.png",
+  siteIconUrl: "/src/assets/demo-icon.png",
+  avatarUrl: "/src/assets/demo-profile.jpg",
+  bannerUrl: "/src/assets/demo-banner2.jpg",
   bannerHeight: 30,
   bannerExtend: 10,
   bannerOverlap: 5,
