@@ -1,38 +1,55 @@
 ---
-import type { IterableRenderProps, StyledProps, Breadcrumb } from "@/types";
+import { Icon } from "astro-icon/components";
 
-interface Props extends StyledProps, IterableRenderProps<Breadcrumb> {
-  url: string;
+import type { StyledProps } from "@/types";
+
+import Link from "@/components/common/Link.astro";
+
+import { splitUrl } from "@/lib/utils";
+
+export interface Breadcrumb {
+  href: string;
+
+  name: string;
+  isLast: boolean;
 }
 
-const { class: className, style: styleAttr, renderer: Comp, url } = Astro.props;
+interface Props extends StyledProps {}
+
+const { class: className, style: styleAttr } = Astro.props;
+const url = Astro.url.pathname;
 
 let cumulative = "";
-const separator = "/";
 
-const split = url.split(separator).filter(Boolean);
-const crumbs = split.map((path, i) => {
-  cumulative += `${separator}${path}`;
+const parts = splitUrl(url, { includeSeparator: true });
+const crumbs = parts.map((path, i) => {
+  cumulative += path;
   return {
     href: cumulative,
     name: path,
-    isLast: i + 1 == split.length,
+    isLast: i + 1 == parts.length,
   };
 });
-const items: Breadcrumb[] = [
-  { href: "/", name: "home", isLast: false },
-  ...crumbs,
-];
 ---
 
-<ul class:list={[className]} style={styleAttr}>
+<ul class:list={[className, "flex items-center gap-2"]} style={styleAttr}>
   {
-    items.map((item, index) => (
-      <li>
-        <Comp id={item.href} index={index} item={item}>
-          <slot name="separator" slot="separator" />
-        </Comp>
-      </li>
+    crumbs.map((crumb) => (
+      <Fragment>
+        <li class="flex items-center capitalize">
+          {crumb.isLast ? (
+            <span>{crumb.name}</span>
+          ) : (
+            <Link
+              href={crumb.href}
+              class="text-foreground/70 hover:text-foreground transition-colors"
+            >
+              {crumb.name}
+            </Link>
+          )}
+        </li>
+        {!crumb.isLast && <Icon name="lucide:chevron-right" />}
+      </Fragment>
     ))
   }
 </ul>
