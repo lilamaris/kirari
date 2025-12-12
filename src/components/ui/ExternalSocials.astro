@@ -1,11 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
-import Link from "@/components/common/Link.astro";
-import { objectEntries } from "@/lib/utils";
-
-import { SOCIAL } from "@/consts";
 
 import type { StyledProps } from "@/types";
+
+import Link from "@/components/common/Link.astro";
+
+import { socialRegistry } from "@/consts";
+import { objectEntries } from "@/lib/utils";
 
 interface Props extends StyledProps {}
 
@@ -17,7 +18,7 @@ const { class: className = "", style: styleAttr = "" } = Astro.props;
   style={styleAttr}
 >
   {
-    objectEntries(SOCIAL).map(([key, link]) => (
+    objectEntries(socialRegistry).map(([_, link]) => (
       <li>
         <Link href={link.href} class="btn icon">
           <Icon name={link.icon} />

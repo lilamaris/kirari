@@ -1,4 +1,5 @@
-import type { Theme } from "@/types";
+import { routeRegistry, themeConfig } from "@/consts";
+import type { RouteEnum, Theme } from "@/types";
 
 export const objectKeys = <T extends object>(obj: T) =>
   Object.keys(obj) as (keyof T)[];
@@ -35,6 +36,11 @@ export const createUrl = (path: string) => {
   return joinUrl("", import.meta.env.BASE_URL, path);
 };
 
+export const createRouteUrl = (route: RouteEnum, path?: string): string => {
+  const baseUrl = routeRegistry[route].href;
+  return joinUrl(baseUrl, ...(path != undefined ? [path] : []));
+};
+
 export const formatDate = (date: Date) => {
   return Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -44,10 +50,9 @@ export const formatDate = (date: Date) => {
 };
 
 export const getTheme = (): Theme => {
-  // TODO: Read default theme from site config
-  const fallback = "light";
+  const fallback = themeConfig.initialTheme;
   const storedTheme = localStorage.getItem("theme") as Theme;
-  return storedTheme || fallback;
+  return storedTheme ?? fallback;
 };
 
 export const setTheme = (theme: Theme) => {
@@ -56,10 +61,9 @@ export const setTheme = (theme: Theme) => {
 };
 
 export const getHue = (): number => {
-  // TODO: Read default hue from site config
-  const fallback = "250";
+  const fallback = themeConfig.initialHue;
   const storedHue = localStorage.getItem("hue");
-  return Number.parseInt(storedHue ?? fallback);
+  return storedHue != null ? Number.parseInt(storedHue) : fallback;
 };
 
 export const setHue = (hue: number): void => {
