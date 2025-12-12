@@ -1,4 +1,4 @@
-import { routeRegistry, themeConfig } from "@/consts";
+import { route, routeRegistry, themeConfig } from "@/consts";
 import type { RouteEnum, Theme } from "@/types";
 
 export const objectKeys = <T extends object>(obj: T) =>
@@ -21,9 +21,26 @@ export const toStyleVars = (vars: Record<string, string | number>): string =>
     .map(([k, v]) => `--${k}:${typeof v === "number" ? `${v}rem` : v};`)
     .join("");
 
-export const splitUrl = (path: string): string[] => {
-  const ROOT = "root";
-  const part = path.split("/").filter((part) => !!part.trim());
+export interface SplitUrlOptions {
+  includeSeparator: boolean;
+  rootName: string;
+}
+const defaultSplitUrlOptions: SplitUrlOptions = {
+  includeSeparator: false,
+  rootName: route.Root,
+};
+
+export const splitUrl = (
+  path: string,
+  options?: Partial<SplitUrlOptions>,
+): string[] => {
+  const opts = { ...defaultSplitUrlOptions, ...options };
+  const ROOT = opts.rootName;
+  const separator = "/";
+  const pattern = opts.includeSeparator
+    ? new RegExp(`(?=${separator})`)
+    : `${separator}`;
+  const part = path.split(pattern).filter((part) => !!part.trim());
   return !!part.length ? part : [ROOT];
 };
 
