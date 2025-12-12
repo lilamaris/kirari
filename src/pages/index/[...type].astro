@@ -12,7 +12,6 @@ import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
 
 import { availableIndexType } from "@/types";
-import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
 
 export const getStaticPaths = (async () => {
   return [undefined, ...availableIndexType].map((type) => ({
@@ -39,37 +38,35 @@ const indexes = postIndex.map((index) => ({
       ),
   },
 }));
-
 ---
 
 <MainLayout>
-  <DefaultLeftAside slot="left-aside" />
-  <div>
-
-
-  <Decorator class="text-foreground" slot="header">
-    <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
-    <Breadcrumbs
-      class:list={["flex items-center"]}
-      url={Astro.url.pathname}
-      renderer={Breadcrumb}
-    >
-      <Icon name="lucide:chevron-right" slot="separator" />
-    </Breadcrumbs>
-  </Decorator>
-  {
-    indexes.map((index) => (
-        <Decorator class="text-foreground" slot="left-aside">
-          <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco" />
-          <h1 class="text-foreground text-lg">{index.data.name}</h1>
-        </Decorator>
-        <PostList
-          class:list={["flex flex-col gap-2"]}
-          items={index.data.items}
-          renderer={PostItem}
-        />
-    ))
-  }
-
+  <div class="space-y-6">
+    <Decorator class="text-foreground" slot="header">
+      <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+      <Breadcrumbs
+        class:list={["flex items-center"]}
+        url={Astro.url.pathname}
+        renderer={Breadcrumb}
+      >
+        <Icon name="lucide:chevron-right" slot="separator" />
+      </Breadcrumbs>
+    </Decorator>
+    {
+      indexes.map((index, i) => (
+        <div class="space-y-2">
+          <Decorator class="text-foreground" slot="left-aside">
+            <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco" />
+            <h1 class="text-foreground text-lg">{index.data.name}</h1>
+          </Decorator>
+          <PostList
+            class:list={["flex flex-col gap-2"]}
+            style={`--initialDelay: ${i * 150}ms`}
+            items={index.data.items}
+            renderer={PostItem}
+          />
+        </div>
+      ))
+    }
   </div>
 </MainLayout>

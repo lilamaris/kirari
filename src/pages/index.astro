@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
-import PageSection from "@/layouts/PageSection.astro";
 
 import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
@@ -10,7 +9,6 @@ import Link from "@/components/common/Link.astro";
 
 import { ROUTE, APPEARANCE } from "@/consts";
 import { joinUrl } from "@/lib/utils";
-import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
 
 const recentPosts = (await getCollection("posts")).slice(
   0,
@@ -19,8 +17,6 @@ const recentPosts = (await getCollection("posts")).slice(
 ---
 
 <MainLayout>
-  <DefaultLeftAside slot="left-aside" />
-
   <div>
     <PostList
       class:list={["space-y-2"]}

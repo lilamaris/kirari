@@ -3,37 +3,36 @@ import Base from "@/layouts/Base.astro";
 
 import Navigation from "@/components/ui/Navigation.astro";
 import Footer from "@/components/ui/Footer.astro";
-import Img from "@/components/common/Img.astro";
+import Author from "@/components/ui/Author.astro";
+import CategoryList from "@/components/ui/CategoryList.astro";
+import TagList from "@/components/ui/TagList.astro";
 
 import { APPEARANCE } from "@/consts";
 import { toStyleVars } from "@/lib/utils";
+import Img from "@/components/common/Img.astro";
 
 const {
   contentWidth,
   navigationHeight,
   bannerHeight,
   bannerExtend,
-  bannerSrc,
+  bannerUrl,
   asideWidth,
 } = APPEARANCE;
 
 const pageWidth = contentWidth + 2 * asideWidth;
+const asideGap = 0.5; // rem
+const asideOffset = navigationHeight + asideGap;
 ---
 
 <Base>
   <div
     class="anim-banner-entering transition-page-banner absolute h-full dark:mask-b-from-10%"
   >
-    <Img class="h-full" src={bannerSrc} alt="banner" />
+    <Img class="h-full" src={bannerUrl} alt="banner" />
   </div>
 
-  <Navigation
-    class:list={[
-      "anim-navigation-entering sticky top-0 z-50",
-      "h-[var(--navigationHeight)]",
-    ]}
-    style={toStyleVars({ navigationHeight })}
-  />
+  <Navigation class="anim-navigation-entering fixed top-0 z-50" />
   <Footer class="fixed right-0 bottom-0 text-sm" />
 
   <main
@@ -45,17 +44,33 @@ const pageWidth = contentWidth + 2 * asideWidth;
         "mx-auto grid gap-2 px-2",
         "max-w-[var(--pageWidth)] grid-cols-[minmax(0px,var(--asideWidth)))_var(--contentWidth)_minmax(0px,var(--asideWidth))]",
       ]}
-      style={toStyleVars({ pageWidth, asideWidth, contentWidth })}
+      style={toStyleVars({
+        pageWidth,
+        asideWidth,
+        asideOffset,
+        contentWidth,
+        navigationHeight,
+      })}
     >
-      <aside class:list={[]}>
-        <slot name="left-aside" />
+      <aside>
+        <div class="sticky top-[var(--asideOffset)]">
+          <slot name="left-aside">
+            <div class="space-y-2">
+              <Author />
+              <CategoryList />
+              <TagList />
+            </div>
+          </slot>
+        </div>
       </aside>
       <div class="transition-swup-page">
         <slot />
       </div>
 
-      <aside class="">
-        <slot name="right-aside" />
+      <aside class="transition-swup-page">
+        <div class="sticky top-[var(--asideOffset)]">
+          <slot name="right-aside" />
+        </div>
       </aside>
     </div>
   </main>

@@ -9,7 +9,6 @@ import Breadcrumb from "@/components/ui/Breadcrumb.astro";
 import PostList from "@/components/ui/post/PostList.astro";
 import PostItem from "@/components/ui/post/PostItem.astro";
 import { Icon } from "astro-icon/components";
-import DefaultLeftAside from "@/components/ui/DefaultLeftAside.astro";
 
 export const getStaticPaths = (async () => {
   const indexes = await getCollection("postIndex");
@@ -27,8 +26,7 @@ const posts = await getCollection("posts", (post) =>
 ---
 
 <MainLayout>
-  <DefaultLeftAside slot="left-aside" />
-  <div>
+  <div class="space-y-2">
     <Decorator class="text-foreground">
       <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
       <Breadcrumbs
