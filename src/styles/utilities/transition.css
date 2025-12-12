@@ -59,9 +59,26 @@
   .anim-main-entering {
     --direction: 2rem;
     animation:
-      fade-in 400ms ease,
-      emergeFrom 400ms ease;
+      fade-in 400ms ease-out,
+      emergeFrom 400ms ease-out;
     animation-fill-mode: forwards;
+  }
+
+  .anim-onload {
+    --direction: 2rem;
+    opacity: 0;
+    animation:
+      emergeFrom 200ms 0s,
+      fade-in 200ms 0s;
+    animation-fill-mode: forwards;
+  }
+
+  .anim-delay-sequence {
+    & > * {
+      --max: 300ms;
+      --delay: calc(var(--max) * (var(--i) / (var(--i) + 4)));
+      animation-delay: var(--delay);
+    }
   }
 
   html.is-changing .transition-swup-page {
