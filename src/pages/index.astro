@@ -15,7 +15,7 @@ const recentPosts = (await getCollection("posts")).slice(0, recentPostCount);
 <MainLayout>
   <PostList class:list={["space-y-2"]} posts={recentPosts} />
   <Link
-    class="btn text-foreground mx-auto mt-2 w-fit"
+    class="btn text-foreground mx-auto mt-2 w-fit px-2"
     data-variant="ghost"
     href={createRouteUrl("blog")}
   >

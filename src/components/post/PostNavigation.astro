@@ -31,8 +31,7 @@ const olderPost = olderPostRef
 >
   <Link
     href={olderPost ? `/blog/${olderPost?.id}` : "#"}
-    class:list={["btn group bg-surface flex", { disabled: !!!olderPost }]}
-    data-variant="outline"
+    class:list={["btn card group rounded-l-lg", { disabled: !!!olderPost }]}
   >
     <Icon
       class="mx-4 size-4 shrink-0 self-center transition-transform group-hover:-translate-x-2"
@@ -48,10 +47,9 @@ const olderPost = olderPostRef
   <Link
     href={newerPost ? `/blog/${newerPost?.id}` : "#"}
     class:list={[
-      "btn group bg-surface flex justify-end",
+      "btn card group justify-end rounded-r-lg",
       { disabled: !!!newerPost },
     ]}
-    data-variant="outline"
   >
     <div class="text-end">
       <div class="text-foreground/50 text-sm">Next Post</div>

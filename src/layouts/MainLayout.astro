@@ -10,7 +10,7 @@ import CategoryList from "@/components/index/CategoryList.astro";
 import TagList from "@/components/index/TagList.astro";
 
 import { layoutConfig, themeConfig } from "@/consts";
-import { toStyleVars } from "@/lib/utils";
+import { toInlineStyle, toStyleVars } from "@/lib/utils";
 
 const { bannerImgUrl } = themeConfig;
 const {
@@ -24,94 +24,101 @@ const {
 
 const pageWidth = contentWidth + 2 * (asideWidth + layoutGap);
 const asideOffset = navigationHeight + layoutGap;
+
+const bannerStyleVars = toStyleVars({
+  bannerHeight: `${bannerHeight}vh`,
+  bannerExtend: `${bannerExtend}vh`,
+});
+
+const layoutStyleVars = toStyleVars({
+  navigationHeight,
+  contentWidth,
+  asideWidth,
+  layoutGap,
+  pageWidth,
+  asideOffset,
+});
 ---
 
 <Base>
   <div
-    class="anim-banner-entering transition-page-banner absolute overflow-hidden dark:mask-b-from-10%"
-    style={toStyleVars({
-      bannerHeight: `${bannerHeight}vh`,
-      bannerExtend: `${bannerExtend}vh`,
-    })}
+    id="transition-banner"
+    class="anim-banner-entering transition-page-banner absolute mask-b-from-20%"
+    style={bannerStyleVars}
   >
-    <Img
-      id="banner"
-      class="pointer-events-none h-full select-none"
-      src={bannerImgUrl}
-      alt="banner"
-    />
+    <Img id="banner" class="h-full" src={bannerImgUrl} alt="banner" />
   </div>
 
   <Navigation class="anim-navigation-entering sticky top-0 z-50" />
 
   <main
-    class:list={["anim-main-entering transition-page-main relative"]}
-    style={toStyleVars({ ...layoutConfig, pageWidth, asideOffset })}
+    id="transition-main"
+    class:list={[
+      "anim-main-entering relative mx-auto grid p-0 sm:px-2",
+      "max-w-[var(--contentWidth)] grid-cols-1 xl:max-w-[var(--pageWidth)] xl:grid-cols-[var(--asideWidth)_1fr] xl:gap-[var(--layoutGap)]",
+    ]}
+    style={toInlineStyle([bannerStyleVars, layoutStyleVars])}
   >
+    <aside>
+      <slot name="left-aside h-full">
+        <div
+          class="anim-delay-sequence sticky top-[calc(var(--navigationHeight)_+_var(--layoutGap))] space-y-2"
+        >
+          <SiteProfile class="anim-onload" style="--i: 0" />
+          <AuthorProfile class="anim-onload" style="--i: 1" />
+          <CategoryList class="anim-onload hidden xl:block" style="--i: 2" />
+          <TagList class="anim-onload hidden xl:block" style="--i: 3" />
+        </div>
+      </slot>
+    </aside>
+
     <div
-      class:list={[
-        "mx-auto grid px-2",
-        "max-w-[var(--pageWidth)] grid-cols-[var(--asideWidth)_1fr] gap-[var(--layoutGap)]",
-      ]}
+      id="swup-target"
+      class="grid grid-cols-1 xl:grid-cols-[1fr_var(--asideWidth)] xl:gap-[var(--layoutGap)]"
     >
-      <aside>
-        <div class="sticky">
-          <slot name="left-aside">
-            <div class="anim-delay-sequence h-full space-y-2">
-              <SiteProfile class="anim-onload" style="--i: 0" />
-              <AuthorProfile class="anim-onload" style="--i: 1" />
-              <CategoryList class="anim-onload" style="--i: 2" />
-              <TagList class="anim-onload sticky top-0" style="--i: 3" />
-            </div>
-          </slot>
+      <section id="content-container" class="transition-swup-page">
+        <slot />
+        <Footer
+          class="anim-onload mt-8 py-5 text-center text-sm"
+          style={`--initialDelay: 350ms`}
+        />
+      </section>
+
+      <aside class="transition-swup-page hidden xl:block">
+        <div
+          class="sticky top-[calc(var(--navigationHeight)_+_var(--layoutGap))]"
+        >
+          <slot name="right-aside" />
         </div>
       </aside>
-
-      <div
-        id="swup-target"
-        class="grid grid-cols-[1fr_var(--asideWidth)] gap-[var(--layoutGap)]"
-      >
-        <section class="transition-swup-page">
-          <slot />
-          <Footer
-            class="anim-onload mt-8 py-5 text-center text-sm"
-            style={`--initialDelay: 350ms`}
-          />
-        </section>
-
-        <aside class="transition-swup-page">
-          <div class="sticky">
-            <slot name="right-aside" />
-          </div>
-        </aside>
-      </div>
     </div>
   </main>
 
   <style>
     @import "tailwindcss";
-    .transition-page-banner {
-      @apply h-[var(--height)] -translate-y-[var(--offset)] transition-all duration-600;
+    #transition-banner {
+      @apply h-[var(--height)] -translate-y-[var(--offset)] transition-[height,translate] duration-600;
     }
-    .transition-page-main {
-      @apply translate-y-[var(--offset)] transition-all duration-600;
+    #transition-main {
+      @apply top-[var(--offset)] transition-[top] duration-600;
     }
+
     html {
       &[data-baseloc="root"] {
-        .transition-page-banner {
+        #transition-banner {
           --offset: 0;
           --height: calc(var(--bannerHeight) + var(--bannerExtend));
         }
-        .transition-page-main {
+        #transition-main {
           --offset: calc(var(--bannerHeight));
         }
       }
       &:not([data-baseloc="root"]) {
-        .transition-page-banner {
+        #transition-banner {
           --offset: var(--bannerExtend);
           --height: var(--bannerHeight);
         }
-        .transition-page-main {
+        #transition-main {
           --offset: calc(var(--bannerExtend));
         }
       }

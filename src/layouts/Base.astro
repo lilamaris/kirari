@@ -7,25 +7,15 @@ import { siteConfig } from "@/consts";
   <head>
     <script is:inline type="module" src="/src/lib/swup.js"></script>
     <script is:inline>
-      function getBaseUrl() {
-        const path = window.location.pathname;
-        const parts = path.split("/").filter(Boolean);
-        const base = parts.length > 0 ? parts[0] : "root";
-        return base;
-      }
+      const path = window.location.pathname;
+      const parts = path.split("/").filter(Boolean);
+      const base = parts.length > 0 ? parts[0] : "root";
+      document.documentElement.setAttribute("data-baseloc", base);
 
-      function getHue() {
-        const hue = localStorage.getItem("hue") || "250";
-        return hue;
-      }
-      function getTheme() {
-        const theme = localStorage.getItem("theme") || "light";
-        return theme;
-      }
-
-      document.documentElement.style.setProperty("--hue", getHue());
-      document.documentElement.setAttribute("data-baseloc", getBaseUrl());
-      document.documentElement.setAttribute("data-theme", getTheme());
+      const hue = localStorage.getItem("hue") || "250";
+      document.documentElement.style.setProperty("--hue", hue);
+      const theme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", theme);
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

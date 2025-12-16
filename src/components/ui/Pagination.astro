@@ -25,46 +25,48 @@ const {
 } = Astro.props;
 ---
 
-<div class:list={className} style={styleAttr}>
-  {
-    !compact && (
-      <Link
-        href={first}
-        class:list={["btn icon", !!!first && "disabled"]}
-        data-variant="ghost"
-      >
-        <Icon name="lucide:chevrons-left" />
-      </Link>
-    )
-  }
-  <Link
-    href={prev}
-    class:list={["btn icon", !!!prev && "disabled"]}
-    data-variant="ghost"
-  >
-    <Icon name="lucide:chevron-left" />
-  </Link>
-  {
-    !compact && (
-      <span class="text-foreground px-2 text-sm font-medium">{current}</span>
-    )
-  }
-  <Link
-    href={next}
-    class:list={["btn icon", !!!next && "disabled"]}
-    data-variant="ghost"
-  >
-    <Icon name="lucide:chevron-right" />
-  </Link>
-  {
-    !compact && (
-      <Link
-        href={last}
-        class:list={["btn icon", !!!last && "disabled"]}
-        data-variant="ghost"
-      >
-        <Icon name="lucide:chevrons-right" />
-      </Link>
-    )
-  }
-</div>
+{
+  !compact && (
+    <Link
+      href={first}
+      class:list={[className, "btn icon", !!!first && "disabled"]}
+      style={styleAttr}
+      data-variant="ghost"
+    >
+      <Icon name="lucide:chevrons-left" />
+    </Link>
+  )
+}
+<Link
+  href={prev}
+  class:list={[className, "btn icon", !!!prev && "disabled"]}
+  style={styleAttr}
+  data-variant="ghost"
+>
+  <Icon name="lucide:chevron-left" />
+</Link>
+{
+  !compact && (
+    <span class="text-foreground px-2 text-sm font-medium">{current}</span>
+  )
+}
+<Link
+  href={next}
+  class:list={[className, "btn icon", !!!next && "disabled"]}
+  style={styleAttr}
+  data-variant="ghost"
+>
+  <Icon name="lucide:chevron-right" />
+</Link>
+{
+  !compact && (
+    <Link
+      href={last}
+      class:list={[className, "btn icon", !!!last && "disabled"]}
+      style={styleAttr}
+      data-variant="ghost"
+    >
+      <Icon name="lucide:chevrons-right" />
+    </Link>
+  )
+}

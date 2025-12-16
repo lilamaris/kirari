@@ -22,7 +22,11 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 if (!images[src]) throw new Error(`"${src}" does not exists`);
 ---
 
-<div id={id} class:list={[className]} style={styleAttr}>
+<div
+  id={id}
+  class:list={[className, "pointer-events-none overflow-hidden select-none"]}
+  style={styleAttr}
+>
   <Image
     src={images[src]()}
     alt={alt || ""}
