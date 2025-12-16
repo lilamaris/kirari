@@ -62,7 +62,7 @@
     }
 
     :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-      @apply text-foreground decoration-accent-foreground hover:decoration-foreground font-medium break-words underline underline-offset-[3px] transition-colors;
+      @apply text-foreground decoration-accent hover:decoration-foreground font-medium break-words underline underline-offset-[3px] transition-colors;
     }
 
     :where(strong):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
@@ -113,7 +113,7 @@
 
     :where(th):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
       @apply px-4 py-2 font-medium;
-      @apply text-accent-foreground text-left [&[align=center]]:text-center [&[align=right]]:text-right;
+      @apply text-accent text-left [&[align=center]]:text-center [&[align=right]]:text-right;
     }
 
     :where(tr):not(:where([class~="not-prose"], [class~="not-prose"] *)) {

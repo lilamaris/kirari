@@ -3,7 +3,8 @@ import { splitUrl } from "./utils";
 
 const setBaseUrlToDocument = () => {
   const path = window.location.pathname;
-  const base = splitUrl(path)[0];
+  const parts = splitUrl(path, { includeRoot: false });
+  const base = parts.length > 0 ? parts[0] : "";
   document.documentElement.setAttribute("data-baseloc", base);
 };
 

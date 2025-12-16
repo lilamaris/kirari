@@ -5,7 +5,7 @@
   --hover-background: oklch(from var(--background) calc(l + 0.03) c h / 100%);
   --active-background: oklch(from var(--background) calc(l + 0.01) c h / 100%);
 
-  @apply rounded-select flex items-center justify-center bg-[var(--background)] px-2 py-1 transition select-none;
+  @apply rounded-select flex items-center justify-center bg-[var(--background)] py-1 transition select-none;
 
   &:is(:hover, :focus-visible) {
     @apply bg-[var(--hover-background)];

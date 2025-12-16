@@ -1,37 +1,24 @@
-import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import type { CollectionEntry } from "astro:content";
-import type { indexType, route, social } from "./consts";
+import type {
+  indexType,
+  routes,
+  socials,
+  theme,
+  thumbnailOption,
+} from "./consts";
 
 export type Post = CollectionEntry<"posts">;
 export type PostIndex = CollectionEntry<"postIndex">;
-export type AstroComponentWithProps<P> = AstroComponentFactory &
-  ((
-    result: any,
-    props: P,
-    slots: Record<string, any>,
-  ) => AsyncGenerator<string | void | unknown>);
 
-export const theme = ["light", "dark", "system"] as const;
-export type Theme = (typeof theme)[number];
-export const availableIndexType = [
-  "publishedYear",
-  "categories",
-  "tags",
-  "series",
-] as const;
-
-export type AvailableIndexType = (typeof availableIndexType)[number];
+export type ThemeEnum = (typeof theme)[keyof typeof theme];
+export type IndexEnum = (typeof indexType)[keyof typeof indexType];
+export type ThumbnailOptionEnum =
+  (typeof thumbnailOption)[keyof typeof thumbnailOption];
 
 export interface StyledProps {
   class?: string;
   "class:list"?: string[];
   style?: string;
-}
-
-export interface Breadcrumb {
-  href: string;
-  name: string;
-  isLast: boolean;
 }
 
 export interface SiteConfig {
@@ -45,6 +32,7 @@ export interface SiteConfig {
 export interface ThemeConfig {
   initialHue: number;
   initialTheme: ThemeEnum;
+  thumbnailOption: ThumbnailOptionEnum;
   enableBanner: boolean;
   enableHueControl: boolean;
   enableThemeControl: boolean;
@@ -53,6 +41,7 @@ export interface ThemeConfig {
   siteIconUrl: string;
   avatarImgUrl: string;
   bannerImgUrl: string;
+  thumbnailFallbackImgUrl: string;
 }
 
 export interface LayoutConfig {
@@ -64,22 +53,19 @@ export interface LayoutConfig {
   layoutGap: number;
 }
 
-export type RouteEnum = (typeof route)[keyof typeof route];
-export type ThemeEnum = (typeof theme)[keyof typeof theme];
-export type IndexEnum = (typeof indexType)[keyof typeof indexType];
-export type SocialEnum = (typeof social)[keyof typeof social];
-
+export type Route = keyof typeof routes;
 export interface RouteMeta {
   href: string;
   label: string;
   icon?: string;
 }
 
+export type Social = keyof typeof socials;
 export interface SocialMeta {
   href: string;
   label: string;
   icon: string;
 }
 
-export type RouteRegistry = Record<RouteEnum, RouteMeta>;
-export type SocialRegistry = Record<SocialEnum, SocialMeta>;
+export type RouteRegistry = Record<Route, RouteMeta>;
+export type SocialRegistry = Record<Social, SocialMeta>;

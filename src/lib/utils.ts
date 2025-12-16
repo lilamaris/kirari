@@ -1,5 +1,5 @@
-import { route, routeRegistry, themeConfig } from "@/consts";
-import type { RouteEnum, Theme } from "@/types";
+import { routes, themeConfig } from "@/consts";
+import type { Route, RouteMeta, ThemeEnum } from "@/types";
 
 export const objectKeys = <T extends object>(obj: T) =>
   Object.keys(obj) as (keyof T)[];
@@ -23,11 +23,13 @@ export const toStyleVars = (vars: Record<string, string | number>): string =>
 
 export interface SplitUrlOptions {
   includeSeparator: boolean;
+  includeRoot: boolean;
   rootName: string;
 }
 const defaultSplitUrlOptions: SplitUrlOptions = {
   includeSeparator: false,
-  rootName: route.Root,
+  includeRoot: true,
+  rootName: "root",
 };
 
 export const splitUrl = (
@@ -41,7 +43,7 @@ export const splitUrl = (
     ? new RegExp(`(?=${separator})`)
     : `${separator}`;
   const part = path.split(pattern).filter((part) => !!part.trim());
-  return !!part.length ? part : [ROOT];
+  return [...(opts.includeRoot ? [ROOT] : []), ...part];
 };
 
 export const joinUrl = (...parts: string[]) => {
@@ -53,8 +55,8 @@ export const createUrl = (path: string) => {
   return joinUrl("", import.meta.env.BASE_URL, path);
 };
 
-export const createRouteUrl = (route: RouteEnum, path?: string): string => {
-  const baseUrl = routeRegistry[route].href;
+export const createRouteUrl = (route: Route, path?: string): string => {
+  const baseUrl = routes[route]?.href ?? "/";
   return joinUrl(baseUrl, ...(path != undefined ? [path] : []));
 };
 
@@ -66,13 +68,13 @@ export const formatDate = (date: Date) => {
   }).format(date);
 };
 
-export const getTheme = (): Theme => {
+export const getTheme = (): ThemeEnum => {
   const fallback = themeConfig.initialTheme;
-  const storedTheme = localStorage.getItem("theme") as Theme;
+  const storedTheme = localStorage.getItem("theme") as ThemeEnum;
   return storedTheme ?? fallback;
 };
 
-export const setTheme = (theme: Theme) => {
+export const setTheme = (theme: ThemeEnum) => {
   localStorage.setItem("theme", theme);
   document.documentElement.setAttribute("data-theme", theme);
 };
