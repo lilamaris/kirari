@@ -3,9 +3,9 @@ import { getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
 import Link from "@/components/common/Link.astro";
-import PostList from "@/components/ui/post/PostList.astro";
+import PostList from "@/components/post/PostList.astro";
 
-import { route, themeConfig } from "@/consts";
+import { themeConfig } from "@/consts";
 import { createRouteUrl } from "@/lib/utils";
 
 const { recentPostCount } = themeConfig;
@@ -13,12 +13,12 @@ const recentPosts = (await getCollection("posts")).slice(0, recentPostCount);
 ---
 
 <MainLayout>
-  <div>
-    <PostList class:list={["space-y-2"]} posts={recentPosts} />
-    <Link
-      class="btn text-foreground mx-auto mt-2 w-fit"
-      data-variant="ghost"
-      href={createRouteUrl(route.Blog)}>See more blogs</Link
-    >
-  </div>
+  <PostList class:list={["space-y-2"]} posts={recentPosts} />
+  <Link
+    class="btn text-foreground mx-auto mt-2 w-fit"
+    data-variant="ghost"
+    href={createRouteUrl("blog")}
+  >
+    See more blogs
+  </Link>
 </MainLayout>

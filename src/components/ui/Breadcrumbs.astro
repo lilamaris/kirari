@@ -21,12 +21,12 @@ const url = Astro.url.pathname;
 
 let cumulative = "";
 
-const parts = splitUrl(url, { includeSeparator: true });
+const parts = splitUrl(url, { includeRoot: false });
 const crumbs = parts.map((path, i) => {
-  cumulative += path;
+  cumulative += `/${path}`;
   return {
     href: cumulative,
-    name: path,
+    name: decodeURI(path),
     isLast: i + 1 == parts.length,
   };
 });

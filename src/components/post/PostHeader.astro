@@ -1,0 +1,42 @@
+---
+import type { Post, StyledProps } from "@/types";
+
+import Img from "@/components/common/Img.astro";
+import MetadataIndicator from "@/components/post/MetadataIndicator.astro";
+
+import { themeConfig } from "@/consts";
+import { render } from "astro:content";
+
+interface Props extends StyledProps {
+  post: Post;
+}
+
+const { thumbnailFallbackImgUrl } = themeConfig;
+const { post, class: className = "", style: styleAttr = "" } = Astro.props;
+const { title, description, published, categories, image } = post.data;
+const { remarkPluginFrontmatter } = await render(post);
+const thumbnailUrl = post.data.image?.src ?? thumbnailFallbackImgUrl;
+const { minutes, words } = remarkPluginFrontmatter;
+---
+
+<div class:list={[className, ""]} style={styleAttr}>
+  <Img src={thumbnailUrl} class="rounded-surface h-60 overflow-hidden" />
+  <div
+    class="border-border rounded-surface my-4 h-1 w-full translate-y-1 border-b-4 border-dashed"
+  >
+  </div>
+  <div class="flex flex-col items-center space-y-4">
+    <h1 class="group-hover:text-accent text-3xl font-medium">
+      {title}
+    </h1>
+    <p class="text-foreground/70 line-clamp-2 text-sm">
+      {description}
+    </p>
+    <MetadataIndicator
+      class=""
+      published={published}
+      category={categories}
+      readTimeMinute={minutes}
+    />
+  </div>
+</div>

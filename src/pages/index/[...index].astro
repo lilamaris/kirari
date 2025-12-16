@@ -5,7 +5,7 @@ import { getCollection } from "astro:content";
 import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
-import PostList from "@/components/ui/post/PostList.astro";
+import PostList from "@/components/post/PostList.astro";
 
 export const getStaticPaths = (async () => {
   const indexes = await getCollection("postIndex");
@@ -25,10 +25,10 @@ const posts = await getCollection("posts", (post) =>
 <MainLayout>
   <div class="space-y-2">
     <Decorator class="text-foreground">
-      <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+      <span class="bg-accent mr-2 h-4 w-0.5" slot="deco"></span>
       <Breadcrumbs />
     </Decorator>
 
-    <PostList class:list={["flex flex-col gap-2"]} posts={posts} />
+    <PostList posts={posts} />
   </div>
 </MainLayout>

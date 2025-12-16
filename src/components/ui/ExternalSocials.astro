@@ -5,7 +5,7 @@ import type { StyledProps } from "@/types";
 
 import Link from "@/components/common/Link.astro";
 
-import { socialRegistry } from "@/consts";
+import { socials } from "@/consts";
 import { objectEntries } from "@/lib/utils";
 
 interface Props extends StyledProps {}
@@ -18,7 +18,7 @@ const { class: className = "", style: styleAttr = "" } = Astro.props;
   style={styleAttr}
 >
   {
-    objectEntries(socialRegistry).map(([_, link]) => (
+    objectEntries(socials).map(([_, link]) => (
       <li>
         <Link href={link.href} class="btn icon">
           <Icon name={link.icon} />
