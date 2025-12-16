@@ -1,10 +1,8 @@
 import { type MarkdownInstance } from "astro";
 import { glob, type Loader } from "astro/loaders";
-import {
-  availableIndexType,
-  type AvailableIndexType,
-  type Post,
-} from "@/types";
+import { type IndexEnum, type Post } from "@/types";
+import { indexType } from "@/consts";
+import { objectKeys, objectValues } from "./utils";
 
 const globWithLoader = (
   options: Parameters<typeof glob>[0],
@@ -103,7 +101,7 @@ export const postIndexLoader: Loader = {
       string,
       { type: string; name: string; items: string[] }
     >;
-    const buckets: Record<AvailableIndexType, IndexBucket> = {
+    const buckets: Record<IndexEnum, IndexBucket> = {
       publishedYear: new Map(),
       tags: new Map(),
       categories: new Map(),
@@ -111,7 +109,7 @@ export const postIndexLoader: Loader = {
     };
 
     for (const post of visible) {
-      for (const key of availableIndexType) {
+      for (const key of objectValues(indexType)) {
         const values: string[] = Array.isArray(post[key])
           ? post[key]
           : [post[key]];
@@ -127,7 +125,7 @@ export const postIndexLoader: Loader = {
     }
 
     await Promise.all(
-      availableIndexType.flatMap((key) =>
+      objectValues(indexType).flatMap((key) =>
         [...buckets[key].entries()].map(async ([id, { type, name, items }]) => {
           const unique = [...new Set(items)];
           const data = await parseData({
