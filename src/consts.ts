@@ -24,8 +24,8 @@ export const themeConfig: ThemeConfig = {
 };
 
 export const layoutConfig: LayoutConfig = {
-  bannerHeight: 30,
-  bannerExtend: 20,
+  bannerHeight: 40,
+  bannerExtend: 10,
   navigationHeight: 3,
   contentWidth: 45,
   asideWidth: 16,

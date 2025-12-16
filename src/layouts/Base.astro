@@ -1,16 +1,19 @@
 ---
 import "@/styles/global.css";
 import { siteConfig } from "@/consts";
-import { splitUrl } from "@/lib/utils";
-
-const path = Astro.url.pathname;
-const base = splitUrl(path)[0];
 ---
 
 <html lang={siteConfig.lang}>
   <head>
     <script is:inline type="module" src="/src/lib/swup.js"></script>
-    <script is:inline define:vars={{ base }}>
+    <script is:inline>
+      function getBaseUrl() {
+        const path = window.location.pathname;
+        const parts = path.split("/").filter(Boolean);
+        const base = parts.length > 0 ? parts[0] : "root";
+        return base;
+      }
+
       function getHue() {
         const hue = localStorage.getItem("hue") || "250";
         return hue;
@@ -21,7 +24,7 @@ const base = splitUrl(path)[0];
       }
 
       document.documentElement.style.setProperty("--hue", getHue());
-      document.documentElement.setAttribute("data-baseloc", base);
+      document.documentElement.setAttribute("data-baseloc", getBaseUrl());
       document.documentElement.setAttribute("data-theme", getTheme());
     </script>
     <meta charset="UTF-8" />

@@ -3,8 +3,9 @@ import type { GetStaticPaths } from "astro";
 import { render, getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
-
-import TableOfContents from "@/components/ui/post/TableOfContents.astro";
+import TableOfContents from "@/components/post/TableOfContents.astro";
+import PostHeader from "@/components/post/PostHeader.astro";
+import PostNavigation from "@/components/post/PostNavigation.astro";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
@@ -16,14 +17,33 @@ export const getStaticPaths = (async () => {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
+const { olderPostRef, newerPostRef } = post.data;
 ---
 
 <MainLayout>
-  <div class="card bg-surface/80 max-w-[var(--contentWidth)] px-8">
-    <div class="anim-onload card">METADATA</div>
-    <div class="anim-onload prose">
-      <Content />
+  <div class="anim-delay-sequence space-y-2">
+    <PostNavigation
+      class="anim-onload"
+      style="--i: 0"
+      olderPostRef={olderPostRef}
+      newerPostRef={newerPostRef}
+    />
+    <div class="card space-y-2 p-4">
+      <PostHeader post={post} class="anim-onload" style="--i: 1" />
     </div>
+    <article
+      class="anim-onload card prose max-w-[var(--contentWidth)] px-5"
+      style="--i: 2"
+    >
+      <Content />
+    </article>
+
+    <PostNavigation
+      class="anim-onload"
+      style="--i: 3"
+      olderPostRef={olderPostRef}
+      newerPostRef={newerPostRef}
+    />
   </div>
   <TableOfContents
     headings={headings}

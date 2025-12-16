@@ -44,7 +44,11 @@ const {
   >
     <Icon name="lucide:chevron-left" />
   </Link>
-  {!compact && <span class="px-2 text-sm font-medium">{current}</span>}
+  {
+    !compact && (
+      <span class="text-foreground px-2 text-sm font-medium">{current}</span>
+    )
+  }
   <Link
     href={next}
     class:list={["btn icon", !!!next && "disabled"]}

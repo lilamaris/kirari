@@ -3,10 +3,12 @@ import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
-import PostList from "@/components/ui/post/PostList.astro";
+import Link from "@/components/common/Link.astro";
 import Pagination from "@/components/ui/Pagination.astro";
+import PostItem from "@/components/post/PostItem.astro";
 
 import { themeConfig } from "@/consts";
+import { createRouteUrl } from "@/lib/utils";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts");
@@ -14,13 +16,25 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const posts = page.data;
 ---
 
 <MainLayout>
-  <div class="text-foreground">
-    <PostList class:list={["space-y-2"]} posts={page.data} />
+  <div class="space-y-2">
+    <ul class="anim-delay-sequence space-y-2">
+      {
+        posts.map((post, index) => (
+          <li class="anim-onload" style={`--i: ${index}`}>
+            <Link href={createRouteUrl("blog", post.id)}>
+              <PostItem post={post} />
+            </Link>
+          </li>
+        ))
+      }
+    </ul>
     <Pagination
-      class:list={["mt-2 flex items-center justify-center gap-0.5"]}
+      class="anim-onload flex items-center justify-center gap-0.5"
+      style="--initialDelay: 300ms"
       current={page.currentPage}
       prev={page.url.prev}
       next={page.url.next}
