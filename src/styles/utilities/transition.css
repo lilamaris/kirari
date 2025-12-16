@@ -71,14 +71,15 @@
       emergeFrom 200ms 0s,
       fade-in 200ms 0s;
     animation-fill-mode: forwards;
+    animation-delay: var(--initialDelay);
   }
 
   .anim-delay-sequence {
     & > * {
-      --start: var(--initialDelay, 0ms);
       --max: 300ms;
       --delay: calc(var(--max) * (var(--i) / (var(--i) + 4)));
-      animation-delay: calc(var(--start) + var(--delay));
+      --offsetDelay: calc(var(--initialDelay, 0ms) + var(--delay));
+      animation-delay: var(--offsetDelay);
     }
   }
 

@@ -1,10 +1,4 @@
-import type {
-  LayoutConfig,
-  RouteRegistry,
-  SiteConfig,
-  SocialRegistry,
-  ThemeConfig,
-} from "./types";
+import type { LayoutConfig, SiteConfig, ThemeConfig } from "./types";
 
 export const siteConfig: SiteConfig = {
   title: "Kirari",
@@ -17,31 +11,26 @@ export const siteConfig: SiteConfig = {
 export const themeConfig: ThemeConfig = {
   initialHue: 200,
   initialTheme: "system",
+  thumbnailOption: "static",
   enableBanner: true,
   enableHueControl: true,
   enableThemeControl: true,
-  recentPostCount: 5,
-  postPerPage: 10,
+  recentPostCount: 4,
+  postPerPage: 5,
   siteIconUrl: "/src/assets/demo-icon.png",
   avatarImgUrl: "/src/assets/demo-profile.jpg",
-  bannerImgUrl: "/src/assets/demo-banner2.jpg",
+  bannerImgUrl: "/src/assets/demo-banner.jpg",
+  thumbnailFallbackImgUrl: "/src/assets/demo-thumnail.png",
 };
 
 export const layoutConfig: LayoutConfig = {
   bannerHeight: 30,
-  bannerExtend: 10,
+  bannerExtend: 20,
   navigationHeight: 3,
   contentWidth: 45,
   asideWidth: 16,
   layoutGap: 0.5,
 };
-
-export const route = {
-  Root: "root",
-  Blog: "blog",
-  Index: "index",
-  About: "about",
-} as const;
 
 export const theme = {
   Light: "light",
@@ -56,16 +45,16 @@ export const indexType = {
   Series: "series",
 } as const;
 
-export const social = {
-  GitHub: "github",
-  Twitter: "twitter",
-  Steam: "steam",
+export const thumbnailOption = {
+  None: "none",
+  Static: "static",
+  Image: "image",
 } as const;
 
-export const routeRegistry: RouteRegistry = {
+export const routes = {
   root: {
     href: "/",
-    label: "/Kirari",
+    label: "/Home",
   },
   blog: {
     href: "/blog",
@@ -79,9 +68,9 @@ export const routeRegistry: RouteRegistry = {
     href: "/about",
     label: "/About",
   },
-};
+} as const;
 
-export const socialRegistry: SocialRegistry = {
+export const socials = {
   github: {
     href: "https://github.com/lilamaris",
     label: "Github",
@@ -97,4 +86,4 @@ export const socialRegistry: SocialRegistry = {
     label: "Steam",
     icon: "fa6-brands:steam",
   },
-};
+} as const;
