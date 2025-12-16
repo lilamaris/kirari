@@ -16,29 +16,33 @@ const { thumbnailFallbackImgUrl } = themeConfig;
 const { post, class: className = "", style: styleAttr = "" } = Astro.props;
 const { remarkPluginFrontmatter } = await render(post);
 const { title, description, published, categories, image } = post.data;
-const readtime = remarkPluginFrontmatter.readTime;
+const { minutes, words } = remarkPluginFrontmatter;
 ---
 
 <div
   class:list={[
     className,
-    "card bg-surface/70 text-foreground hover:bg-surface active:bg-surface/50 group flex items-center space-x-4 p-4 transition",
+    "card bg-surface/70 text-foreground hover:bg-surface active:bg-surface/50 group grid items-center gap-2 p-4 transition sm:grid-cols-[40%_1fr_auto]",
   ]}
   style={styleAttr}
 >
   <Img
     src={image?.src ?? thumbnailFallbackImgUrl}
-    class="rounded-surface aspect-video w-60 shrink-0 overflow-hidden"
+    class="rounded-surface hidden aspect-video w-full overflow-hidden sm:block"
   />
-  <div class="flex-1 self-start">
+  <div class="self-start px-2">
     <h1 class="group-hover:text-accent line-clamp-1 text-lg font-medium">
       {title}
     </h1>
     <p class="text-foreground/70 mb-2 line-clamp-2 text-sm">{description}</p>
-    <MetadataIndicator published={published} category={categories} />
+    <MetadataIndicator
+      published={published}
+      category={categories}
+      readTimeMinute={minutes}
+    />
   </div>
   <Icon
     name="lucide:chevron-right"
-    class="group-hover:text-accent shrink-0 transition group-hover:translate-x-2"
+    class="group-hover:text-accent hidden shrink-0 transition group-hover:translate-x-2 md:block"
   />
 </div>

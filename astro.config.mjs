@@ -6,6 +6,7 @@ import icon from "astro-icon";
 
 import rehypeSlug from "rehype-slug";
 import rehypeAutoLinkHeadings from "rehype-autolink-headings";
+
 import { remarkReadingTime } from "./src/lib/plugins/remark-reading-time.mjs";
 
 // https://astro.build/config
@@ -15,6 +16,12 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   markdown: {
+    shikiConfig: {
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+    },
     remarkPlugins: [remarkReadingTime],
     rehypePlugins: [
       rehypeSlug,

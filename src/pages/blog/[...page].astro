@@ -20,7 +20,7 @@ const posts = page.data;
 ---
 
 <MainLayout>
-  <div class="space-y-2">
+  <div class="relative space-y-2">
     <ul class="anim-delay-sequence space-y-2">
       {
         posts.map((post, index) => (
@@ -32,14 +32,15 @@ const posts = page.data;
         ))
       }
     </ul>
-    <Pagination
-      class="anim-onload flex items-center justify-center gap-0.5"
-      style="--initialDelay: 300ms"
-      current={page.currentPage}
-      prev={page.url.prev}
-      next={page.url.next}
-      first={page.url.first}
-      last={page.url.last}
-    />
+    <div class="anim-onload flex items-center justify-center gap-0.5">
+      <Pagination
+        style="--initialDelay: 250ms"
+        current={page.currentPage}
+        prev={page.url.prev}
+        next={page.url.next}
+        first={page.url.first}
+        last={page.url.last}
+      />
+    </div>
   </div>
 </MainLayout>

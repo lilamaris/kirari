@@ -12,7 +12,11 @@ const { class: className, style: styleAttr, headings } = Astro.props;
 ---
 
 <table-of-contents>
-  <div id="toc-wrapper" class:list={[className]} style={styleAttr}>
+  <div
+    id="toc-wrapper"
+    class:list={[className, "relative overflow-y-scroll"]}
+    style={styleAttr}
+  >
     <ul class="mx-4 py-2">
       {
         headings.map((heading) => (

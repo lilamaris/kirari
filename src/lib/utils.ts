@@ -1,5 +1,5 @@
 import { routes, themeConfig } from "@/consts";
-import type { Route, RouteMeta, ThemeEnum } from "@/types";
+import type { Route, ThemeEnum } from "@/types";
 
 export const objectKeys = <T extends object>(obj: T) =>
   Object.keys(obj) as (keyof T)[];

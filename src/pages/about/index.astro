@@ -1,0 +1,12 @@
+---
+import AuthorProfile from "@/components/ui/AuthorProfile.astro";
+import { routes } from "@/consts";
+import MainLayout from "@/layouts/MainLayout.astro";
+---
+
+<MainLayout>
+  <div class="card px-6 py-4">
+    <h1 class="text-lg font-bold">{routes.about.label}</h1>
+  </div>
+  <AuthorProfile class="anim-onload" style="--i: 1" />
+</MainLayout>

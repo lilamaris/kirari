@@ -28,15 +28,19 @@ const { olderPostRef, newerPostRef } = post.data;
       olderPostRef={olderPostRef}
       newerPostRef={newerPostRef}
     />
-    <div class="card space-y-2 p-4">
-      <PostHeader post={post} class="anim-onload" style="--i: 1" />
+    <div class="card anim-onload space-y-2 p-4" style="--i: 1">
+      <PostHeader post={post} class="anim-onload" />
+      <div
+        class="border-border rounded-surface my-4 h-1 w-full translate-y-1 border-b-4 border-dashed"
+      >
+      </div>
+      <article
+        class="anim-onload prose px-6 xl:max-w-[var(--contentWidth)]"
+        style="--i: 2"
+      >
+        <Content />
+      </article>
     </div>
-    <article
-      class="anim-onload card prose max-w-[var(--contentWidth)] px-5"
-      style="--i: 2"
-    >
-      <Content />
-    </article>
 
     <PostNavigation
       class="anim-onload"
@@ -47,7 +51,7 @@ const { olderPostRef, newerPostRef } = post.data;
   </div>
   <TableOfContents
     headings={headings}
-    class:list={["max-h-[40dvh] overflow-y-scroll mask-y-from-95%"]}
+    class:list={["max-h-[40dvh] mask-y-from-95%"]}
     slot="right-aside"
   />
 </MainLayout>
