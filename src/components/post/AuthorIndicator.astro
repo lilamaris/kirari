@@ -1,0 +1,21 @@
+---
+import type { StyledProps } from "@/types";
+import Img from "@/components/common/Img.astro";
+import { siteConfig, themeConfig } from "@/consts";
+import Decorator from "@/components/common/Decorator.astro";
+
+interface Props extends StyledProps {}
+
+const { authorName } = siteConfig;
+const { avatarImgUrl } = themeConfig;
+const { class: className = "", style: styleAttr = "" } = Astro.props;
+---
+
+<Decorator class={className} style={styleAttr}>
+  <Img
+    class="aspect-square size-4 overflow-hidden rounded-full"
+    src={avatarImgUrl}
+    slot="deco"
+  />
+  {authorName}
+</Decorator>

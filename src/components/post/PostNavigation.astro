@@ -1,0 +1,67 @@
+---
+import { getEntry } from "astro:content";
+
+import Link from "@/components/common/Link.astro";
+import type { StyledProps } from "@/types";
+import { Icon } from "astro-icon/components";
+
+interface Props extends StyledProps {
+  newerPostRef?: string;
+  olderPostRef?: string;
+}
+
+const {
+  newerPostRef,
+  olderPostRef,
+  class: className = "",
+  style: styleAttr = "",
+} = Astro.props;
+
+const newerPost = newerPostRef
+  ? await getEntry("posts", newerPostRef)
+  : undefined;
+const olderPost = olderPostRef
+  ? await getEntry("posts", olderPostRef)
+  : undefined;
+---
+
+<div
+  class:list={[className, "text-foreground grid grid-cols-2 gap-2"]}
+  style={styleAttr}
+>
+  <Link
+    href={olderPost ? `/blog/${olderPost?.id}` : "#"}
+    class:list={["btn group bg-surface flex", { disabled: !!!olderPost }]}
+    data-variant="outline"
+  >
+    <Icon
+      class="mx-4 size-4 shrink-0 self-center transition-transform group-hover:-translate-x-2"
+      name="lucide:arrow-left"
+    />
+    <div class="flex-1">
+      <div class="text-foreground/50 text-sm">Previous Post</div>
+      <span class="line-clamp-1 font-medium">
+        {olderPost?.data.title ?? "No previous post"}
+      </span>
+    </div>
+  </Link>
+  <Link
+    href={newerPost ? `/blog/${newerPost?.id}` : "#"}
+    class:list={[
+      "btn group bg-surface flex justify-end",
+      { disabled: !!!newerPost },
+    ]}
+    data-variant="outline"
+  >
+    <div class="text-end">
+      <div class="text-foreground/50 text-sm">Next Post</div>
+      <span class="line-clamp-1 font-medium">
+        {newerPost?.data.title ?? "No next post"}
+      </span>
+    </div>
+    <Icon
+      class="mx-4 size-4 shrink-0 self-center transition-transform group-hover:translate-x-2"
+      name="lucide:arrow-right"
+    />
+  </Link>
+</div>

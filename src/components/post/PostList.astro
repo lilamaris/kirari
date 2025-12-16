@@ -1,0 +1,25 @@
+---
+import Link from "@/components/common/Link.astro";
+
+import { createRouteUrl } from "@/lib/utils";
+import type { Post, StyledProps } from "@/types";
+import PostItem from "./PostItem.astro";
+
+interface Props extends StyledProps {
+  posts: Post[];
+}
+
+const { posts, class: className = "", style: styleAttr = "" } = Astro.props;
+---
+
+<ul class:list={[className, "anim-delay-sequence space-y-2"]} style={styleAttr}>
+  {
+    posts.map((post, index) => (
+      <li class="anim-onload" style={`--i: ${index}`}>
+        <Link href={createRouteUrl("blog", post.id)}>
+          <PostItem post={post} />
+        </Link>
+      </li>
+    ))
+  }
+</ul>

@@ -5,12 +5,12 @@ import { getCollection } from "astro:content";
 import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
-import PostList from "@/components/ui/post/PostList.astro";
-
-import { availableIndexType } from "@/types";
+import PostList from "@/components/post/PostList.astro";
+import { indexType } from "@/consts";
+import { objectValues } from "@/lib/utils";
 
 export const getStaticPaths = (async () => {
-  return [undefined, ...availableIndexType].map((type) => ({
+  return [undefined, ...objectValues(indexType)].map((type) => ({
     params: { type: type },
   }));
 }) satisfies GetStaticPaths;
@@ -37,23 +37,19 @@ const indexes = postIndex.map((index) => ({
 ---
 
 <MainLayout>
-  <div class="space-y-6">
+  <div class="space-y-2">
     <Decorator class="text-foreground" slot="header">
-      <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco"></span>
+      <span class="bg-accent mr-2 h-4 w-0.5" slot="deco"></span>
       <Breadcrumbs />
     </Decorator>
     {
       indexes.map((index, i) => (
         <div class="space-y-2">
           <Decorator class="text-foreground" slot="left-aside">
-            <span class="bg-accent-foreground mr-2 h-4 w-0.5" slot="deco" />
+            <span class="bg-accent mr-2 h-4 w-0.5" slot="deco" />
             <h1 class="text-foreground text-lg">{index.data.name}</h1>
           </Decorator>
-          <PostList
-            class:list={["flex flex-col gap-2"]}
-            style={`--initialDelay: ${i * 100}ms`}
-            posts={index.data.items}
-          />
+          <PostList posts={index.data.items} />
         </div>
       ))
     }

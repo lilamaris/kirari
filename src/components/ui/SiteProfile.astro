@@ -1,0 +1,32 @@
+---
+import { Icon } from "astro-icon/components";
+
+import type { StyledProps } from "@/types";
+
+import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
+
+interface Props extends StyledProps {}
+
+import { siteConfig } from "@/consts";
+const { title, description } = siteConfig;
+
+const { class: className = "", style: styleAttr = "" } = Astro.props;
+---
+
+<div class:list={[className, "card flex gap-2 px-2 py-1"]} style={styleAttr}>
+  <div class="flex-1">
+    <Decorator>
+      <h1 class="font-bold">{title}</h1>
+    </Decorator>
+    <p class="text-foreground/50 text-sm">{description}</p>
+  </div>
+  <div class="flex items-center gap-px">
+    <Link class="btn icon text-accent">
+      <Icon name="lucide:rss" />
+    </Link>
+    <Link class="btn icon text-accent">
+      <Icon name="lucide:mail" />
+    </Link>
+  </div>
+</div>

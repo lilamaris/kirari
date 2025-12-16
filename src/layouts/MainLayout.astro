@@ -4,9 +4,10 @@ import Base from "@/layouts/Base.astro";
 import Img from "@/components/common/Img.astro";
 import Navigation from "@/components/ui/Navigation.astro";
 import Footer from "@/components/ui/Footer.astro";
-import Profile from "@/components/ui/Profile.astro";
-import CategoryList from "@/components/ui/CategoryList.astro";
-import TagList from "@/components/ui/TagList.astro";
+import SiteProfile from "@/components/ui/SiteProfile.astro";
+import AuthorProfile from "@/components/ui/AuthorProfile.astro";
+import CategoryList from "@/components/index/CategoryList.astro";
+import TagList from "@/components/index/TagList.astro";
 
 import { layoutConfig, themeConfig } from "@/consts";
 import { toStyleVars } from "@/lib/utils";
@@ -27,74 +28,91 @@ const asideOffset = navigationHeight + layoutGap;
 
 <Base>
   <div
-    class="anim-banner-entering transition-page-banner absolute h-full dark:mask-b-from-10%"
-    style={toStyleVars({ bannerHeight, bannerExtend })}
+    class="anim-banner-entering transition-page-banner absolute overflow-hidden dark:mask-b-from-10%"
+    style={toStyleVars({
+      bannerHeight: `${bannerHeight}vh`,
+      bannerExtend: `${bannerExtend}vh`,
+    })}
   >
-    <Img class="h-full" src={bannerImgUrl} alt="banner" />
+    <Img
+      id="banner"
+      class="pointer-events-none h-full select-none"
+      src={bannerImgUrl}
+      alt="banner"
+    />
   </div>
 
-  <Navigation class="anim-navigation-entering fixed top-0 z-50" />
+  <Navigation class="anim-navigation-entering sticky top-0 z-50" />
 
   <main
-    class:list={[
-      "anim-main-entering transition-page-main absolute h-full w-full",
-    ]}
+    class:list={["anim-main-entering transition-page-main relative"]}
     style={toStyleVars({ ...layoutConfig, pageWidth, asideOffset })}
   >
     <div
-      id="swup-target"
       class:list={[
         "mx-auto grid px-2",
-        "max-w-[var(--pageWidth)] grid-cols-[minmax(auto,var(--asideWidth)))_var(--contentWidth)_minmax(auto,var(--asideWidth))] gap-[var(--layoutGap)]",
+        "max-w-[var(--pageWidth)] grid-cols-[var(--asideWidth)_1fr] gap-[var(--layoutGap)]",
       ]}
     >
       <aside>
-        <div class="sticky top-[var(--asideOffset)]">
+        <div class="sticky">
           <slot name="left-aside">
-            <div class="space-y-2">
-              <Profile />
-              <CategoryList />
-              <TagList />
+            <div class="anim-delay-sequence h-full space-y-2">
+              <SiteProfile class="anim-onload" style="--i: 0" />
+              <AuthorProfile class="anim-onload" style="--i: 1" />
+              <CategoryList class="anim-onload" style="--i: 2" />
+              <TagList class="anim-onload sticky top-0" style="--i: 3" />
             </div>
           </slot>
         </div>
       </aside>
-      <div class="transition-swup-page relative">
-        <slot />
-        <Footer class="text-center text-sm" />
-      </div>
 
-      <aside class="transition-swup-page">
-        <div class="sticky top-[var(--asideOffset)]">
-          <slot name="right-aside" />
-        </div>
-      </aside>
+      <div
+        id="swup-target"
+        class="grid grid-cols-[1fr_var(--asideWidth)] gap-[var(--layoutGap)]"
+      >
+        <section class="transition-swup-page">
+          <slot />
+          <Footer
+            class="anim-onload mt-8 py-5 text-center text-sm"
+            style={`--initialDelay: 350ms`}
+          />
+        </section>
+
+        <aside class="transition-swup-page">
+          <div class="sticky">
+            <slot name="right-aside" />
+          </div>
+        </aside>
+      </div>
     </div>
   </main>
 
   <style>
     @import "tailwindcss";
     .transition-page-banner {
-      @apply transition-[max-height] duration-600;
+      @apply h-[var(--height)] -translate-y-[var(--offset)] transition-all duration-600;
     }
     .transition-page-main {
-      @apply transition-[top] duration-600;
+      @apply translate-y-[var(--offset)] transition-all duration-600;
     }
     html {
-      &:not([data-baseloc="root"]) {
-        .transition-page-banner {
-          @apply max-h-[calc(var(--bannerHeight)_-_var(--bannerExtend))];
-        }
-        .transition-page-main {
-          @apply top-[calc(var(--bannerHeight)_-_var(--bannerExtend))];
-        }
-      }
       &[data-baseloc="root"] {
         .transition-page-banner {
-          @apply max-h-[calc(var(--bannerHeight)_+_var(--bannerExtend))];
+          --offset: 0;
+          --height: calc(var(--bannerHeight) + var(--bannerExtend));
         }
         .transition-page-main {
-          @apply top-[var(--bannerHeight)];
+          --offset: calc(var(--bannerHeight));
+        }
+      }
+      &:not([data-baseloc="root"]) {
+        .transition-page-banner {
+          --offset: var(--bannerExtend);
+          --height: var(--bannerHeight);
+        }
+        .transition-page-main {
+          --offset: calc(var(--bannerExtend));
         }
       }
     }

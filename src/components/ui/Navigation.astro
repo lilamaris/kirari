@@ -6,7 +6,7 @@ import Img from "@/components/common/Img.astro";
 import HueController from "@/components/ui/HueController.svelte";
 import ThemeController from "@/components/ui/ThemeController.svelte";
 
-import { layoutConfig, themeConfig, routeRegistry } from "@/consts";
+import { layoutConfig, themeConfig, routes } from "@/consts";
 import { objectEntries, toInlineStyle, toStyleVars } from "@/lib/utils";
 
 interface Props extends StyledProps {}
@@ -29,9 +29,9 @@ const { siteIconUrl } = themeConfig;
 >
   <div class="flex max-w-[var(--contentWidth)] flex-1 items-center gap-4">
     <Img src={siteIconUrl} class="size-4 rounded-sm" />
-    <ul class="flex gap-4">
+    <ul class="flex gap-4 select-none">
       {
-        objectEntries(routeRegistry).map(([_, route]) => (
+        objectEntries(routes).map(([_, route]) => (
           <li>
             <Link
               href={route.href}

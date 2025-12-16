@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content";
+
+import type { StyledProps } from "@/types";
+
+import Decorator from "@/components/common/Decorator.astro";
+import Link from "@/components/common/Link.astro";
+
+import { indexType } from "@/consts";
+import { createRouteUrl } from "@/lib/utils";
+
+interface Props extends StyledProps {}
+
+const { class: className = "", style: styleAttr = "" } = Astro.props;
+
+const tags = await getCollection(
+  "postIndex",
+  (index) => index.data.type === indexType.Tags,
+);
+---
+
+<div class:list={[className, "card space-y-1 px-4 py-2"]} style={styleAttr}>
+  <Decorator>
+    <span>Tags</span>
+  </Decorator>
+  <ul class="flex flex-wrap gap-1">
+    {
+      tags.map((tag) => (
+        <li>
+          <Link
+            class="text-foreground/70 hover:text-accent btn px-2 text-xs transition-colors"
+            href={createRouteUrl("index", tag.id)}
+          >
+            <spae class="truncate">{tag.data.name}</spae>
+          </Link>
+        </li>
+      ))
+    }
+  </ul>
+</div>

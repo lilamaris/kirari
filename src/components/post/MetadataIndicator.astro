@@ -1,0 +1,34 @@
+---
+import AuthorIndicator from "@/components/post/AuthorIndicator.astro";
+import { formatDate } from "@/lib/utils";
+import type { StyledProps } from "@/types";
+
+interface Props extends StyledProps {
+  published?: Date;
+  category?: string;
+  tags?: string[];
+  readTimeMinute?: number;
+}
+
+const {
+  published,
+  category,
+  tags,
+  readTimeMinute,
+  class: className = "",
+  style: styleAttr = "",
+} = Astro.props;
+---
+
+<div
+  class:list={[
+    className,
+    "divide-neutral text-foreground/70 flex divide-x-1 text-xs [&>*:not(:first-child)]:pl-2 [&>*:not(:last-child)]:pr-2",
+  ]}
+  style={styleAttr}
+>
+  <AuthorIndicator />
+  {published && <span>{formatDate(published)}</span>}
+  {category && <span>{category}</span>}
+  {readTimeMinute && <span>{readTimeMinute} min read</span>}
+</div>

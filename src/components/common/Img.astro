@@ -4,18 +4,25 @@ import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
 
 interface Props extends StyledProps {
+  id?: string;
   src: string;
   alt?: string;
 }
 
-const { src, alt, class: className = "", style: styleAttr = "" } = Astro.props;
+const {
+  id,
+  src,
+  alt,
+  class: className = "",
+  style: styleAttr = "",
+} = Astro.props;
 const images = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/*.{jpg,jpeg,png}",
 );
 if (!images[src]) throw new Error(`"${src}" does not exists`);
 ---
 
-<div class:list={[className]} style={styleAttr}>
+<div id={id} class:list={[className]} style={styleAttr}>
   <Image
     src={images[src]()}
     alt={alt || ""}
