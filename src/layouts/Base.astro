@@ -1,21 +1,23 @@
 ---
 import "@/styles/global.css";
-import { siteConfig } from "@/consts";
+import { siteConfig, themeConfig } from "@/consts";
+
+const { initialHue, initialTheme } = themeConfig;
 ---
 
 <html lang={siteConfig.lang}>
   <head>
     <script is:inline type="module" src="/src/lib/table-of-contents"></script>
     <script is:inline type="module" src="/src/lib/swup.js"></script>
-    <script is:inline>
+    <script is:inline define:vars={{ initialHue, initialTheme }}>
       const path = window.location.pathname;
       const parts = path.split("/").filter(Boolean);
       const base = parts.length > 0 ? parts[0] : "root";
       document.documentElement.setAttribute("data-baseloc", base);
 
-      const hue = localStorage.getItem("hue") || "250";
+      const hue = localStorage.getItem("hue") || String(initialHue);
       document.documentElement.style.setProperty("--hue", hue);
-      const theme = localStorage.getItem("theme") || "light";
+      const theme = localStorage.getItem("theme") || initialTheme;
       document.documentElement.setAttribute("data-theme", theme);
     </script>
     <meta charset="UTF-8" />
