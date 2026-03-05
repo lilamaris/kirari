@@ -10,6 +10,7 @@ class TableOfContent extends HTMLElement {
   tocElements: HTMLElement[] = [];
   tocWrapperElement: HTMLElement | null = null;
   viewportIndicator: HTMLElement | null = null;
+  scrollFrame: number | null = null;
 
   constructor() {
     super();
@@ -26,7 +27,7 @@ class TableOfContent extends HTMLElement {
     const { top, bottom } = this.getViewportHeight();
 
     // this code will loop more as the page scrolls down
-    let visibleSectionIdx = [];
+    const visibleSectionIdx: number[] = [];
     for (const [index, heading] of this.mdSections.entries()) {
       const start = heading.start;
       const end = heading.end;
@@ -67,7 +68,7 @@ class TableOfContent extends HTMLElement {
       return {
         id: el.id,
         top: rect.top + scrollY,
-        height: rect.height + scrollY,
+        height: rect.height,
       };
     });
   }
@@ -93,39 +94,51 @@ class TableOfContent extends HTMLElement {
   }
 
   updateIndicator() {
-    if (this.mdSections.length === 0) return [];
+    if (this.mdSections.length === 0 || this.tocSections.length === 0) return;
     const visibleSectionIdx = this.getVisibleSectionsIndex();
-    const length = visibleSectionIdx.length;
-
-    if (length == 0) return;
+    if (visibleSectionIdx.length === 0) return;
     const startIdx = visibleSectionIdx[0];
-    const endIdx = visibleSectionIdx[length - 1];
+    const endIdx = visibleSectionIdx[visibleSectionIdx.length - 1];
+    const startSection = this.tocSections[startIdx];
+    const endSection = this.tocSections[endIdx];
+    if (!startSection || !endSection) return;
 
-    const top = this.tocSections[startIdx].start;
-    const bottom = this.tocSections[endIdx].end;
+    const top = startSection.start;
+    const bottom = endSection.end;
 
     this.viewportIndicator?.setAttribute(
       "style",
       `top: ${top}px; height: ${bottom - top}px`,
     );
 
+    const visibleSectionSet = new Set(visibleSectionIdx);
     this.tocElements.forEach((el, index) => {
-      if (visibleSectionIdx.includes(index)) {
+      if (visibleSectionSet.has(index)) {
         el.classList.add("text-foreground/80");
       } else {
         el.classList.remove("text-foreground/80");
       }
     });
 
-    this.tocWrapperElement?.scrollTo({
-      top: top * 0.87,
-      left: 0,
-      behavior: "smooth",
-    });
+    const wrapper = this.tocWrapperElement;
+    if (!wrapper) return;
+    const currentTop = wrapper.scrollTop;
+    const currentBottom = currentTop + wrapper.clientHeight;
+    if (top < currentTop || bottom > currentBottom) {
+      wrapper.scrollTo({
+        top: Math.max(0, top - wrapper.clientHeight * 0.2),
+        left: 0,
+        behavior: "auto",
+      });
+    }
   }
 
   handleScroll = () => {
-    this.updateIndicator();
+    if (this.scrollFrame != null) return;
+    this.scrollFrame = window.requestAnimationFrame(() => {
+      this.scrollFrame = null;
+      this.updateIndicator();
+    });
   };
 
   handleResize = () => {
@@ -148,6 +161,10 @@ class TableOfContent extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener("scroll", this.handleScroll);
     window.removeEventListener("resize", this.handleResize);
+    if (this.scrollFrame != null) {
+      window.cancelAnimationFrame(this.scrollFrame);
+      this.scrollFrame = null;
+    }
   }
 }
 
