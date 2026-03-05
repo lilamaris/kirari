@@ -1,5 +1,6 @@
 import { type MarkdownInstance } from "astro";
 import { glob, type Loader } from "astro/loaders";
+import getReadingTime from "reading-time";
 import { type IndexEnum, type Post } from "@/types";
 import { indexType } from "@/consts";
 import { objectKeys, objectValues } from "./utils";
@@ -28,6 +29,15 @@ export const postWithAdjacentLinkLoader = (): Loader => {
     },
     async (context) => {
       const all = context.store.values() as Post[];
+      const getReadTimeMinute = (body: string) =>
+        Math.max(1, Math.round(getReadingTime(body).minutes));
+
+      for (const post of all) {
+        const parts = post.id.split("/");
+        post.data.series = parts.length > 1 ? parts[0] : "standalone";
+        post.data.minutes = getReadTimeMinute(post.body ?? "");
+      }
+
       const sorted = all
         .filter((e) => !e.data.draft)
         .sort((a, b) => {
@@ -39,9 +49,6 @@ export const postWithAdjacentLinkLoader = (): Loader => {
         });
 
       for (const [index, post] of sorted.entries()) {
-        const parts = post.id.split("/");
-        const series = parts.length > 1 ? parts[0] : "standalone";
-        post.data.series = series;
         if (index > 0) {
           post.data.newerPostRef = sorted[index - 1].id;
         }

@@ -5,7 +5,6 @@ import Img from "@/components/common/Img.astro";
 import MetadataIndicator from "@/components/post/MetadataIndicator.astro";
 
 import { themeConfig } from "@/consts";
-import { render } from "astro:content";
 
 interface Props extends StyledProps {
   post: Post;
@@ -13,10 +12,8 @@ interface Props extends StyledProps {
 
 const { thumbnailFallbackImgUrl } = themeConfig;
 const { post, class: className = "", style: styleAttr = "" } = Astro.props;
-const { title, description, published, categories, image } = post.data;
-const { remarkPluginFrontmatter } = await render(post);
+const { title, description, published, categories, image, minutes } = post.data;
 const thumbnailUrl = post.data.image?.src ?? thumbnailFallbackImgUrl;
-const { minutes, words } = remarkPluginFrontmatter;
 ---
 
 <div class:list={[className, "space-y-4"]} style={styleAttr}>

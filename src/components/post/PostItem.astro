@@ -3,7 +3,6 @@ import { Icon } from "astro-icon/components";
 
 import type { Post, StyledProps } from "@/types";
 
-import { render } from "astro:content";
 import MetadataIndicator from "./MetadataIndicator.astro";
 import Img from "../common/Img.astro";
 import { themeConfig } from "@/consts";
@@ -14,9 +13,7 @@ interface Props extends StyledProps {
 
 const { thumbnailFallbackImgUrl } = themeConfig;
 const { post, class: className = "", style: styleAttr = "" } = Astro.props;
-const { remarkPluginFrontmatter } = await render(post);
-const { title, description, published, categories, image } = post.data;
-const { minutes, words } = remarkPluginFrontmatter;
+const { title, description, published, categories, image, minutes } = post.data;
 ---
 
 <div
