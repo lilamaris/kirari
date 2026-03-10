@@ -1,10 +1,16 @@
 ---
 import AuthorProfile from "@/components/ui/AuthorProfile.astro";
-import { routes } from "@/consts";
+import { routes, siteConfig } from "@/consts";
 import MainLayout from "@/layouts/MainLayout.astro";
 ---
 
-<MainLayout>
+<MainLayout
+  seo={{
+    title: "About",
+    description: `${siteConfig.authorName} and ${siteConfig.title} profile page.`,
+    type: "website",
+  }}
+>
   <div class="card px-6 py-4">
     <h1 class="text-lg font-bold">{routes.about.label}</h1>
   </div>

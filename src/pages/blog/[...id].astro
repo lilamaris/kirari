@@ -6,6 +6,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import TableOfContents from "@/components/post/TableOfContents.astro";
 import PostHeader from "@/components/post/PostHeader.astro";
 import PostNavigation from "@/components/post/PostNavigation.astro";
+import { themeConfig } from "@/consts";
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
@@ -18,9 +19,19 @@ export const getStaticPaths = (async () => {
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const { olderPostRef, newerPostRef } = post.data;
+const { thumbnailFallbackImgUrl } = themeConfig;
 ---
 
-<MainLayout>
+<MainLayout
+  seo={{
+    title: post.data.title,
+    description: post.data.description,
+    image: post.data.image?.src ?? thumbnailFallbackImgUrl,
+    type: "article",
+    publishedTime: post.data.published,
+    keywords: post.data.tags,
+  }}
+>
   <div class="anim-delay-sequence space-y-2">
     <PostNavigation
       class="anim-onload"

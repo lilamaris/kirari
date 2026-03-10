@@ -1,8 +1,15 @@
 ---
 import "@/styles/global.css";
+import SeoHead from "@/components/common/SeoHead.astro";
 import { siteConfig, themeConfig } from "@/consts";
+import type { SeoMeta } from "@/types";
+
+interface Props {
+  seo?: SeoMeta;
+}
 
 const { initialHue, initialTheme } = themeConfig;
+const { seo } = Astro.props;
 ---
 
 <html lang={siteConfig.lang}>
@@ -22,6 +29,7 @@ const { initialHue, initialTheme } = themeConfig;
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <SeoHead {...seo} />
     <slot name="head" />
   </head>
   <body class="relative min-h-screen">

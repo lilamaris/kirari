@@ -27,6 +27,7 @@ export interface SiteConfig {
   authorName: string;
   authorComment?: string;
   lang: string;
+  siteUrl?: string;
 }
 
 export interface ThemeConfig {
@@ -51,6 +52,17 @@ export interface LayoutConfig {
   contentWidth: number;
   asideWidth: number;
   layoutGap: number;
+}
+
+export interface SeoMeta {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  type?: "website" | "article";
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  keywords?: string[];
 }
 
 export type Route = keyof typeof routes;

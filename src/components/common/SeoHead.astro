@@ -1,0 +1,84 @@
+---
+import { siteConfig, themeConfig } from "@/consts";
+import { getSiteUrl, resolveSeoImage, toAbsoluteUrl } from "@/lib/seo";
+import type { SeoMeta } from "@/types";
+
+interface Props extends SeoMeta {}
+
+const {
+  title,
+  description,
+  image,
+  noindex = false,
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  keywords = [],
+} = Astro.props;
+
+const siteUrl = getSiteUrl();
+const canonicalUrl = toAbsoluteUrl(Astro.url.pathname, siteUrl);
+const pageTitle = title ? `${title} | ${siteConfig.title}` : siteConfig.title;
+const pageDescription = description ?? siteConfig.description;
+const imageUrl = resolveSeoImage(
+  image ?? themeConfig.bannerImgUrl ?? themeConfig.siteIconUrl,
+  siteUrl,
+);
+const robots = noindex ? "noindex, nofollow" : "index, follow";
+
+const jsonLd =
+  type === "article"
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: pageTitle,
+        description: pageDescription,
+        author: {
+          "@type": "Person",
+          name: siteConfig.authorName,
+        },
+        datePublished: publishedTime?.toISOString(),
+        dateModified: modifiedTime?.toISOString() ?? publishedTime?.toISOString(),
+        mainEntityOfPage: canonicalUrl,
+        image: imageUrl ? [imageUrl] : undefined,
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: siteConfig.title,
+        description: siteConfig.description,
+        url: siteUrl || undefined,
+        inLanguage: siteConfig.lang,
+      };
+
+const serializedJsonLd = JSON.stringify(jsonLd);
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={pageDescription} />
+<meta name="robots" content={robots} />
+<meta name="author" content={siteConfig.authorName} />
+<meta name="generator" content={Astro.generator} />
+{keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+<link rel="icon" href={themeConfig.siteIconUrl} />
+
+<meta property="og:site_name" content={siteConfig.title} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={pageDescription} />
+{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+{imageUrl && <meta property="og:image" content={imageUrl} />}
+<meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={pageDescription} />
+{imageUrl && <meta name="twitter:image" content={imageUrl} />}
+
+{publishedTime && (
+  <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime.toISOString()} />
+)}
+
+<script type="application/ld+json" set:html={serializedJsonLd}></script>
