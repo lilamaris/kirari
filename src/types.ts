@@ -28,6 +28,7 @@ export interface SiteConfig {
   authorComment?: string;
   lang: string;
   siteUrl?: string;
+  email?: string;
 }
 
 export interface ThemeConfig {

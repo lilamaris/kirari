@@ -9,7 +9,10 @@ import { siteConfig, themeConfig } from "@/consts";
 import { createRouteUrl } from "@/lib/utils";
 
 const { recentPostCount } = themeConfig;
-const recentPosts = (await getCollection("posts")).slice(0, recentPostCount);
+const recentPosts = (await getCollection("posts", ({ data }) => !data.draft)).slice(
+  0,
+  recentPostCount,
+);
 ---
 
 <MainLayout
