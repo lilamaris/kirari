@@ -4,14 +4,8 @@
 
   let hue = $state(getHue());
 
-  let timer: NodeJS.Timeout;
   $effect(() => {
-    ((hue: number) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        setHue(hue);
-      }, 20);
-    })(hue);
+    setHue(hue);
   });
 </script>
 
@@ -20,7 +14,7 @@
     <Icon icon="lucide:palette" class="icon" />
   </button>
   <div class="content">
-    <div class="card flex items-center justify-center bg-surface p-2 w-80">
+    <div class="card w-80 flex items-center justify-center p-2">
       <input
         class="hueHandle"
         max="360"
