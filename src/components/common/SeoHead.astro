@@ -25,6 +25,8 @@ const imageUrl = resolveSeoImage(
   siteUrl,
 );
 const robots = noindex ? "noindex, nofollow" : "index, follow";
+const manifestUrl = "/manifest.webmanifest";
+const rssUrl = toAbsoluteUrl("/rss.xml", siteUrl) ?? "/rss.xml";
 
 const jsonLd =
   type === "article"
@@ -59,9 +61,14 @@ const serializedJsonLd = JSON.stringify(jsonLd);
 <meta name="robots" content={robots} />
 <meta name="author" content={siteConfig.authorName} />
 <meta name="generator" content={Astro.generator} />
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafafb" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17171a" />
 {keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
 {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 <link rel="icon" href={themeConfig.siteIconUrl} />
+<link rel="apple-touch-icon" href="/favicon.svg" />
+<link rel="manifest" href={manifestUrl} />
+<link rel="alternate" type="application/rss+xml" title={`${siteConfig.title} RSS Feed`} href={rssUrl} />
 
 <meta property="og:site_name" content={siteConfig.title} />
 <meta property="og:type" content={type} />

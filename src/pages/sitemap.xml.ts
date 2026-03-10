@@ -14,7 +14,7 @@ const escapeXml = (value: string): string =>
 
 export const GET: APIRoute = async () => {
   const siteUrl = getSiteUrl();
-  const posts = await getCollection("posts");
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
   const indexes = await getCollection("postIndex");
 
   const pageCount = Math.max(1, Math.ceil(posts.length / themeConfig.postPerPage));

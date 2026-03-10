@@ -9,7 +9,7 @@ import PostNavigation from "@/components/post/PostNavigation.astro";
 import { themeConfig } from "@/consts";
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection("posts");
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
   return posts.map((post) => ({
     params: { id: post.id },
     props: { post },
