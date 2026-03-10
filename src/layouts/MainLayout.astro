@@ -11,8 +11,14 @@ import TagList from "@/components/index/TagList.astro";
 
 import { layoutConfig, themeConfig } from "@/consts";
 import { toInlineStyle, toStyleVars } from "@/lib/utils";
+import type { SeoMeta } from "@/types";
+
+interface Props {
+  seo?: SeoMeta;
+}
 
 const { bannerImgUrl } = themeConfig;
+const { seo } = Astro.props;
 const {
   bannerHeight,
   bannerExtend,
@@ -40,7 +46,7 @@ const layoutStyleVars = toStyleVars({
 });
 ---
 
-<Base>
+<Base seo={seo}>
   <div
     id="transition-banner"
     class="anim-banner-entering transition-page-banner absolute mask-b-from-20%"

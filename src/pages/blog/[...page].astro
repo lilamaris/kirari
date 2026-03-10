@@ -6,7 +6,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import PostList from "@/components/post/PostList.astro";
 import Pagination from "@/components/ui/Pagination.astro";
 
-import { themeConfig } from "@/consts";
+import { siteConfig, themeConfig } from "@/consts";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts");
@@ -15,9 +15,20 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 const posts = page.data;
+const seoTitle = page.currentPage > 1 ? `Blog Page ${page.currentPage}` : "Blog";
+const seoDescription =
+  page.currentPage > 1
+    ? `${siteConfig.title} blog archive, page ${page.currentPage}.`
+    : `${siteConfig.title} blog archive.`;
 ---
 
-<MainLayout>
+<MainLayout
+  seo={{
+    title: seoTitle,
+    description: seoDescription,
+    type: "website",
+  }}
+>
   <div class="relative space-y-2">
     <PostList posts={posts} />
     <div class="anim-onload flex items-center justify-center gap-0.5">

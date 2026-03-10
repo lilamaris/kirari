@@ -6,7 +6,7 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
 import PostList from "@/components/post/PostList.astro";
-import { indexType } from "@/consts";
+import { indexType, siteConfig } from "@/consts";
 import { objectValues } from "@/lib/utils";
 
 export const getStaticPaths = (async () => {
@@ -34,9 +34,17 @@ const indexes = postIndex.map((index) => ({
       ),
   },
 }));
+
+const label = type || "publishedYear";
 ---
 
-<MainLayout>
+<MainLayout
+  seo={{
+    title: `Index - ${label}`,
+    description: `${siteConfig.title} post index grouped by ${label}.`,
+    type: "website",
+  }}
+>
   <div class="space-y-2">
     <Decorator class="text-foreground" slot="header">
       <span class="bg-accent mr-2 h-4 w-0.5" slot="deco"></span>

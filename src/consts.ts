@@ -6,6 +6,7 @@ export const siteConfig: SiteConfig = {
   authorName: "lilamaris",
   authorComment: "haaiii",
   lang: "en",
+  siteUrl: "",
 };
 
 export const themeConfig: ThemeConfig = {
