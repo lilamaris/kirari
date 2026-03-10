@@ -19,7 +19,7 @@ const { siteIconUrl } = themeConfig;
 <nav
   class:list={[
     className,
-    "bg-surface/60 flex w-full justify-center backdrop-blur-sm",
+    "bg-surface/60 flex w-full justify-center px-4 backdrop-blur-sm xl:px-0",
     "h-[var(--navigationHeight)]",
   ]}
   style={toInlineStyle([
@@ -29,7 +29,7 @@ const { siteIconUrl } = themeConfig;
 >
   <div class="flex max-w-[var(--contentWidth)] flex-1 items-center gap-4">
     <Img src={siteIconUrl} class="hidden size-4 rounded-sm xl:block" />
-    <ul class="flex flex-wrap gap-4 px-2 select-none xl:p-0">
+    <ul class="flex flex-wrap gap-4 select-none">
       {
         objectEntries(routes).map(([_, route]) => (
           <li>

@@ -2,9 +2,9 @@
   import Icon from "@iconify/svelte";
 
   import { getTheme, setTheme } from "@/lib/utils";
-  import type { Theme } from "@/types";
+  import type { ThemeEnum } from "@/types";
 
-  const themes: Theme[] = ["light", "dark", "system"];
+  const themes: ThemeEnum[] = ["light", "dark", "system"];
   let curIdx = $state(themes.indexOf(getTheme()));
   let nextIdx = $derived.by(() => {
     if (curIdx >= themes.length - 1) return 0;
@@ -22,7 +22,7 @@
   };
 </script>
 
-{#snippet ThemeIcon(theme: Theme)}
+{#snippet ThemeIcon(theme: ThemeEnum)}
   {#if theme === "light"}
     <Icon icon="lucide:sun" class="icon" />
   {:else if theme === "dark"}
@@ -42,7 +42,7 @@
   </button>
 
   <div class="content">
-    <div class="card bg-surface p-1 flex gap-0.5 flex-col">
+    <div class="card p-1 flex gap-0.5 flex-col">
       {#each themes as theme, idx}
         <button
           class="btn w-full flex gap-5 px-1"
