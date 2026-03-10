@@ -22,7 +22,12 @@ const { class: className = "", style: styleAttr = "" } = Astro.props;
     <p class="text-foreground/50 text-sm">{description}</p>
   </div>
   <div class="flex items-center gap-px">
-    <Link class="btn icon text-accent" href="/rss.xml" aria-label="RSS feed">
+    <Link
+      class="btn icon text-accent"
+      href="/rss.xml"
+      aria-label="RSS feed"
+      data-no-swup
+    >
       <Icon name="lucide:rss" />
     </Link>
     {
