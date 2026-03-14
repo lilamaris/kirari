@@ -163,7 +163,7 @@ const moreGroups = Math.max(0, indexes.length - previewGroups.length);
         {
           objectValues(indexType).map((entryType) => (
             <Link
-              class="btn justify-between px-3 text-sm"
+              class="btn row px-3 text-sm"
               data-variant={entryType === activeType ? undefined : "ghost"}
               href={createRouteUrl("index", entryType)}
             >
@@ -183,7 +183,7 @@ const moreGroups = Math.max(0, indexes.length - previewGroups.length);
         {
           previewGroups.map((entry) => (
             <Link
-              class="btn justify-between px-3 text-sm"
+              class="btn row px-3 text-sm"
               data-variant="ghost"
               href={`#${entry.sectionId}`}
             >
