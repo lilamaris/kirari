@@ -4,7 +4,6 @@ import { getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
-import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
 import Link from "@/components/common/Link.astro";
 import ArchivePostList from "@/components/post/ArchivePostList.astro";
 import { indexType, siteConfig } from "@/consts";
@@ -56,20 +55,28 @@ const meta = typeMeta[index.data.type];
   }}
 >
   <div class="anim-delay-sequence space-y-2">
-    <section class="card anim-onload space-y-4 p-5 sm:p-6" style="--i: 0">
-      <div class="space-y-2">
-        <Decorator class="text-sm">
-          <Breadcrumbs class="text-foreground/65 text-sm" />
-        </Decorator>
-        <h1 class="text-2xl font-medium sm:text-3xl">{index.data.name}</h1>
-      </div>
-
-      <div
-        class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
-      >
-        <span>{meta.label}</span>
-        <span class="text-foreground/25">/</span>
-        <span>{posts.length} posts</span>
+    <section class="card anim-onload p-5 sm:p-6" style="--i: 0">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <Decorator
+            class="text-foreground/55 text-xs tracking-[0.24em] uppercase"
+          >
+            {meta.label}
+          </Decorator>
+          <div
+            class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+          >
+            <span class="text-foreground/75">{index.data.name}</span>
+            <span class="text-foreground/25">/</span>
+            <span>{posts.length} posts</span>
+          </div>
+        </div>
+        <Link
+          class="text-foreground/65 hover:text-accent text-sm transition-colors"
+          href={createRouteUrl("index", index.data.type)}
+        >
+          Back to {meta.label.toLowerCase()}
+        </Link>
       </div>
     </section>
 

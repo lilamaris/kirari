@@ -3,10 +3,13 @@ import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
+import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
 import PostList from "@/components/post/PostList.astro";
 import Pagination from "@/components/ui/Pagination.astro";
 
 import { siteConfig, themeConfig } from "@/consts";
+import { createRouteUrl, formatDate } from "@/lib/utils";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
@@ -15,7 +18,14 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 const posts = page.data;
-const seoTitle = page.currentPage > 1 ? `Blog Page ${page.currentPage}` : "Blog";
+const allPosts = [
+  ...(await getCollection("posts", ({ data }) => !data.draft)),
+].sort(
+  (a, b) => +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0),
+);
+const latestPost = allPosts[0];
+const seoTitle =
+  page.currentPage > 1 ? `Blog Page ${page.currentPage}` : "Blog";
 const seoDescription =
   page.currentPage > 1
     ? `${siteConfig.title} blog archive, page ${page.currentPage}.`
@@ -29,8 +39,49 @@ const seoDescription =
     type: "website",
   }}
 >
-  <div class="relative space-y-2">
-    <PostList posts={posts} />
+  <div class="anim-delay-sequence space-y-2">
+    <section class="card anim-onload p-5 sm:p-6" style="--i: 0">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <Decorator
+            class="text-foreground/55 text-xs tracking-[0.24em] uppercase"
+          >
+            Blog
+          </Decorator>
+          <div
+            class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+          >
+            <span>{allPosts.length} posts</span>
+            {
+              latestPost && (
+                <>
+                  <span class="text-foreground/25">/</span>
+                  <span>{formatDate(latestPost.data.published)}</span>
+                </>
+              )
+            }
+            {
+              page.lastPage > 1 && (
+                <>
+                  <span class="text-foreground/25">/</span>
+                  <span>
+                    Page {page.currentPage} of {page.lastPage}
+                  </span>
+                </>
+              )
+            }
+          </div>
+        </div>
+        <Link
+          class="text-foreground/65 hover:text-accent text-sm transition-colors"
+          href={createRouteUrl("index")}
+        >
+          Open archive
+        </Link>
+      </div>
+    </section>
+
+    <PostList class:list={["anim-onload"]} style="--i: 1" posts={posts} />
     <div class="anim-onload flex items-center justify-center gap-0.5">
       <Pagination
         style="--initialDelay: 250ms"

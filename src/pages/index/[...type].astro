@@ -6,7 +6,6 @@ import type { IndexEnum, PostIndex } from "@/types";
 
 import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
-import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
 import Link from "@/components/common/Link.astro";
 import ArchivePostList from "@/components/post/ArchivePostList.astro";
 import { indexType, siteConfig } from "@/consts";
@@ -102,22 +101,28 @@ const moreGroups = Math.max(0, indexes.length - previewGroups.length);
   }}
 >
   <div class="anim-delay-sequence space-y-2">
-    <section class="card anim-onload space-y-4 p-5 sm:p-6" style="--i: 0">
-      <div class="space-y-2">
-        <Decorator class="text-sm">
-          <Breadcrumbs class="text-foreground/65 text-sm" />
-        </Decorator>
-        <h1 class="text-2xl font-medium sm:text-3xl">
-          {archiveRoot ? "Archive" : meta.label}
-        </h1>
-      </div>
-
-      <div
-        class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
-      >
-        <span>{indexes.length} groups</span>
-        <span class="text-foreground/25">/</span>
-        <span>{totalIndexedPosts} indexed posts</span>
+    <section class="card anim-onload p-5 sm:p-6" style="--i: 0">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <Decorator
+            class="text-foreground/55 text-xs tracking-[0.24em] uppercase"
+          >
+            {archiveRoot ? "Archive" : meta.label}
+          </Decorator>
+          <div
+            class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+          >
+            <span>{indexes.length} groups</span>
+            <span class="text-foreground/25">/</span>
+            <span>{totalIndexedPosts} indexed posts</span>
+          </div>
+        </div>
+        <Link
+          class="text-foreground/65 hover:text-accent text-sm transition-colors"
+          href={createRouteUrl("blog")}
+        >
+          Open blog
+        </Link>
       </div>
     </section>
 
