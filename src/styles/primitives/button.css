@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 .btn {
   --background: var(--select);
   --hover-background: oklch(from var(--background) calc(l + 0.03) c h / 100%);

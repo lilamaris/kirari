@@ -1,9 +1,0 @@
-@import "tailwindcss";
-
-@layer components {
-  @import "./icon.css";
-  @import "./button.css";
-  @import "./card.css";
-  @import "./hueSlider.css";
-  @import "./hoverdown.css";
-}
