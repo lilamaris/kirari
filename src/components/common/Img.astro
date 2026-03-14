@@ -17,9 +17,9 @@ const {
   style: styleAttr = "",
 } = Astro.props;
 const images = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/*.{jpg,jpeg,png}",
+  "/src/assets/**/*.{jpg,jpeg,png,webp,avif,svg}",
 );
-if (!images[src]) throw new Error(`"${src}" does not exists`);
+const imageLoader = images[src];
 ---
 
 <div
@@ -27,9 +27,19 @@ if (!images[src]) throw new Error(`"${src}" does not exists`);
   class:list={[className, "pointer-events-none overflow-hidden select-none"]}
   style={styleAttr}
 >
-  <Image
-    src={images[src]()}
-    alt={alt || ""}
-    class="h-full object-cover object-center"
-  />
+  {
+    imageLoader ? (
+      <Image
+        src={imageLoader()}
+        alt={alt || ""}
+        class="h-full object-cover object-center"
+      />
+    ) : (
+      <img
+        src={src}
+        alt={alt || ""}
+        class="h-full object-cover object-center"
+      />
+    )
+  }
 </div>

@@ -20,7 +20,7 @@ const { class: className = "", style: styleAttr = "" } = Astro.props;
   {
     objectEntries(socials).map(([_, link]) => (
       <li>
-        <Link href={link.href} class="btn icon">
+        <Link href={link.href} class="btn icon" external>
           <Icon name={link.icon} />
         </Link>
       </li>
