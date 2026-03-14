@@ -1,8 +1,8 @@
-interface Section {
-  id: string;
-  start: number;
-  end: number;
-}
+import {
+  buildSections,
+  getVisibleSectionsIndex,
+  type Section,
+} from "./table-of-contents-core";
 
 class TableOfContent extends HTMLElement {
   mdSections: Section[] = [];
@@ -11,6 +11,10 @@ class TableOfContent extends HTMLElement {
   tocWrapperElement: HTMLElement | null = null;
   viewportIndicator: HTMLElement | null = null;
   scrollFrame: number | null = null;
+  refreshFrame: number | null = null;
+  resizeObserver: ResizeObserver | null = null;
+  observedContentElement: HTMLElement | null = null;
+  observedTocListElement: HTMLElement | null = null;
 
   constructor() {
     super();
@@ -23,32 +27,18 @@ class TableOfContent extends HTMLElement {
     return { top, bottom };
   }
 
-  getVisibleSectionsIndex() {
-    const { top, bottom } = this.getViewportHeight();
+  getContentBottom(headingElements: HTMLElement[]) {
+    const lastHeading = headingElements[headingElements.length - 1];
+    if (!lastHeading) return undefined;
 
-    // this code will loop more as the page scrolls down
-    const visibleSectionIdx: number[] = [];
-    for (const [index, heading] of this.mdSections.entries()) {
-      const start = heading.start;
-      const end = heading.end;
-      if (start > bottom) break;
-      if (end >= top && start <= bottom) visibleSectionIdx.push(index);
-    }
+    const contentRoot =
+      lastHeading.closest<HTMLElement>("article") ?? lastHeading.parentElement;
+    if (!contentRoot) return undefined;
 
-    return visibleSectionIdx;
-  }
+    this.syncObservedElement("observedContentElement", contentRoot);
 
-  buildSections(offsets: { id: string; top: number; height: number }[]) {
-    return offsets
-      .map((offset, i) => ({
-        id: offset.id,
-        start: offset.top,
-        end:
-          i < offsets.length - 1
-            ? offsets[i + 1].top
-            : offset.top + offset.height,
-      }))
-      .sort((a, b) => a.start - b.start);
+    const rect = contentRoot.getBoundingClientRect();
+    return rect.bottom + window.scrollY;
   }
 
   getRelativeOffset(elements: HTMLElement[]) {
@@ -73,30 +63,88 @@ class TableOfContent extends HTMLElement {
     });
   }
 
+  getHeadingId(link: HTMLAnchorElement) {
+    return decodeURIComponent(link.hash.replace(/^#/, ""));
+  }
+
+  getSectionPairs() {
+    const tocLinks = Array.from(
+      this.querySelectorAll<HTMLAnchorElement>("#toc-wrapper a[href^='#']"),
+    );
+
+    return tocLinks
+      .map((link) => {
+        const id = this.getHeadingId(link);
+        const heading = document.getElementById(id);
+        const tocElement = link.closest<HTMLElement>("li");
+        if (!heading || !tocElement) return null;
+
+        return { id, heading, tocElement };
+      })
+      .filter((pair): pair is NonNullable<typeof pair> => pair != null);
+  }
+
+  syncObservedElement(
+    key: "observedContentElement" | "observedTocListElement",
+    element: HTMLElement | null,
+  ) {
+    if (!this.resizeObserver) return;
+    const current = this[key];
+    if (current === element) return;
+    if (current) this.resizeObserver.unobserve(current);
+    if (element) this.resizeObserver.observe(element);
+    this[key] = element;
+  }
+
+  scheduleRefresh = () => {
+    if (this.refreshFrame != null) return;
+    this.refreshFrame = window.requestAnimationFrame(() => {
+      this.refreshFrame = null;
+      this.buildSection();
+      this.updateIndicator();
+    });
+  };
+
+  resetIndicator() {
+    this.viewportIndicator?.setAttribute("style", "top: 0; height: 0");
+    this.tocElements.forEach((el) => el.classList.remove("text-foreground/80"));
+  }
+
   buildSection() {
-    const headingElements = Array.from(
-      document.querySelectorAll<HTMLElement>(
-        ".prose :where(h1, h2, h3, h4, h5, h6)",
-      ),
-    );
+    const sectionPairs = this.getSectionPairs();
+    const headingElements = sectionPairs.map((pair) => pair.heading);
+    const tocHeadingElements = sectionPairs.map((pair) => pair.tocElement);
     const headingOffsets = this.getGlobalOffset(headingElements);
-
-    const tocHeadingElements = Array.from(
-      document.querySelectorAll<HTMLElement>(
-        "#toc-wrapper ul li:has(a[href^='#'])",
-      ),
-    );
     const tocHeadingOffset = this.getRelativeOffset(tocHeadingElements);
+    const contentBottom =
+      headingElements.length > 0
+        ? this.getContentBottom(headingElements)
+        : undefined;
+    const tocListElement = this.querySelector<HTMLElement>("#toc-wrapper ul");
 
-    this.mdSections = this.buildSections(headingOffsets);
-    this.tocSections = this.buildSections(tocHeadingOffset);
+    if (headingElements.length === 0) {
+      this.syncObservedElement("observedContentElement", null);
+    }
+    this.syncObservedElement("observedTocListElement", tocListElement);
+
+    this.mdSections = buildSections(headingOffsets, contentBottom);
+    this.tocSections = buildSections(tocHeadingOffset);
     this.tocElements = tocHeadingElements;
   }
 
   updateIndicator() {
-    if (this.mdSections.length === 0 || this.tocSections.length === 0) return;
-    const visibleSectionIdx = this.getVisibleSectionsIndex();
-    if (visibleSectionIdx.length === 0) return;
+    if (this.mdSections.length === 0 || this.tocSections.length === 0) {
+      this.resetIndicator();
+      return;
+    }
+    const visibleSectionIdx = getVisibleSectionsIndex(
+      this.mdSections,
+      this.getViewportHeight(),
+    );
+    if (visibleSectionIdx.length === 0) {
+      this.resetIndicator();
+      return;
+    }
     const startIdx = visibleSectionIdx[0];
     const endIdx = visibleSectionIdx[visibleSectionIdx.length - 1];
     const startSection = this.tocSections[startIdx];
@@ -147,13 +195,15 @@ class TableOfContent extends HTMLElement {
   };
 
   connectedCallback() {
-    this.buildSection();
-
     this.tocWrapperElement = this.querySelector("#toc-wrapper");
     this.viewportIndicator = this.querySelector("#viewport-indicator");
+    this.resizeObserver = new ResizeObserver(this.scheduleRefresh);
+
+    this.buildSection();
 
     window.addEventListener("scroll", this.handleScroll, { passive: true });
     window.addEventListener("resize", this.handleResize, { passive: true });
+    window.addEventListener("load", this.handleResize, { passive: true });
 
     this.updateIndicator();
   }
@@ -161,10 +211,19 @@ class TableOfContent extends HTMLElement {
   disconnectedCallback() {
     window.removeEventListener("scroll", this.handleScroll);
     window.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("load", this.handleResize);
     if (this.scrollFrame != null) {
       window.cancelAnimationFrame(this.scrollFrame);
       this.scrollFrame = null;
     }
+    if (this.refreshFrame != null) {
+      window.cancelAnimationFrame(this.refreshFrame);
+      this.refreshFrame = null;
+    }
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    this.observedContentElement = null;
+    this.observedTocListElement = null;
   }
 }
 
