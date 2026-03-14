@@ -1,20 +1,50 @@
 ---
+import { getCollection } from "astro:content";
+
 import type { StyledProps } from "@/types";
 
-import IndexList from "./IndexList.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import Link from "@/components/common/Link.astro";
 
+import { createRouteUrl } from "@/lib/utils";
 import { indexType } from "@/consts";
 
 interface Props extends StyledProps {}
 
 const { class: className = "", style: styleAttr = "" } = Astro.props;
+
+const categories = [
+  ...(await getCollection(
+    "postIndex",
+    (index) => index.data.type === indexType.Categories,
+  )),
+].sort((a, b) => {
+  const compare = b.data.count - a.data.count;
+  return compare !== 0 ? compare : a.data.name.localeCompare(b.data.name);
+});
 ---
 
-<IndexList
-  class={className}
-  style={styleAttr}
-  type={indexType.Categories}
-  title="Categories"
-  showCount
-  linkClass="flex items-center text-sm"
-/>
+<div class:list={[className, "card space-y-3 p-4"]} style={styleAttr}>
+  <Decorator class="text-sm font-medium">Categories</Decorator>
+  <div class="space-y-1.5">
+    {
+      categories.map((category, index) => (
+        <Link
+          class="btn justify-between px-3 text-sm"
+          data-variant={index === 0 ? undefined : "ghost"}
+          href={createRouteUrl("index", category.id)}
+        >
+          <span class="truncate">{category.data.name}</span>
+          <span class="text-foreground/45 text-xs">{category.data.count}</span>
+        </Link>
+      ))
+    }
+  </div>
+  <Link
+    class="text-foreground/65 hover:text-accent inline-flex items-center gap-2 text-sm transition-colors"
+    href={createRouteUrl("index", indexType.Categories)}
+  >
+    Open category archive
+    <span aria-hidden="true">/</span>
+  </Link>
+</div>

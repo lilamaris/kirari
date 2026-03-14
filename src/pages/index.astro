@@ -3,16 +3,24 @@ import { getCollection } from "astro:content";
 
 import MainLayout from "@/layouts/MainLayout.astro";
 import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
 import PostList from "@/components/post/PostList.astro";
+import SiteProfile from "@/components/ui/SiteProfile.astro";
+import AuthorProfile from "@/components/ui/AuthorProfile.astro";
+import CategoryList from "@/components/index/CategoryList.astro";
 
 import { siteConfig, themeConfig } from "@/consts";
-import { createRouteUrl } from "@/lib/utils";
+import { createRouteUrl, formatDate } from "@/lib/utils";
+
+const posts = [
+  ...(await getCollection("posts", ({ data }) => !data.draft)),
+].sort(
+  (a, b) => +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0),
+);
 
 const { recentPostCount } = themeConfig;
-const recentPosts = (await getCollection("posts", ({ data }) => !data.draft)).slice(
-  0,
-  recentPostCount,
-);
+const recentPosts = posts.slice(0, Math.max(3, recentPostCount));
+const latestPost = recentPosts[0];
 ---
 
 <MainLayout
@@ -21,12 +29,49 @@ const recentPosts = (await getCollection("posts", ({ data }) => !data.draft)).sl
     type: "website",
   }}
 >
-  <PostList class:list={["space-y-2"]} posts={recentPosts} />
-  <Link
-    class="btn text-foreground mx-auto mt-2 w-fit px-2"
-    data-variant="ghost"
-    href={createRouteUrl("blog")}
+  <div class="anim-delay-sequence space-y-2">
+    <section class="card anim-onload p-5 sm:p-6" style="--i: 0">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <Decorator
+            class="text-foreground/55 text-xs tracking-[0.24em] uppercase"
+          >
+            Home
+          </Decorator>
+          <div
+            class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+          >
+            <span>{posts.length} posts</span>
+            {
+              latestPost && (
+                <>
+                  <span class="text-foreground/25">/</span>
+                  <span>{formatDate(latestPost.data.published)}</span>
+                </>
+              )
+            }
+          </div>
+        </div>
+        <Link
+          class="text-foreground/65 hover:text-accent text-sm transition-colors"
+          href={createRouteUrl("blog")}
+        >
+          Read posts
+        </Link>
+      </div>
+    </section>
+
+    <section class="anim-onload space-y-2" style="--i: 1">
+      <PostList class:list={["space-y-2"]} posts={recentPosts} />
+    </section>
+  </div>
+
+  <div
+    slot="left-aside"
+    class="anim-delay-sequence sticky top-[calc(var(--navigationHeight)_+_var(--layoutGap))] space-y-2"
   >
-    See more blogs
-  </Link>
+    <SiteProfile class="anim-onload" style="--i: 0" />
+    <AuthorProfile class="anim-onload" style="--i: 1" />
+    <CategoryList class="anim-onload hidden xl:block" style="--i: 2" />
+  </div>
 </MainLayout>
