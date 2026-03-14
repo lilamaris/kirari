@@ -1,7 +1,38 @@
 ---
-import AuthorProfile from "@/components/ui/AuthorProfile.astro";
-import { routes, siteConfig } from "@/consts";
+import { getCollection } from "astro:content";
+
 import MainLayout from "@/layouts/MainLayout.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import Link from "@/components/common/Link.astro";
+import Img from "@/components/common/Img.astro";
+import ExternalSocials from "@/components/ui/ExternalSocials.astro";
+
+import { routes, siteConfig, socials, themeConfig } from "@/consts";
+import { createRouteUrl, objectEntries } from "@/lib/utils";
+
+const posts = await getCollection("posts", ({ data }) => !data.draft);
+const indexes = await getCollection("postIndex");
+
+const { avatarImgUrl } = themeConfig;
+const { title, description, authorName, authorComment } = siteConfig;
+
+const quickLinks = [
+  {
+    label: "Blog",
+    href: createRouteUrl("blog"),
+    detail: `${posts.length} posts`,
+  },
+  {
+    label: "Archive",
+    href: createRouteUrl("index"),
+    detail: `${indexes.length} groups`,
+  },
+  {
+    label: "Home",
+    href: createRouteUrl("root"),
+    detail: "Front page",
+  },
+];
 ---
 
 <MainLayout
@@ -11,8 +42,111 @@ import MainLayout from "@/layouts/MainLayout.astro";
     type: "website",
   }}
 >
-  <div class="card px-6 py-4">
-    <h1 class="text-lg font-bold">{routes.about.label}</h1>
+  <div class="anim-delay-sequence space-y-2">
+    <section class="card anim-onload p-5 sm:p-6" style="--i: 0">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <Decorator
+            class="text-foreground/55 text-xs tracking-[0.24em] uppercase"
+          >
+            About
+          </Decorator>
+          <div
+            class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+          >
+            <span>{authorName}</span>
+            <span class="text-foreground/25">/</span>
+            <span>{title}</span>
+          </div>
+        </div>
+        <Link
+          class="text-foreground/65 hover:text-accent text-sm transition-colors"
+          href={createRouteUrl("blog")}
+        >
+          Open blog
+        </Link>
+      </div>
+    </section>
+
+    <section
+      class="anim-onload grid gap-2 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
+      style="--i: 1"
+    >
+      <div class="card space-y-4 p-5 sm:p-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <Img
+            src={avatarImgUrl}
+            alt={`${authorName} profile`}
+            class="rounded-surface border-border/50 aspect-square size-24 shrink-0 border sm:size-28"
+          />
+          <div class="min-w-0 space-y-3">
+            <div class="space-y-1">
+              <h1 class="text-xl font-medium sm:text-2xl">{authorName}</h1>
+              <p class="text-foreground/60 text-sm sm:text-base">
+                {authorComment}
+              </p>
+            </div>
+            <p
+              class="text-foreground/72 max-w-2xl text-sm leading-6 sm:text-base sm:leading-7"
+            >
+              {title} is a personal space for posts, small notes, and ongoing threads.
+              This page stays intentionally compact: enough context to know who is
+              writing and where the rest of the site branches out.
+            </p>
+            <ExternalSocials />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid gap-2">
+        <div class="card space-y-3 p-5">
+          <Decorator class="text-sm font-medium">Quick links</Decorator>
+          <div class="space-y-1.5">
+            {
+              quickLinks.map((link, index) => (
+                <Link
+                  class="btn justify-between px-3 text-sm"
+                  data-variant={index === 0 ? undefined : "ghost"}
+                  href={link.href}
+                >
+                  <span>{link.label}</span>
+                  <span class="text-foreground/45 text-xs">{link.detail}</span>
+                </Link>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="card space-y-3 p-5">
+          <Decorator class="text-sm font-medium">Elsewhere</Decorator>
+          <div class="space-y-1.5">
+            {
+              objectEntries(socials).map(([key, social]) => (
+                <Link
+                  class="btn justify-between px-3 text-sm"
+                  data-variant="ghost"
+                  href={social.href}
+                  external
+                >
+                  <span>{social.label}</span>
+                  <span class="text-foreground/45 text-xs">{key}</span>
+                </Link>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-  <AuthorProfile class="anim-onload" style="--i: 1" />
+
+  <div slot="right-aside" class="anim-delay-sequence space-y-2">
+    <div class="card anim-onload space-y-3 p-4" style="--i: 0">
+      <Decorator class="text-sm font-medium">At a glance</Decorator>
+      <div class="text-foreground/60 space-y-1 text-sm">
+        <p>{authorName}</p>
+        <p>{posts.length} published posts</p>
+        <p>{indexes.length} archive groups</p>
+      </div>
+    </div>
+  </div>
 </MainLayout>
