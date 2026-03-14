@@ -7,68 +7,14 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-@theme {
-  --font-sans:
-    "Geist Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono:
-    "Geist Variable Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, "Liberation Mono", "Courier New", monospace;
-
-  --hue: 250;
-  --radius-surface: 0.625rem;
-  --radius-select: 0.5rem;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-neutral: var(--neutral);
-  --color-surface: var(--surface);
-  --color-select: var(--select);
-  --color-accent: var(--accent);
-  --color-border: var(--border);
-  --color-foreground: var(--foreground);
-}
-
-@layer theme {
-  :root {
-    --background: oklch(1 0.008 var(--hue));
-    --neutral: oklch(0.6 0 0);
-    --surface: oklch(1 0.004 var(--hue));
-    --select: oklch(0.97 0.01 var(--hue));
-    --accent: oklch(0.55 0.15 var(--hue));
-    --border: oklch(0 0 0 / 0.1);
-    --foreground: oklch(0.2 0 0);
-  }
-
-  [data-theme="dark"] {
-    --background: oklch(0.15 0.008 var(--hue));
-    --neutral: oklch(0.4 0 var(--hue));
-    --surface: oklch(0.1 0.008 var(--hue));
-    --select: oklch(0.2 0.01 var(--hue));
-    --accent: oklch(0.9 0.18 var(--hue));
-    --border: oklch(1 0 0 / 0.1);
-    --foreground: oklch(0.97 0 0);
-  }
-}
-
-@layer base {
-  body {
-    @apply bg-background transition-colors;
-  }
-
-  .astro-code,
-  .astro-code span {
-    @variant dark {
-      color: var(--shiki-dark) !important;
-      background-color: var(--shiki-dark-bg) !important;
-      /* Optional, if you also want font styles */
-      font-style: var(--shiki-dark-font-style) !important;
-      font-weight: var(--shiki-dark-font-weight) !important;
-      text-decoration: var(--shiki-dark-text-decoration) !important;
-    }
-  }
-}
-
-@import "./components/index.css";
-@import "./utilities/index.css";
+@import "./foundation/theme.css";
+@import "./foundation/base.css";
+@import "./primitives/icon.css";
+@import "./primitives/button.css";
+@import "./primitives/card.css";
+@import "./widgets/hue-slider.css";
+@import "./interaction/hoverdown.css";
+@import "./interaction/animations.css";
+@import "./content/base-typography.css";
+@import "./content/prose.css";
+@import "./content/helpers.css";

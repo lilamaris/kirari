@@ -1,5 +1,3 @@
-@import "tailwindcss";
-
 .icon {
   @apply text-accent inline-flex aspect-square items-center justify-center;
 }

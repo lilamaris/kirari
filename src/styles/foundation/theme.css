@@ -1,0 +1,44 @@
+@theme {
+  --font-sans:
+    "Geist Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "Geist Variable Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --hue: 250;
+  --radius-surface: 0.625rem;
+  --radius-select: 0.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-neutral: var(--neutral);
+  --color-surface: var(--surface);
+  --color-select: var(--select);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+}
+
+@layer theme {
+  :root {
+    --background: oklch(1 0.008 var(--hue));
+    --neutral: oklch(0.6 0 0);
+    --surface: oklch(1 0.004 var(--hue));
+    --select: oklch(0.97 0.01 var(--hue));
+    --accent: oklch(0.55 0.15 var(--hue));
+    --border: oklch(0 0 0 / 0.1);
+    --foreground: oklch(0.2 0 0);
+  }
+
+  [data-theme="dark"] {
+    --background: oklch(0.15 0.008 var(--hue));
+    --neutral: oklch(0.4 0 var(--hue));
+    --surface: oklch(0.1 0.008 var(--hue));
+    --select: oklch(0.2 0.01 var(--hue));
+    --accent: oklch(0.9 0.18 var(--hue));
+    --border: oklch(1 0 0 / 0.1);
+    --foreground: oklch(0.97 0 0);
+  }
+}

@@ -1,0 +1,7 @@
+@utility fix-margin {
+  @apply [&>*]:first:mt-0! [&>*]:last:mb-0!;
+}
+
+@utility small {
+  @apply text-sm leading-6 [&_code]:text-xs [&_img,video,figure,details,blockquote,.katex-display,.expressive-code]:my-4! [&_li,ol]:mt-0 [&_p]:my-2! [&_ul]:my-0;
+}
