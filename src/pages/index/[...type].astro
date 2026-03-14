@@ -2,64 +2,199 @@
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 
+import type { IndexEnum, PostIndex } from "@/types";
+
 import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
-import PostList from "@/components/post/PostList.astro";
+import Link from "@/components/common/Link.astro";
+import ArchivePostList from "@/components/post/ArchivePostList.astro";
 import { indexType, siteConfig } from "@/consts";
-import { objectValues } from "@/lib/utils";
+import { createRouteUrl, objectValues } from "@/lib/utils";
 
 export const getStaticPaths = (async () => {
   return [undefined, ...objectValues(indexType)].map((type) => ({
-    params: { type: type },
+    params: { type },
   }));
 }) satisfies GetStaticPaths;
 
+const sortPostsByPublished = <
+  T extends { data: { published: Date; title: string } },
+>(
+  posts: T[],
+) =>
+  [...posts].sort((a, b) => {
+    const compare =
+      +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0);
+    return compare !== 0
+      ? compare
+      : (a.data.title ?? "").localeCompare(b.data.title ?? "");
+  });
+
+const sortIndexes = (type: IndexEnum, indexes: PostIndex[]) => {
+  return [...indexes].sort((a, b) => {
+    if (type === indexType.PublishedYear) {
+      return Number(b.data.name) - Number(a.data.name);
+    }
+
+    const compare = b.data.count - a.data.count;
+    return compare !== 0 ? compare : a.data.name.localeCompare(b.data.name);
+  });
+};
+
+const typeMeta: Record<IndexEnum, { label: string; eyebrow: string }> = {
+  [indexType.PublishedYear]: {
+    label: "Years",
+    eyebrow: "Timeline",
+  },
+  [indexType.Categories]: {
+    label: "Categories",
+    eyebrow: "Topics",
+  },
+  [indexType.Tags]: {
+    label: "Tags",
+    eyebrow: "Keywords",
+  },
+  [indexType.Series]: {
+    label: "Series",
+    eyebrow: "Threads",
+  },
+};
+
 const { type } = Astro.params;
+const activeType = (type ?? indexType.PublishedYear) as IndexEnum;
+const archiveRoot = type == null;
 
-const postIndex = await getCollection(
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const postIndexes = await getCollection(
   "postIndex",
-  (index) => index.data.type === (type || "publishedYear"),
+  (entry) => entry.data.type === activeType,
 );
-const posts = await getCollection("posts");
 
-const indexes = postIndex.map((index) => ({
-  ...index,
+const postsById = new Map(allPosts.map((post) => [post.id, post]));
+const indexes = sortIndexes(activeType, postIndexes).map((entry) => ({
+  ...entry,
+  sectionId: `group-${entry.id.replaceAll("/", "-")}`,
   data: {
-    ...index.data,
-    items: posts
-      .filter((post) => index.data.items.includes(post.id))
-      .sort(
-        (a, b) => +new Date(b.data.published) - +new Date(a.data.published),
-      ),
+    ...entry.data,
+    items: sortPostsByPublished(
+      entry.data.items
+        .map((item) => postsById.get(item))
+        .filter((item) => item != null),
+    ),
   },
 }));
 
-const label = type || "publishedYear";
+const meta = typeMeta[activeType];
+const totalIndexedPosts = indexes.reduce(
+  (sum, entry) => sum + entry.data.count,
+  0,
+);
+const previewGroups = indexes.slice(0, 10);
+const moreGroups = Math.max(0, indexes.length - previewGroups.length);
 ---
 
 <MainLayout
   seo={{
-    title: `Index - ${label}`,
-    description: `${siteConfig.title} post index grouped by ${label}.`,
+    title: archiveRoot ? "Archive" : `Index - ${meta.label}`,
+    description: `${siteConfig.title} archive grouped by ${meta.label.toLowerCase()}.`,
     type: "website",
   }}
 >
-  <div class="space-y-2">
-    <Decorator class="text-foreground" slot="header">
-      <span class="bg-accent mr-2 h-4 w-0.5" slot="deco"></span>
-      <Breadcrumbs />
-    </Decorator>
-    {
-      indexes.map((index, i) => (
-        <div class="space-y-2">
-          <Decorator class="text-foreground" slot="left-aside">
-            <span class="bg-accent mr-2 h-4 w-0.5" slot="deco" />
-            <h1 class="text-foreground text-lg">{index.data.name}</h1>
-          </Decorator>
-          <PostList posts={index.data.items} />
-        </div>
-      ))
-    }
+  <div class="anim-delay-sequence space-y-2">
+    <section class="card anim-onload space-y-4 p-5 sm:p-6" style="--i: 0">
+      <div class="space-y-2">
+        <Decorator class="text-sm">
+          <Breadcrumbs class="text-foreground/65 text-sm" />
+        </Decorator>
+        <h1 class="text-2xl font-medium sm:text-3xl">
+          {archiveRoot ? "Archive" : meta.label}
+        </h1>
+      </div>
+
+      <div
+        class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+      >
+        <span>{indexes.length} groups</span>
+        <span class="text-foreground/25">/</span>
+        <span>{totalIndexedPosts} indexed posts</span>
+      </div>
+    </section>
+
+    <section class="anim-onload space-y-2" style="--i: 1">
+      {
+        indexes.map((entry, index) => (
+          <section id={entry.sectionId} class="card space-y-3 p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-3">
+              <div class="space-y-1">
+                <Decorator class="text-sm font-medium">
+                  {entry.data.name}
+                </Decorator>
+                <p class="text-foreground/55 px-1 text-sm">
+                  {entry.data.count} post{entry.data.count === 1 ? "" : "s"}
+                </p>
+              </div>
+              <Link
+                class="text-foreground/70 hover:text-accent text-sm transition-colors"
+                href={createRouteUrl("index", entry.id)}
+              >
+                Open group
+              </Link>
+            </div>
+            <ArchivePostList
+              posts={entry.data.items}
+              style={`--initialDelay: ${100 + index * 40}ms`}
+            />
+          </section>
+        ))
+      }
+    </section>
+  </div>
+
+  <div slot="right-aside" class="anim-delay-sequence space-y-2">
+    <div class="card anim-onload space-y-3 p-4" style="--i: 0">
+      <Decorator class="text-sm font-medium">Axes</Decorator>
+      <div class="space-y-1.5">
+        {
+          objectValues(indexType).map((entryType) => (
+            <Link
+              class="btn justify-between px-3 text-sm"
+              data-variant={entryType === activeType ? undefined : "ghost"}
+              href={createRouteUrl("index", entryType)}
+            >
+              <span>{typeMeta[entryType].label}</span>
+              <span class="text-foreground/45 text-xs">
+                {typeMeta[entryType].eyebrow}
+              </span>
+            </Link>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="card anim-onload space-y-3 p-4" style="--i: 1">
+      <Decorator class="text-sm font-medium">On this page</Decorator>
+      <div class="space-y-1.5">
+        {
+          previewGroups.map((entry) => (
+            <Link
+              class="btn justify-between px-3 text-sm"
+              data-variant="ghost"
+              href={`#${entry.sectionId}`}
+            >
+              <span class="truncate">{entry.data.name}</span>
+              <span class="text-foreground/45 text-xs">{entry.data.count}</span>
+            </Link>
+          ))
+        }
+      </div>
+      {
+        moreGroups > 0 && (
+          <p class="text-foreground/45 text-xs">
+            + {moreGroups} more groups below
+          </p>
+        )
+      }
+    </div>
   </div>
 </MainLayout>

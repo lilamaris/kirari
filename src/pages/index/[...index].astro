@@ -5,8 +5,10 @@ import { getCollection } from "astro:content";
 import MainLayout from "@/layouts/MainLayout.astro";
 import Decorator from "@/components/common/Decorator.astro";
 import Breadcrumbs from "@/components/ui/Breadcrumbs.astro";
-import PostList from "@/components/post/PostList.astro";
-import { siteConfig } from "@/consts";
+import Link from "@/components/common/Link.astro";
+import ArchivePostList from "@/components/post/ArchivePostList.astro";
+import { indexType, siteConfig } from "@/consts";
+import { createRouteUrl } from "@/lib/utils";
 
 export const getStaticPaths = (async () => {
   const indexes = await getCollection("postIndex");
@@ -16,11 +18,34 @@ export const getStaticPaths = (async () => {
   }));
 }) satisfies GetStaticPaths;
 
-const { index } = Astro.props;
+const typeMeta = {
+  [indexType.PublishedYear]: { label: "Years", eyebrow: "Timeline" },
+  [indexType.Categories]: { label: "Categories", eyebrow: "Topics" },
+  [indexType.Tags]: { label: "Tags", eyebrow: "Keywords" },
+  [indexType.Series]: { label: "Series", eyebrow: "Threads" },
+} as const;
 
-const posts = await getCollection("posts", (post) =>
-  index.data.items.includes(post.id),
+const sortPostsByPublished = <
+  T extends { data: { published: Date; title: string } },
+>(
+  posts: T[],
+) =>
+  [...posts].sort((a, b) => {
+    const compare =
+      +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0);
+    return compare !== 0
+      ? compare
+      : (a.data.title ?? "").localeCompare(b.data.title ?? "");
+  });
+
+const { index } = Astro.props;
+const posts = sortPostsByPublished(
+  await getCollection(
+    "posts",
+    (post) => !post.data.draft && index.data.items.includes(post.id),
+  ),
 );
+const meta = typeMeta[index.data.type];
 ---
 
 <MainLayout
@@ -30,12 +55,64 @@ const posts = await getCollection("posts", (post) =>
     type: "website",
   }}
 >
-  <div class="space-y-2">
-    <Decorator class="text-foreground">
-      <span class="bg-accent mr-2 h-4 w-0.5" slot="deco"></span>
-      <Breadcrumbs />
-    </Decorator>
+  <div class="anim-delay-sequence space-y-2">
+    <section class="card anim-onload space-y-4 p-5 sm:p-6" style="--i: 0">
+      <div class="space-y-2">
+        <Decorator class="text-sm">
+          <Breadcrumbs class="text-foreground/65 text-sm" />
+        </Decorator>
+        <h1 class="text-2xl font-medium sm:text-3xl">{index.data.name}</h1>
+      </div>
 
-    <PostList posts={posts} />
+      <div
+        class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+      >
+        <span>{meta.label}</span>
+        <span class="text-foreground/25">/</span>
+        <span>{posts.length} posts</span>
+      </div>
+    </section>
+
+    <section class="anim-onload space-y-2" style="--i: 1">
+      <div class="card p-4 sm:p-5">
+        <ArchivePostList posts={posts} />
+      </div>
+    </section>
+  </div>
+
+  <div slot="right-aside" class="anim-delay-sequence space-y-2">
+    <div class="card anim-onload space-y-3 p-4" style="--i: 0">
+      <Decorator class="text-sm font-medium">Group</Decorator>
+      <div class="space-y-1">
+        <p class="text-foreground text-sm font-medium">{index.data.name}</p>
+        <p class="text-foreground/55 text-sm">{meta.eyebrow}</p>
+      </div>
+      <div class="text-foreground/55 space-y-1 text-sm">
+        <p>{posts.length} posts</p>
+        <p>{index.data.type}</p>
+      </div>
+    </div>
+
+    <div class="card anim-onload space-y-3 p-4" style="--i: 1">
+      <Decorator class="text-sm font-medium">Back</Decorator>
+      <div class="space-y-1.5">
+        <Link
+          class="btn justify-between px-3 text-sm"
+          data-variant="ghost"
+          href={createRouteUrl("index", index.data.type)}
+        >
+          <span>{meta.label}</span>
+          <span class="text-foreground/45 text-xs">axis</span>
+        </Link>
+        <Link
+          class="btn justify-between px-3 text-sm"
+          data-variant="ghost"
+          href={createRouteUrl("index")}
+        >
+          <span>Archive</span>
+          <span class="text-foreground/45 text-xs">root</span>
+        </Link>
+      </div>
+    </div>
   </div>
 </MainLayout>
