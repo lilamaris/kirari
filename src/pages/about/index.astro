@@ -105,7 +105,7 @@ const quickLinks = [
             {
               quickLinks.map((link, index) => (
                 <Link
-                  class="btn justify-between px-3 text-sm"
+                  class="btn row px-3 text-sm"
                   data-variant={index === 0 ? undefined : "ghost"}
                   href={link.href}
                 >
@@ -123,7 +123,7 @@ const quickLinks = [
             {
               objectEntries(socials).map(([key, social]) => (
                 <Link
-                  class="btn justify-between px-3 text-sm"
+                  class="btn row px-3 text-sm"
                   data-variant="ghost"
                   href={social.href}
                   external

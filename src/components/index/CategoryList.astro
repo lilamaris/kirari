@@ -30,7 +30,7 @@ const categories = [
     {
       categories.map((category, index) => (
         <Link
-          class="btn justify-between px-3 text-sm"
+          class="btn row px-3 text-sm"
           data-variant={index === 0 ? undefined : "ghost"}
           href={createRouteUrl("index", category.id)}
         >
