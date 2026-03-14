@@ -12,13 +12,21 @@ const {
   external,
   underline,
   class: className,
+  rel,
+  target,
   ...props
 }: Props = Astro.props;
+
+const resolvedTarget = target ?? (external ? "_blank" : "_self");
+const resolvedRel = external
+  ? [...new Set([rel, "noopener", "noreferrer"].filter(Boolean))].join(" ")
+  : rel;
 ---
 
 <a
   href={href}
-  target={external ? "_blank" : "_self"}
+  target={resolvedTarget}
+  rel={resolvedRel}
   class:list={[
     className,
     underline && "hover:decoration-accent underline underline-offset-3",
