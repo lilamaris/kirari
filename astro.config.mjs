@@ -11,10 +11,6 @@ import { remarkReadingTime } from "./src/lib/plugins/remark-reading-time.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-  trailingSlash: "always",
-  build: {
-    format: "directory",
-  },
   vite: {
     plugins: [tailwindcss()],
   },
