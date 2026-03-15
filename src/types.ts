@@ -1,3 +1,4 @@
+import type { ImageMetadata } from "astro";
 import type { CollectionEntry } from "astro:content";
 import type {
   indexType,
@@ -9,6 +10,7 @@ import type {
 
 export type Post = CollectionEntry<"posts">;
 export type PostIndex = CollectionEntry<"postIndex">;
+export type AssetLike = string | ImageMetadata;
 
 export type ThemeEnum = (typeof theme)[keyof typeof theme];
 export type IndexEnum = (typeof indexType)[keyof typeof indexType];
@@ -40,10 +42,10 @@ export interface ThemeConfig {
   enableThemeControl: boolean;
   recentPostCount: number;
   postPerPage: number;
-  siteIconUrl: string;
-  avatarImgUrl: string;
-  bannerImgUrl: string;
-  thumbnailFallbackImgUrl: string;
+  siteIconUrl: AssetLike;
+  avatarImgUrl: AssetLike;
+  bannerImgUrl: AssetLike;
+  thumbnailFallbackImgUrl: AssetLike;
 }
 
 export interface LayoutConfig {
@@ -58,7 +60,7 @@ export interface LayoutConfig {
 export interface SeoMeta {
   title?: string;
   description?: string;
-  image?: string;
+  image?: AssetLike;
   noindex?: boolean;
   type?: "website" | "article";
   publishedTime?: Date;

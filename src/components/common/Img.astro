@@ -2,42 +2,60 @@
 import type { StyledProps } from "@/types";
 import type { ImageMetadata } from "astro";
 import { Image } from "astro:assets";
+import { isImageMetadata } from "@/lib/assets";
 
 interface Props extends StyledProps {
   id?: string;
-  src: string;
+  src: string | ImageMetadata;
   alt?: string;
+  loading?: "eager" | "lazy";
+  decoding?: "sync" | "async" | "auto";
+  fetchpriority?: "high" | "low" | "auto";
 }
 
 const {
   id,
   src,
   alt,
+  loading = "eager",
+  decoding = "async",
+  fetchpriority = "auto",
   class: className = "",
   style: styleAttr = "",
 } = Astro.props;
 const images = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/**/*.{jpg,jpeg,png,webp,avif,svg}",
 );
-const imageLoader = images[src];
+const importedImage =
+  isImageMetadata(src)
+    ? src
+    : typeof src === "string" && images[src]
+      ? (await images[src]()).default
+      : undefined;
 ---
 
 <div
   id={id}
   class:list={[className, "pointer-events-none overflow-hidden select-none"]}
   style={styleAttr}
->
+  >
   {
-    imageLoader ? (
+    importedImage ? (
       <Image
-        src={imageLoader()}
+        src={importedImage}
         alt={alt || ""}
+        loading={loading}
+        decoding={decoding}
+        fetchpriority={fetchpriority}
         class="h-full object-cover object-center"
       />
     ) : (
       <img
         src={src}
         alt={alt || ""}
+        loading={loading}
+        decoding={decoding}
+        fetchpriority={fetchpriority}
         class="h-full object-cover object-center"
       />
     )

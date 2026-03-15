@@ -24,7 +24,7 @@ const { title, description, published, categories, image, minutes } = post.data;
   style={styleAttr}
 >
   <Img
-    src={image?.src ?? thumbnailFallbackImgUrl}
+    src={image ?? thumbnailFallbackImgUrl}
     class="rounded-surface hidden aspect-video w-full overflow-hidden sm:block"
   />
   <div class="self-start px-2">

@@ -52,7 +52,13 @@ const layoutStyleVars = toStyleVars({
     class="anim-banner-entering transition-page-banner absolute mask-b-from-20%"
     style={bannerStyleVars}
   >
-    <Img id="banner" class="h-full" src={bannerImgUrl} alt="banner" />
+    <Img
+      id="banner"
+      class="h-full"
+      src={bannerImgUrl}
+      alt="banner"
+      fetchpriority="high"
+    />
   </div>
 
   <Navigation class="anim-navigation-entering sticky top-0 z-50" />

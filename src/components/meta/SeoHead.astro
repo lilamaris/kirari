@@ -1,5 +1,6 @@
 ---
 import { siteConfig, themeConfig } from "@/consts";
+import { getAssetSrc } from "@/lib/assets";
 import { getSiteUrl, resolveSeoImage, toAbsoluteUrl } from "@/lib/seo";
 import type { SeoMeta } from "@/types";
 
@@ -24,6 +25,7 @@ const imageUrl = resolveSeoImage(
   image ?? themeConfig.bannerImgUrl ?? themeConfig.siteIconUrl,
   siteUrl,
 );
+const siteIconHref = getAssetSrc(themeConfig.siteIconUrl);
 const robots = noindex ? "noindex, nofollow" : "index, follow";
 const manifestUrl = "/manifest.webmanifest";
 const rssUrl = toAbsoluteUrl("/rss.xml", siteUrl) ?? "/rss.xml";
@@ -74,7 +76,7 @@ const serializedJsonLd = JSON.stringify(jsonLd);
 />
 {keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
 {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-<link rel="icon" href={themeConfig.siteIconUrl} />
+{siteIconHref && <link rel="icon" href={siteIconHref} />}
 <link rel="apple-touch-icon" href="/favicon.svg" />
 <link rel="manifest" href={manifestUrl} />
 <link

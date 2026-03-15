@@ -1,4 +1,8 @@
 import type { LayoutConfig, SiteConfig, ThemeConfig } from "./types";
+import demoIcon from "@/assets/demo-icon.png";
+import demoProfile from "@/assets/demo-profile.jpg";
+import demoBanner from "@/assets/demo-banner.jpg";
+import demoThumbnail from "@/assets/demo-thumnail.png";
 
 export const siteConfig: SiteConfig = {
   title: "Kirari",
@@ -19,10 +23,10 @@ export const themeConfig: ThemeConfig = {
   enableThemeControl: true,
   recentPostCount: 3,
   postPerPage: 4,
-  siteIconUrl: "/src/assets/demo-icon.png",
-  avatarImgUrl: "/src/assets/demo-profile.jpg",
-  bannerImgUrl: "/src/assets/demo-banner.jpg",
-  thumbnailFallbackImgUrl: "/src/assets/demo-thumnail.png",
+  siteIconUrl: demoIcon,
+  avatarImgUrl: demoProfile,
+  bannerImgUrl: demoBanner,
+  thumbnailFallbackImgUrl: demoThumbnail,
 };
 
 export const layoutConfig: LayoutConfig = {
@@ -59,15 +63,15 @@ export const routes = {
     label: "/Home",
   },
   blog: {
-    href: "/blog",
+    href: "/blog/",
     label: "/Blog",
   },
   index: {
-    href: "/index",
+    href: "/index/",
     label: "/Index",
   },
   about: {
-    href: "/about",
+    href: "/about/",
     label: "/About",
   },
 } as const;

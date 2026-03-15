@@ -13,7 +13,7 @@ interface Props extends StyledProps {
 const { thumbnailFallbackImgUrl } = themeConfig;
 const { post, class: className = "", style: styleAttr = "" } = Astro.props;
 const { title, description, published, categories, image, minutes } = post.data;
-const thumbnailUrl = post.data.image?.src ?? thumbnailFallbackImgUrl;
+const thumbnailUrl = post.data.image ?? thumbnailFallbackImgUrl;
 ---
 
 <div class:list={[className, "space-y-4"]} style={styleAttr}>

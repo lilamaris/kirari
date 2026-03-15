@@ -1,4 +1,6 @@
 import { siteConfig } from "@/consts";
+import { getAssetSrc } from "@/lib/assets";
+import type { AssetLike } from "@/types";
 
 const ABSOLUTE_URL_PATTERN = /^https?:\/\//i;
 
@@ -24,10 +26,11 @@ export const toAbsoluteUrl = (
 };
 
 export const resolveSeoImage = (
-  image?: string,
+  image?: AssetLike,
   siteUrl = getSiteUrl(),
 ): string | undefined => {
-  if (!image) return undefined;
-  if (isAbsoluteUrl(image)) return image;
-  return toAbsoluteUrl(image, siteUrl);
+  const imageSrc = getAssetSrc(image);
+  if (!imageSrc) return undefined;
+  if (isAbsoluteUrl(imageSrc)) return imageSrc;
+  return toAbsoluteUrl(imageSrc, siteUrl);
 };
