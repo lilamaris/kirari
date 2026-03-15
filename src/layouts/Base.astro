@@ -14,8 +14,8 @@ const { seo } = Astro.props;
 
 <html lang={siteConfig.lang}>
   <head>
-    <script is:inline type="module" src="/src/lib/table-of-contents"></script>
     <script>
+      import "@/lib/table-of-contents";
       import "@/lib/swup.js";
     </script>
     <script is:inline define:vars={{ initialHue, initialTheme }}>
