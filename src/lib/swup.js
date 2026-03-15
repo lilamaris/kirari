@@ -28,12 +28,12 @@ const swup = new Swup({
 });
 
 swup.hooks.on("animation:out:start", () => {
-  console.log("Animation out start");
+  // console.log("Animation out start");
   setBaseUrlToDocument();
 });
 
 swup.hooks.on("visit:start", () => {
-  console.log("Visit start");
+  // console.log("Visit start");
   setBaseUrlToDocument();
 });
 

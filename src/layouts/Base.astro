@@ -15,7 +15,9 @@ const { seo } = Astro.props;
 <html lang={siteConfig.lang}>
   <head>
     <script is:inline type="module" src="/src/lib/table-of-contents"></script>
-    <script is:inline type="module" src="/src/lib/swup.js"></script>
+    <script>
+      import "@/lib/swup.js";
+    </script>
     <script is:inline define:vars={{ initialHue, initialTheme }}>
       const path = window.location.pathname;
       const parts = path.split("/").filter(Boolean);
