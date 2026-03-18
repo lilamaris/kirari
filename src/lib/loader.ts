@@ -3,7 +3,7 @@ import { glob, type Loader } from "astro/loaders";
 import getReadingTime from "reading-time";
 import { type IndexEnum, type Post } from "@/types";
 import { indexType } from "@/consts";
-import { objectKeys, objectValues } from "./utils";
+import { objectValues } from "./utils";
 
 const globWithLoader = (
   options: Parameters<typeof glob>[0],
