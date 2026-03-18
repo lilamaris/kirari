@@ -3,13 +3,15 @@ set -Eeuo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORK_DIR="${ROOT_DIR}/.tmp/articles-build"
-CONTENT_DIR="${ROOT_DIR}/src/content/posts"
 
 ARTICLE_REPO_URL=""
 ARTICLE_SUBDIR=""
 IMAGE_REPO="${IMAGE_REPO:-astro-blog}"
 IMAGE_TAG="${IMAGE_TAG:-local}"
 DOCKERFILE_PATH="${DOCKERFILE_PATH:-docker/Dockerfile}"
+CONTENT_DIR="${CONTENT_DIR:-${ROOT_DIR}/src/content/blog}"
+NORMALIZE_SCRIPT="${NORMALIZE_SCRIPT:-${ROOT_DIR}/scripts/normalize-articles.ts}"
+BASE_DIR=""
 
 log() {
   printf '\n[%s] %s\n' "$(date '+%F %T')" "$*"
@@ -32,9 +34,12 @@ Usage:
 Options:
   -r, --repo <url>           External git repository URL containing articles
   -d, --subdir <dir>         Optional subdirectory inside the article repo
+  -b, --base-dir <dir>       Base directory for category calculation
   -i, --image-repo <repo>    Container image repository
   -t, --image-tag <tag>      Container image tag
       --dockerfile <path>    Dockerfile path relative to project root
+      --content-dir <path>   Output content directory (default: src/content/blog)
+      --no-build             Normalize only, skip image build
   -h, --help                 Show this help
 
 Examples:
@@ -44,6 +49,8 @@ Examples:
      -i registry.lilamaris.kr/blog/astro-blog -t v0.1.0
 EOF
 }
+
+SKIP_BUILD="false"
 
 cleanup() {
   rm -rf "$WORK_DIR"
@@ -63,6 +70,11 @@ while [[ $# -gt 0 ]]; do
     ARTICLE_SUBDIR="$2"
     shift 2
     ;;
+  -b | --base-dir)
+    [[ $# -ge 2 ]] || fail "missing value for $1"
+    BASE_DIR="$2"
+    shift 2
+    ;;
   -i | --image-repo)
     [[ $# -ge 2 ]] || fail "missing value for $1"
     IMAGE_REPO="$2"
@@ -77,6 +89,15 @@ while [[ $# -gt 0 ]]; do
     [[ $# -ge 2 ]] || fail "missing value for $1"
     DOCKERFILE_PATH="$2"
     shift 2
+    ;;
+  --content-dir)
+    [[ $# -ge 2 ]] || fail "missing value for $1"
+    CONTENT_DIR="$2"
+    shift 2
+    ;;
+  --no-build)
+    SKIP_BUILD="true"
+    shift
     ;;
   -h | --help)
     usage
@@ -94,9 +115,10 @@ done
 }
 
 require_cmd git
-require_cmd rsync
+require_cmd pnpm
 require_cmd podman
 
+[[ -f "$NORMALIZE_SCRIPT" ]] || fail "normalize script not found: $NORMALIZE_SCRIPT"
 [[ -f "${ROOT_DIR}/${DOCKERFILE_PATH}" ]] || fail "Dockerfile not found at ${DOCKERFILE_PATH}"
 
 log "Preparing temporary workspace"
@@ -104,7 +126,7 @@ rm -rf "$WORK_DIR"
 mkdir -p "$WORK_DIR"
 
 log "Cloning article repository"
-git clone --depth 1 "$ARTICLE_REPO_URL" "$WORK_DIR/repo"
+git clone "$ARTICLE_REPO_URL" "$WORK_DIR/repo"
 
 SOURCE_DIR="$WORK_DIR/repo"
 if [[ -n "$ARTICLE_SUBDIR" ]]; then
@@ -113,22 +135,28 @@ fi
 
 [[ -d "$SOURCE_DIR" ]] || fail "article source directory not found: $SOURCE_DIR"
 
-log "Refreshing blog content directory"
-rm -rf "$CONTENT_DIR"
-mkdir -p "$CONTENT_DIR"
+if [[ -z "$BASE_DIR" ]]; then
+  BASE_DIR="$SOURCE_DIR"
+fi
 
-rsync -av --delete \
-  --exclude='.git' \
-  --exclude='.obsidian' \
-  --exclude='.DS_Store' \
-  --exclude='node_modules' \
-  "$SOURCE_DIR"/ "$CONTENT_DIR"/
-
-log "Building container image"
+log "Normalizing articles into content directory"
 cd "$ROOT_DIR"
+pnpm tsx "$NORMALIZE_SCRIPT" \
+  --source "$SOURCE_DIR" \
+  --output "$CONTENT_DIR" \
+  --base-dir "$BASE_DIR"
+
+if [[ "$SKIP_BUILD" == "true" ]]; then
+  log "Skipped image build (--no-build)"
+  exit 0
+fi
+
 FULL_IMAGE_REF="${IMAGE_REPO}:${IMAGE_TAG}"
+
+log "Building container image: $FULL_IMAGE_REF"
 podman build -f "$DOCKERFILE_PATH" -t "$FULL_IMAGE_REF" .
 
 log "Done"
 echo "Built image: $FULL_IMAGE_REF"
-echo "Articles copied from: ${ARTICLE_REPO_URL}${ARTICLE_SUBDIR:+/$ARTICLE_SUBDIR}"
+echo "Articles source: $ARTICLE_REPO_URL"
+echo "Normalized content output: $CONTENT_DIR"
