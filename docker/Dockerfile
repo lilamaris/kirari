@@ -9,9 +9,18 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+ARG CONTENT_REPO
+ARG CONTENT_OUTPUT=src/content/posts
+ARG CONTENT_TMP=/.tmp/articles
+
+RUN rm -rf "$CONTENT_OUTPUT" \
+    && git clone --depth 1 "$CONTENT_REPO" "$CONTENT_TMP" \
+    && mkdir -p "$CONTENT_OUTPUT"
+
+
 RUN pnpm tsx scripts/normalize.ts \
-    --source /app/.tmp/articles \
-    --output /app/src/content/posts
+    --source $CONTENT_TMP \
+    --output $CONTENT_OUTPUT
 
 RUN pnpm build
 
