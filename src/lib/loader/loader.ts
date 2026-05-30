@@ -3,7 +3,7 @@ import { glob, type Loader } from "astro/loaders";
 import getReadingTime from "reading-time";
 import { type IndexEnum, type Post } from "@/types";
 import { indexType } from "@/consts";
-import { objectValues } from "./utils";
+import { objectValues, toArray } from "../utils";
 import { buildCategoryTree } from "./category-tree";
 
 const globWithLoader = (
@@ -34,12 +34,10 @@ const extractSeries = (id: string): string => {
   return parts.length > 1 ? parts[0] : "standalone";
 };
 
-/** 값이 배열이면 그대로, null/undefined면 [], 아니면 단일 요소 배열로 */
-const toArray = (v: unknown): string[] =>
-  Array.isArray(v) ? v.filter(Boolean) : v == null ? [] : [String(v)];
-
 /** Post[]용: draft 제외 + published 내림차순 정렬 */
-const normalizePosts = <T extends { data: { published: Date; draft: boolean; title: string } }>(
+const normalizePosts = <
+  T extends { data: { published: Date; draft: boolean; title: string } },
+>(
   posts: T[],
 ): T[] =>
   posts
@@ -104,8 +102,7 @@ const normalizeRawPosts = (posts: RawPostData[]): RawPostData[] =>
   posts
     .filter((e) => !e.draft)
     .sort((a, b) => {
-      const compare =
-        +new Date(b.published ?? 0) - +new Date(a.published ?? 0);
+      const compare = +new Date(b.published ?? 0) - +new Date(a.published ?? 0);
       return compare !== 0
         ? compare
         : (a.title ?? a.id).localeCompare(b.title ?? b.id);
@@ -174,13 +171,10 @@ const buildBucketEntries = (
 };
 
 /** 카테고리 트리 기반 인덱스 생성 */
-const buildCategoryEntries = (
-  posts: RawPostData[],
-): IndexEntry[] => {
-  const categoryEntries: Array<[string, string]> =
-    posts.flatMap((post) =>
-      post.categories.map((cat) => [cat, post.id] as [string, string]),
-    );
+const buildCategoryEntries = (posts: RawPostData[]): IndexEntry[] => {
+  const categoryEntries: Array<[string, string]> = posts.flatMap((post) =>
+    post.categories.map((cat) => [cat, post.id] as [string, string]),
+  );
 
   const categoryTree = buildCategoryTree(categoryEntries);
 

@@ -1,5 +1,8 @@
 import { z, defineCollection } from "astro:content";
-import { postIndexLoader, postWithAdjacentLinkLoader } from "./lib/loader";
+import {
+  postIndexLoader,
+  postWithAdjacentLinkLoader,
+} from "./lib/loader/loader";
 
 const postIndex = defineCollection({
   loader: postIndexLoader,
