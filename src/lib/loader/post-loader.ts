@@ -10,18 +10,17 @@ export const postLoader = (): Loader => {
       base: "./src/content/posts",
     },
     async (context) => {
-      const all = context.store.values() as Post[];
-      const getReadTimeMinute = (body: string) =>
-        Math.max(1, Math.round(getReadingTime(body).minutes));
+      const posts = context.store.values() as Post[];
 
-      // 포스트별 추가 데이터 추출
-      for (const post of all) {
-        post.data.series = extractSeries(post.id);
-        post.data.minutes = getReadTimeMinute(post.body ?? "");
+      for (const post of posts) {
+        console.log(post.id);
+        post.data.minutes = Math.max(
+          1,
+          Math.floor(getReadingTime(post.body ?? "").minutes),
+        );
       }
 
-      // 인접 포스트 참조 설정
-      const sorted = normalizePosts(all);
+      const sorted = posts.sort((a, b) => comparePost(a, b));
       for (const [index, post] of sorted.entries()) {
         if (index > 0) {
           post.data.newerPostRef = sorted[index - 1].id;
@@ -34,22 +33,10 @@ export const postLoader = (): Loader => {
   );
 };
 
-const extractSeries = (id: string): string => {
-  const parts = id.split("/");
-  return parts.length > 1 ? parts[0] : "standalone";
+const comparePost = (a: Post, b: Post): number => {
+  const publishedAtCompare =
+    +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0);
+  return publishedAtCompare !== 0
+    ? publishedAtCompare
+    : a.id.localeCompare(b.id);
 };
-
-export const normalizePosts = <
-  T extends { data: { published: Date; draft: boolean; title: string } },
->(
-  posts: T[],
-): T[] =>
-  posts
-    .filter((e) => !e.data.draft)
-    .sort((a, b) => {
-      const compare =
-        +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0);
-      return compare !== 0
-        ? compare
-        : (a.data.title ?? a.id).localeCompare(b.data.title ?? b.id);
-    });
