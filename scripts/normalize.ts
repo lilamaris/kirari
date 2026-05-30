@@ -21,15 +21,13 @@ interface Frontmatter {
   title?: string;
   description?: string;
   tags?: string[];
-  categories?: string;
-  published?: string | Date;
-  updated?: string | Date;
+  categories?: string[];
+  published?: string;
+  updated?: string;
   draft?: boolean;
   image?: string;
   minutes?: number;
   series?: string;
-  newerPostRef?: string;
-  olderPostRef?: string;
   [key: string]: JsonLike | undefined;
 }
 
@@ -62,16 +60,18 @@ function parseArgs(argv: string[]): CliOptions {
         break;
       case "-h":
       case "--help":
-        printUsageAndExit(0);
-        break;
+        printUsage();
+        process.exit(0);
       default:
         console.error(`Unknown option: ${arg}`);
-        printUsageAndExit(1);
+        printUsage();
+        process.exit(1);
     }
   }
 
   if (!source || !output) {
-    printUsageAndExit(1);
+    printUsage();
+    process.exit(1);
   }
 
   return {
@@ -82,7 +82,7 @@ function parseArgs(argv: string[]): CliOptions {
   };
 }
 
-function printUsageAndExit(code: number): never {
+function printUsage(): void {
   const usage = `
 Usage:
   pnpm tsx scripts/normalize-articles.ts --source <dir> --output <dir> [options]
@@ -106,7 +106,6 @@ Examples:
 `.trim();
 
   console.log(usage);
-  process.exit(code);
 }
 
 function toTitleFromFilename(filePath: string): string {
@@ -118,15 +117,15 @@ function toTitleFromFilename(filePath: string): string {
     .replace(/\b\w/g, (ch) => ch.toUpperCase());
 }
 
-function toCategoryFromPath(filePath: string, baseDir: string): string {
+function toCategoriesFromPath(filePath: string, baseDir: string): string[] {
   const rel = path.relative(baseDir, filePath);
   const dir = path.dirname(rel);
 
   if (!dir || dir === ".") {
-    return "root";
+    return ["root"];
   }
 
-  return dir.split(path.sep).join("/");
+  return dir.split(path.sep);
 }
 
 function estimateReadingMinutes(content: string): number {
@@ -248,7 +247,8 @@ async function main(): Promise<void> {
       title: fm.title?.trim() || toTitleFromFilename(filePath),
       tags: Array.isArray(fm.tags) ? fm.tags : [],
       categories:
-        fm.categories?.trim() || toCategoryFromPath(filePath, categoryBaseDir),
+        fm.categories?.trim() ||
+        toCategoriesFromPath(filePath, categoryBaseDir),
       published: fm.published
         ? normalizeDateString(fm.published)
         : (createdAt ?? new Date().toISOString()),
