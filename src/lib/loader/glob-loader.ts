@@ -1,6 +1,6 @@
 import { glob, type Loader } from "astro/loaders";
 
-export const globWithLoader = (
+export const globLoader = (
   options: Parameters<typeof glob>[0],
   loader: Loader["load"],
 ): Loader => {
@@ -8,7 +8,7 @@ export const globWithLoader = (
   const baseLoad = base.load;
 
   return {
-    name: "glob-with-loader",
+    name: "glob-loader",
     load: async (context) => {
       await baseLoad(context);
       await loader(context);

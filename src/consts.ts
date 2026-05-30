@@ -48,7 +48,6 @@ export const indexType = {
   PublishedYear: "publishedYear",
   Categories: "categories",
   Tags: "tags",
-  Series: "series",
 } as const;
 
 export const thumbnailOption = {

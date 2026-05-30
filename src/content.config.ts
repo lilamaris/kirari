@@ -1,11 +1,9 @@
 import { z, defineCollection } from "astro:content";
-import {
-  postIndexLoader,
-  postWithAdjacentLinkLoader,
-} from "./lib/loader/loader";
+import { indexLoader } from "./lib/loader/index-loader";
+import { postLoader } from "./lib/loader/post-loader";
 
 const postIndex = defineCollection({
-  loader: postIndexLoader,
+  loader: indexLoader,
   schema: () =>
     z.object({
       type: z.string(),
@@ -16,7 +14,7 @@ const postIndex = defineCollection({
 });
 
 const posts = defineCollection({
-  loader: postWithAdjacentLinkLoader(),
+  loader: postLoader(),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
