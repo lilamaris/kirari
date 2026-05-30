@@ -6,12 +6,14 @@ import Navigation from "@/components/ui/Navigation.astro";
 import Footer from "@/components/ui/Footer.astro";
 import SiteProfile from "@/components/ui/SiteProfile.astro";
 import AuthorProfile from "@/components/ui/AuthorProfile.astro";
-import CategoryList from "@/components/index/CategoryList.astro";
 import TagList from "@/components/index/TagList.astro";
+import Decorator from "@/components/common/Decorator.astro";
 
 import { layoutConfig, themeConfig } from "@/consts";
 import { toInlineStyle, toStyleVars } from "@/lib/utils";
 import type { SeoMeta } from "@/types";
+import CategoryTree from "@/components/index/CategoryTree.astro";
+import { getCategoryTree } from "@/lib/index/category";
 
 interface Props {
   seo?: SeoMeta;
@@ -44,6 +46,8 @@ const layoutStyleVars = toStyleVars({
   pageWidth,
   asideOffset,
 });
+
+const categoryRoot = (await getCategoryTree()).root;
 ---
 
 <Base seo={seo}>
@@ -78,7 +82,10 @@ const layoutStyleVars = toStyleVars({
         >
           <SiteProfile class="anim-onload" style="--i: 0" />
           <AuthorProfile class="anim-onload" style="--i: 1" />
-          <CategoryList class="anim-onload hidden xl:block" style="--i: 2" />
+          <div class:list={["card space-y-3 p-4 anim-onload hidden xl:block"]} style="--i: 2">
+            <Decorator>CATEGORIES</Decorator>
+            <CategoryTree category={categoryRoot} class="rounded-surface bg-background/50 p-1.5 shadow-[0_0_0_1px_oklch(0_0_0/5%)]" />
+          </div>
           <TagList class="anim-onload hidden xl:block" style="--i: 3" />
         </div>
       </slot>

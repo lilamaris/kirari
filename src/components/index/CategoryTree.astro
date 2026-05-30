@@ -1,94 +1,66 @@
 ---
+import type { CategoryNode } from "@/lib/index/category";
 import type { StyledProps } from "@/types";
-import type { PostIndex } from "@/types";
 
 import Link from "@/components/common/Link.astro";
 import { createRouteUrl } from "@/lib/utils";
 
 interface Props extends StyledProps {
-  categories: PostIndex[];
+  category: CategoryNode;
 }
 
-const { class: className = "", style: styleAttr = "", categories } = Astro.props;
+const { class: className = "", style: styleAttr = "", category } = Astro.props;
 
 // 트리 구조를 depth 정보가 있는 flat 리스트로 변환
-// displayName: 부모 경로를 제외한 노드 이름만 표시 (예: "dev/backend" → "backend")
 interface FlattenedNode {
-  entry: PostIndex;
+  node: CategoryNode;
   depth: number;
   displayName: string;
 }
 
-function flattenTree(entries: PostIndex[]): FlattenedNode[] {
-  const nameToEntry = new Map(entries.map((e) => [e.data.name, e]));
-
-  // children 매핑: parentName -> [childName1, childName2, ...]
-  // childName은 부모를 제외한 마지막 경로 부분만 저장
-  const childrenMap = new Map<string, string[]>();
-  const allNames = new Set<string>();
-
-  for (const entry of entries) {
-    allNames.add(entry.data.name);
-    const parts = entry.data.name.split("/");
-    if (parts.length > 1) {
-      const parentName = parts.slice(0, -1).join("/");
-      const childName = parts[parts.length - 1];
-      if (!childrenMap.has(parentName)) {
-        childrenMap.set(parentName, []);
-      }
-      childrenMap.get(parentName)!.push(childName);
-    }
+function flattenTree(node: CategoryNode, displayName: string): FlattenedNode[] {
+  // depth = categories.length (루트: 0, 1 depth: 1, ...)
+  const depth = node.categories.length === 0 ? 0 : node.categories.length;
+  const result: FlattenedNode[] = [{ node, depth, displayName }];
+  for (const child of Object.values(node.children)) {
+    const childDisplayName = child.categories.length === 0
+      ? child.name
+      : child.categories[child.categories.length - 1];
+    result.push(...flattenTree(child, childDisplayName));
   }
-
-  // 루트 노드 찾기: 부모 경로가 allNames에 없는 노드
-  const rootNames = [...allNames]
-    .filter((n) => {
-      const parts = n.split("/");
-      if (parts.length === 1) return true; // top-level은 무조건 루트
-      const parentPath = parts.slice(0, -1).join("/");
-      return !allNames.has(parentPath);
-    })
-    .sort();
-
-  const result: FlattenedNode[] = [];
-
-  // displayName: 루트는 전체 이름, 자식은 부모를 제외한 이름만
-  function walk(name: string, depth: number, displayName: string): void {
-    const entry = nameToEntry.get(name);
-    if (!entry) return;
-    result.push({ entry, depth, displayName });
-
-    const childNamesList = childrenMap.get(name) ?? [];
-    for (const childName of childNamesList) {
-      const childPath = name === "" ? childName : `${name}/${childName}`;
-      walk(childPath, depth + 1, childName);
-    }
-  }
-
-  for (const rootName of rootNames) {
-    walk(rootName, 0, rootName);
-  }
-
   return result;
 }
 
-const flatNodes = flattenTree(categories);
-
-function getCategoryUrl(entryName: string): string {
-  return createRouteUrl("index", `categories/${entryName}`);
+// 하위 트리 전체의 총 포스트 수 계산
+function subtreeCount(node: CategoryNode): number {
+  let count = node.directPostRefs.length;
+  for (const child of Object.values(node.children)) {
+    count += subtreeCount(child);
+  }
+  return count;
 }
+
+// 카테고리 경로에서 URL 생성 (예: ["dev", "backend"] → "categories/dev/backend")
+function categoryUrl(node: CategoryNode): string {
+  if (node.categories.length === 0) {
+    return createRouteUrl("index", "categories");
+  }
+  return createRouteUrl("index", `categories/${node.categories.join("/")}`);
+}
+
+const flatNodes = flattenTree(category, "All");
 ---
 
 <div class:list={[className, "space-y-1.5"]}>
   {flatNodes.map((node) => (
-    <div class:list={["flex items-center gap-1.5", `ml-[${node.depth * 1.5}rem]`]}>
+    <div class:list={["flex items-center gap-1.5"]} style={node.depth === 0 ? undefined : `margin-left: ${node.depth * 1.5}rem`}>
       <Link
         class="btn row w-full justify-between px-3 text-sm"
         data-variant={node.depth === 0 ? undefined : "ghost"}
-        href={getCategoryUrl(node.entry.data.name)}
+        href={categoryUrl(node.node)}
       >
         <span class="truncate">{node.displayName}</span>
-        <span class="text-foreground/45 text-xs">{node.entry.data.count}</span>
+        <span class="text-foreground/45 text-xs">{subtreeCount(node.node)}</span>
       </Link>
     </div>
   ))}

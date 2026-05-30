@@ -9,6 +9,7 @@ import CategoryTree from "@/components/index/CategoryTree.astro";
 
 import { createRouteUrl } from "@/lib/utils";
 import { indexType } from "@/consts";
+import { getCategoryTree } from "@/lib/index/category";
 
 interface Props extends StyledProps {
   type: IndexEnum;
@@ -28,8 +29,12 @@ const {
   style: styleAttr = "",
 } = Astro.props;
 
-const indexes = await getCollection("postIndex", (index) => index.data.type === type);
+const indexes = await getCollection(
+  "postIndex",
+  (index) => index.data.type === type,
+);
 
+const categoryRoot = (await getCategoryTree()).root;
 // categories 타입일 경우 CategoryTree 사용
 const isCategories = type === indexType.Categories;
 ---
@@ -38,12 +43,12 @@ const isCategories = type === indexType.Categories;
   <Decorator>
     <span>{title}</span>
   </Decorator>
-  {isCategories ? (
-    <CategoryTree categories={indexes} />
-  ) : (
-    <ul class:list={[listClass]}>
-      {
-        indexes.map((index) => (
+  {
+    isCategories ? (
+      <CategoryTree category={categoryRoot} />
+    ) : (
+      <ul class:list={[listClass]}>
+        {indexes.map((index) => (
           <li>
             <Link
               class:list={[
@@ -54,12 +59,14 @@ const isCategories = type === indexType.Categories;
             >
               <span class="truncate">{index.data.name}</span>
               {showCount && (
-                <span class="text-foreground/50 ml-1 text-xs">({index.data.count})</span>
+                <span class="text-foreground/50 ml-1 text-xs">
+                  ({index.data.count})
+                </span>
               )}
             </Link>
           </li>
-        ))
-      }
-    </ul>
-  )}
+        ))}
+      </ul>
+    )
+  }
 </div>
