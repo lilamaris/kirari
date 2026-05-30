@@ -1,26 +1,11 @@
 import { type MarkdownInstance } from "astro";
-import { glob, type Loader } from "astro/loaders";
+import { type Loader } from "astro/loaders";
 import getReadingTime from "reading-time";
 import { type IndexEnum, type Post } from "@/types";
 import { indexType } from "@/consts";
 import { objectValues, toArray } from "../utils";
 import { buildCategoryTree } from "./category-tree";
-
-const globWithLoader = (
-  options: Parameters<typeof glob>[0],
-  loader: Loader["load"],
-): Loader => {
-  const base = glob(options);
-  const baseLoad = base.load;
-
-  return {
-    name: "glob-with-loader",
-    load: async (context) => {
-      await baseLoad(context);
-      await loader(context);
-    },
-  };
-};
+import { globWithLoader } from "./glob-loader";
 
 // ── 공통 유틸리티 ──────────────────────────────────────────────
 
