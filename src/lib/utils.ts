@@ -10,6 +10,9 @@ export const objectValues = <T extends object>(obj: T) =>
 export const objectEntries = <T extends object>(obj: T) =>
   Object.entries(obj) as [keyof T, T[keyof T]][];
 
+export const toArray = (v: unknown): string[] =>
+  Array.isArray(v) ? v.filter(Boolean) : v == null ? [] : [String(v)];
+
 export const toInlineStyle = (rules: string[]): string =>
   rules
     .filter(Boolean)
