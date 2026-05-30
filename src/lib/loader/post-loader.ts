@@ -2,18 +2,24 @@ import type { Loader } from "astro/loaders";
 import getReadingTime from "reading-time";
 import { globLoader } from "./glob-loader";
 import type { Post } from "@/types";
+import { postsBasePath } from "@/consts";
 
 export const postLoader = (): Loader => {
+  const base = normalizePath(postsBasePath);
+
   return globLoader(
     {
       pattern: "**/*.{md,mdx}",
-      base: "./src/content/posts",
+      base,
     },
     async (context) => {
       const posts = context.store.values() as Post[];
 
       for (const post of posts) {
-        console.log(post.id);
+        const filePath = post.filePath;
+
+        if (!filePath) throw new Error(`filePath undefined. id=${post.id}`);
+        post.data.contentPath = normalizePath(filePath).slice(base.length);
         post.data.minutes = Math.max(
           1,
           Math.floor(getReadingTime(post.body ?? "").minutes),
@@ -40,3 +46,5 @@ const comparePost = (a: Post, b: Post): number => {
     ? publishedAtCompare
     : a.id.localeCompare(b.id);
 };
+
+const normalizePath = (path: string) => path.replaceAll("\\", "/");

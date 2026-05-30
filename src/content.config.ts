@@ -8,13 +8,13 @@ const posts = defineCollection({
       title: z.string(),
       description: z.string().optional(),
       tags: z.array(z.string()).default([]),
-      categories: z.array(z.string()).default([]),
       published: z.coerce.date(),
       draft: z.boolean().default(false),
       image: image().optional(),
       minutes: z.number().optional(),
       newerPostRef: z.string().optional(),
       olderPostRef: z.string().optional(),
+      contentPath: z.string().optional(),
     }),
 });
 

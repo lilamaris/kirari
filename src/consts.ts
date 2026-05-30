@@ -4,6 +4,8 @@ import demoProfile from "@/assets/demo-profile.jpg";
 import demoBanner from "@/assets/demo-banner.jpg";
 import demoThumbnail from "@/assets/demo-thumnail.png";
 
+export const postsBasePath = "src/content/posts";
+
 export const siteConfig: SiteConfig = {
   title: "Kirari",
   description: "kirari astro blog",
