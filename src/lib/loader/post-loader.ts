@@ -3,6 +3,7 @@ import getReadingTime from "reading-time";
 import { globLoader } from "./glob-loader";
 import type { Post } from "@/types";
 import { postsBasePath } from "@/consts";
+import { compareDate } from "../utils";
 
 export const postLoader = (): Loader => {
   const base = normalizePath(postsBasePath);
@@ -40,8 +41,12 @@ export const postLoader = (): Loader => {
 };
 
 const comparePost = (a: Post, b: Post): number => {
-  const publishedAtCompare =
-    +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0);
+  const publishedAtCompare = compareDate(
+    a.data.published,
+    b.data.published,
+    "desc",
+  );
+
   return publishedAtCompare !== 0
     ? publishedAtCompare
     : a.id.localeCompare(b.id);

@@ -71,6 +71,16 @@ export const formatDate = (date: Date) => {
   }).format(date);
 };
 
+export const compareDate = (
+  a: Date,
+  b: Date,
+  order: "asc" | "desc",
+): number => {
+  const left = a ? new Date(a).getTime() : 0;
+  const right = b ? new Date(b).getTime() : 0;
+  return order === "desc" ? right - left : left - right;
+};
+
 export const getTheme = (): ThemeEnum => {
   const fallback = themeConfig.initialTheme;
   const storedTheme = localStorage.getItem("theme") as ThemeEnum;
