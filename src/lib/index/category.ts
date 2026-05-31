@@ -7,6 +7,8 @@ export interface CategoryNode {
   categories: CategoryName[];
   depth: number;
   children: Record<CategoryName, CategoryNode>;
+  directChildCount: number;
+  subtreeChildCount: number;
   directPostRefs: CategorizedPost[];
   directPostCount: number;
   subtreePostCount: number;
@@ -30,6 +32,11 @@ export const getCategoryIndex = async (): Promise<CategoryTree> => {
   return _cache;
 };
 
+export const getIndexedCategory = async (): Promise<CategoryName[]> => {
+  const flat = getFlatten(await getCategoryIndex());
+  return flat.map((node) => node.name);
+};
+
 export const getFlatten = (node: CategoryNode): CategoryNode[] => {
   const result: CategoryNode[] = [node];
   for (const child of Object.values(node.children)) {
@@ -47,6 +54,7 @@ const buildCategoryTree = (posts: Post[]): CategoryTree => {
   }
 
   countPost(root);
+  countChildren(root);
   return { root };
 };
 
@@ -79,6 +87,16 @@ const countPost = (node: CategoryNode): number => {
   return count;
 };
 
+const countChildren = (node: CategoryNode): number => {
+  node.directChildCount = Object.keys(node.children).length;
+  let count = node.directChildCount;
+  for (const child of Object.values(node.children)) {
+    count += countChildren(child);
+  }
+  node.subtreeChildCount = count;
+  return count;
+};
+
 const createNode = (
   name: CategoryName,
   categories: CategoryName[],
@@ -88,6 +106,8 @@ const createNode = (
   categories,
   depth,
   children: {},
+  directChildCount: 0,
+  subtreeChildCount: 0,
   directPostRefs: [],
   directPostCount: 0,
   subtreePostCount: 0,
