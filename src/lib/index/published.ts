@@ -55,9 +55,12 @@ const appendPostToIndex = (
 ): void => {
   const { year, month } = getYearAndMonth(post.published);
 
-  index[year] ??= [];
-
-  const monthEntry = (index[year][month] ??= createMonthEntry(month));
+  const yearEntry = (index[year] ??= []);
+  let monthEntry = yearEntry.find((m) => m.month === month);
+  if (!monthEntry) {
+    monthEntry = createMonthEntry(month);
+    yearEntry.push(monthEntry);
+  }
   monthEntry.posts.push(post);
 };
 
