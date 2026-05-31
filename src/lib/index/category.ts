@@ -5,8 +5,11 @@ export type CategoryName = string;
 export interface CategoryNode {
   name: CategoryName;
   categories: CategoryName[];
+  depth: number;
   children: Record<CategoryName, CategoryNode>;
   directPostRefs: CategorizedPost[];
+  directPostCount: number;
+  subtreePostCount: number;
 }
 
 export interface CategorizedPost {
@@ -27,13 +30,23 @@ export const getCategoryIndex = async (): Promise<CategoryTree> => {
   return _cache;
 };
 
+export const getFlatten = (node: CategoryNode): CategoryNode[] => {
+  const result: CategoryNode[] = [node];
+  for (const child of Object.values(node.children)) {
+    result.push(...getFlatten(child));
+  }
+  return result;
+};
+
 const buildCategoryTree = (posts: Post[]): CategoryTree => {
-  const root = createNode("", ["/"]);
+  const root = createNode("All", ["/"], 0);
 
   for (const post of posts) {
     const categorizedPost = categorize(post);
     appendPostToTree(root, categorizedPost);
   }
+
+  countPost(root);
   return { root };
 };
 
@@ -44,7 +57,11 @@ const appendPostToTree = (root: CategoryNode, post: CategorizedPost): void => {
   for (const category of post.categories) {
     segments.push(category);
 
-    current.children[category] ??= createNode(category, segments);
+    current.children[category] ??= createNode(
+      category,
+      segments,
+      current.depth + 1,
+    );
 
     current = current.children[category];
   }
@@ -52,17 +69,34 @@ const appendPostToTree = (root: CategoryNode, post: CategorizedPost): void => {
   current.directPostRefs.push(post);
 };
 
-const createNode = (name: CategoryName, categories: CategoryName[]) => ({
+const countPost = (node: CategoryNode): number => {
+  node.directPostCount = node.directPostRefs.length;
+  let count = node.directPostCount;
+  for (const child of Object.values(node.children)) {
+    count += countPost(child);
+  }
+  node.subtreePostCount = count;
+  return count;
+};
+
+const createNode = (
+  name: CategoryName,
+  categories: CategoryName[],
+  depth: number,
+) => ({
   name,
   categories,
+  depth,
   children: {},
   directPostRefs: [],
+  directPostCount: 0,
+  subtreePostCount: 0,
 });
 
 const categorize = (post: Post): CategorizedPost => {
   const contentPath = post.data.contentPath;
   if (!contentPath)
-    throw Error(`post filePath must not be undefined. id=${post.id}`);
+    throw new Error(`post filePath must not be undefined. id=${post.id}`);
 
   const paths = getCategoriesFromFilePath(contentPath);
 

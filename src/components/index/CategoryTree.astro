@@ -1,5 +1,5 @@
 ---
-import type { CategoryNode } from "@/lib/index/category";
+import { getFlatten, type CategoryNode } from "@/lib/index/category";
 import type { StyledProps } from "@/types";
 
 import Link from "@/components/common/Link.astro";
@@ -11,36 +11,6 @@ interface Props extends StyledProps {
 
 const { class: className = "", style: styleAttr = "", category } = Astro.props;
 
-// 트리 구조를 depth 정보가 있는 flat 리스트로 변환
-interface FlattenedNode {
-  node: CategoryNode;
-  depth: number;
-  displayName: string;
-}
-
-function flattenTree(node: CategoryNode, displayName: string): FlattenedNode[] {
-  // depth = categories.length (루트: 0, 1 depth: 1, ...)
-  const depth = node.categories.length === 0 ? 0 : node.categories.length;
-  const result: FlattenedNode[] = [{ node, depth, displayName }];
-  for (const child of Object.values(node.children)) {
-    const childDisplayName = child.categories.length === 0
-      ? child.name
-      : child.categories[child.categories.length - 1];
-    result.push(...flattenTree(child, childDisplayName));
-  }
-  return result;
-}
-
-// 하위 트리 전체의 총 포스트 수 계산
-function subtreeCount(node: CategoryNode): number {
-  let count = node.directPostRefs.length;
-  for (const child of Object.values(node.children)) {
-    count += subtreeCount(child);
-  }
-  return count;
-}
-
-// 카테고리 경로에서 URL 생성 (예: ["dev", "backend"] → "categories/dev/backend")
 function categoryUrl(node: CategoryNode): string {
   if (node.categories.length === 0) {
     return createRouteUrl("index", "categories");
@@ -48,20 +18,27 @@ function categoryUrl(node: CategoryNode): string {
   return createRouteUrl("index", `categories/${node.categories.join("/")}`);
 }
 
-const flatNodes = flattenTree(category, "All");
+const flatNodes = getFlatten(category);
 ---
 
 <div class:list={[className, "space-y-1.5"]}>
-  {flatNodes.map((node) => (
-    <div class:list={["flex items-center gap-1.5"]} style={node.depth === 0 ? undefined : `margin-left: ${node.depth * 1.5}rem`}>
-      <Link
-        class="btn row w-full justify-between px-3 text-sm"
-        data-variant={node.depth === 0 ? undefined : "ghost"}
-        href={categoryUrl(node.node)}
+  {
+    flatNodes.map((node) => (
+      <div
+        class:list={["flex items-center gap-1.5"]}
+        style={`margin-left: ${node.depth * 0.75}rem`}
       >
-        <span class="truncate">{node.displayName}</span>
-        <span class="text-foreground/45 text-xs">{subtreeCount(node.node)}</span>
-      </Link>
-    </div>
-  ))}
+        <Link
+          class="btn row w-full justify-between px-3 text-sm"
+          data-variant={node.depth === 0 ? undefined : "ghost"}
+          href={categoryUrl(node)}
+        >
+          <span class="truncate">{node.name}</span>
+          <span class="text-foreground/45 text-xs">
+            {node.subtreePostCount}
+          </span>
+        </Link>
+      </div>
+    ))
+  }
 </div>
