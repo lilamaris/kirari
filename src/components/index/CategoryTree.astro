@@ -18,12 +18,12 @@ function categoryUrl(node: CategoryNode): string {
   return createRouteUrl("index", `categories/${node.categories.join("/")}`);
 }
 
-const flatNodes = getFlatten(category);
+const flat = getFlatten(category);
 ---
 
 <div class:list={[className, "space-y-1.5"]}>
   {
-    flatNodes.map((node) => (
+    flat.map((node) => (
       <div
         class:list={["flex items-center gap-1.5"]}
         style={`margin-left: ${node.depth * 0.75}rem`}
