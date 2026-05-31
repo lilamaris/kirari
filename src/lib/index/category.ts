@@ -18,12 +18,16 @@ export interface CategoryTree {
   root: CategoryNode;
 }
 
-export const getCategoryTree = async (): Promise<CategoryTree> => {
+let _cache: CategoryTree | undefined;
+
+export const getCategoryIndex = async (): Promise<CategoryTree> => {
+  if (_cache) return _cache;
   const posts = await getCollection("posts");
-  return buildCategoryTree(posts);
+  _cache = buildCategoryTree(posts);
+  return _cache;
 };
 
-export const buildCategoryTree = (posts: Post[]): CategoryTree => {
+const buildCategoryTree = (posts: Post[]): CategoryTree => {
   const root = createNode("", ["/"]);
 
   for (const post of posts) {
@@ -60,7 +64,7 @@ const categorize = (post: Post): CategorizedPost => {
   if (!contentPath)
     throw Error(`post filePath must not be undefined. id=${post.id}`);
 
-  var paths = getCategoriesFromFilePath(contentPath);
+  const paths = getCategoriesFromFilePath(contentPath);
 
   return {
     id: post.id,

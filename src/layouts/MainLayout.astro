@@ -13,7 +13,7 @@ import { layoutConfig, themeConfig } from "@/consts";
 import { toInlineStyle, toStyleVars } from "@/lib/utils";
 import type { SeoMeta } from "@/types";
 import CategoryTree from "@/components/index/CategoryTree.astro";
-import { getCategoryTree } from "@/lib/index/category";
+import { getCategoryIndex } from "@/lib/index/category";
 
 interface Props {
   seo?: SeoMeta;
@@ -47,7 +47,7 @@ const layoutStyleVars = toStyleVars({
   asideOffset,
 });
 
-const categoryRoot = (await getCategoryTree()).root;
+const categoryRoot = (await getCategoryIndex()).root;
 ---
 
 <Base seo={seo}>
@@ -82,9 +82,15 @@ const categoryRoot = (await getCategoryTree()).root;
         >
           <SiteProfile class="anim-onload" style="--i: 0" />
           <AuthorProfile class="anim-onload" style="--i: 1" />
-          <div class:list={["card space-y-3 p-4 anim-onload hidden xl:block"]} style="--i: 2">
+          <div
+            class:list={["card anim-onload hidden space-y-3 p-4 xl:block"]}
+            style="--i: 2"
+          >
             <Decorator>CATEGORIES</Decorator>
-            <CategoryTree category={categoryRoot} class="rounded-surface bg-background/50 p-1.5 shadow-[0_0_0_1px_oklch(0_0_0/5%)]" />
+            <CategoryTree
+              category={categoryRoot}
+              class="rounded-surface bg-background/50 p-1.5 shadow-[0_0_0_1px_oklch(0_0_0/5%)]"
+            />
           </div>
           <TagList class="anim-onload hidden xl:block" style="--i: 3" />
         </div>

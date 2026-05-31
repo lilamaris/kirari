@@ -9,7 +9,7 @@ import CategoryTree from "@/components/index/CategoryTree.astro";
 
 import { createRouteUrl } from "@/lib/utils";
 import { indexType } from "@/consts";
-import { getCategoryTree } from "@/lib/index/category";
+import { getCategoryIndex } from "@/lib/index/category";
 
 interface Props extends StyledProps {
   type: IndexEnum;
@@ -34,7 +34,7 @@ const indexes = await getCollection(
   (index) => index.data.type === type,
 );
 
-const categoryRoot = (await getCategoryTree()).root;
+const categoryRoot = (await getCategoryIndex()).root;
 // categories 타입일 경우 CategoryTree 사용
 const isCategories = type === indexType.Categories;
 ---
