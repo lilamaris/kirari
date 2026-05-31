@@ -1,0 +1,95 @@
+---
+import type { GetStaticPaths } from "astro";
+import IndexLayout from "@/layouts/IndexLayout.astro";
+import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import { indexType, siteConfig } from "@/consts";
+import { getPublishedIndex, getIndexedYear } from "@/lib/index/published";
+import { createRouteUrl, formatDate } from "@/lib/utils";
+
+const index = await getPublishedIndex();
+
+const indexedYear = await getIndexedYear();
+
+// Aggregate stats for layout header
+const totalMonths = indexedYear.reduce((sum, y) => sum + index[y].months.length, 0);
+const totalPosts = indexedYear.reduce((sum, y) => sum + index[y].totalPostCount, 0);
+---
+
+<IndexLayout
+  type={indexType.Published}
+  groupCount={totalMonths}
+  postCount={totalPosts}
+  seoTitle={`Index - ${siteConfig.title} Archive`}
+  seoDescription="Timeline of all posts grouped by year and month."
+>
+  <!-- Main content: year -> month -> posts -->
+  {indexedYear.map((year, yi) => {
+    const yearEntry = index[year];
+    return (
+      <section
+        id={year}
+        class="card anim-onload space-y-4 p-5 sm:p-6"
+        style={`--i: ${yi + 1}`}
+      >
+        <!-- Year heading + count -->
+        <div class="flex items-baseline gap-2">
+          <Decorator class="text-base font-semibold">
+            {year}
+          </Decorator>
+          <span class="text-foreground/45 text-sm">
+            {yearEntry.totalPostCount} posts
+          </span>
+        </div>
+
+        <!-- Months within year -->
+        <div class="space-y-4">
+          {yearEntry.months.map((monthEntry) => {
+            return (
+              <div>
+                <div class="flex items-baseline gap-2">
+                  <span class="text-foreground/60 text-sm font-medium">
+                    {monthEntry.monthName}
+                  </span>
+                  <span class="text-foreground/40 text-xs">
+                    {monthEntry.postCount} posts
+                  </span>
+                </div>
+
+                <div class="divide-y divide-border/50">
+                  {monthEntry.posts.map((pp) => (
+                    <Link
+                      class="flex items-center gap-3 px-3 py-2.5 hover:bg-background transition-colors"
+                      href={createRouteUrl("blog", pp.id)}
+                    >
+                      <time class="text-foreground/45 min-w-[8.5rem] text-sm" datetime={pp.published.toISOString()}>
+                        {formatDate(pp.published)}
+                      </time>
+                      <span class="text-foreground/55 truncate text-sm">
+                        {pp.title}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
+  })}
+
+  <!-- Page nav: year anchors with count -->
+  <div slot="page-nav">
+    {indexedYear.map((year) => (
+      <Link
+        class="btn row px-3 text-sm"
+        data-variant="ghost"
+        href={`#${year}`}
+      >
+        <span>{year}</span>
+        <span class="text-foreground/45 text-xs">{index[year].totalPostCount}</span>
+      </Link>
+    ))}
+  </div>
+</IndexLayout>

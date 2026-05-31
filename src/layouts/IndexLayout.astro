@@ -1,0 +1,104 @@
+---
+import type { IndexEnum } from "@/types";
+import MainLayout from "@/layouts/MainLayout.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import Link from "@/components/common/Link.astro";
+import { indexType, siteConfig } from "@/consts";
+import { createRouteUrl, objectValues } from "@/lib/utils";
+
+interface Props {
+  type: IndexEnum;
+  groupCount?: number;
+  postCount?: number;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+const { type, groupCount, postCount, seoTitle, seoDescription } = Astro.props;
+
+const typeMeta: Record<IndexEnum, { label: string; eyebrow: string }> = {
+  [indexType.Published]: { label: "Years", eyebrow: "Timeline" },
+  [indexType.Categories]: { label: "Categories", eyebrow: "Topics" },
+  [indexType.Tags]: { label: "Tags", eyebrow: "Keywords" },
+};
+
+const meta = typeMeta[type];
+
+const showHeaderMeta = groupCount !== undefined;
+---
+
+<MainLayout
+  seo={{
+    title: seoTitle ?? `Index - ${meta.label}`,
+    description: seoDescription ?? `${siteConfig.title} archive grouped by ${meta.label.toLowerCase()}.`,
+    type: "website",
+  }}
+>
+  <div class="anim-delay-sequence space-y-2">
+    <!-- Header -->
+    {Astro.slots.header ? (
+      <slot name="header" />
+    ) : (
+      <section class="card anim-onload p-5 sm:p-6" style="--i: 0">
+        <div class="flex items-center justify-between gap-3">
+          <div class="space-y-1">
+            <Decorator class="text-foreground/55 text-xs tracking-[0.24em] uppercase">
+              {meta.label}
+            </Decorator>
+            {showHeaderMeta && (
+              <div class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                <span>{groupCount} groups</span>
+                <span class="text-foreground/25">/</span>
+                <span>{postCount} indexed posts</span>
+              </div>
+            )}
+          </div>
+          <Link
+            class="text-foreground/65 hover:text-accent text-sm transition-colors"
+            href={createRouteUrl("blog")}
+          >
+            Open blog
+          </Link>
+        </div>
+      </section>
+    )}
+
+    <!-- Main content -->
+    <slot />
+  </div>
+
+  <!-- Right aside -->
+  <div slot="right-aside" class="anim-delay-sequence space-y-2">
+    <div class="card anim-onload space-y-3 p-4" style="--i: 0">
+      <Decorator class="text-sm font-medium">Axes</Decorator>
+      <div class="space-y-1.5">
+        {objectValues(indexType).map((entryType) => {
+          const href = entryType === indexType.Published
+            ? createRouteUrl("index")
+            : createRouteUrl("index", entryType);
+          return (
+            <Link
+              class="btn row px-3 text-sm"
+              data-variant={entryType === type ? undefined : "ghost"}
+              href={href}
+            >
+              <span>{typeMeta[entryType].label}</span>
+              <span class="text-foreground/45 text-xs">
+                {typeMeta[entryType].eyebrow}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+
+    {Astro.slots["page-nav"] && (
+      <div class="card anim-onload space-y-3 p-4" style="--i: 1">
+        <Decorator class="text-sm font-medium">On this page</Decorator>
+        <div class="space-y-1.5">
+          <slot name="page-nav" />
+        </div>
+      </div>
+    )}
+  </div>
+</MainLayout>
