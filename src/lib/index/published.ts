@@ -7,15 +7,23 @@ export type Month = number;
 
 export interface PublishedPost {
   id: string;
+  title: string;
   published: Date;
+}
+
+export interface YearEntry {
+  months: MonthEntry[];
+  totalPostCount: number;
 }
 
 export interface MonthEntry {
   month: number;
+  monthName: string;
   posts: PublishedPost[];
+  postCount: number;
 }
 
-export type PublishedIndex = Record<Year, MonthEntry[]>;
+export type PublishedIndex = Record<Year, YearEntry>;
 
 let _cache: PublishedIndex | undefined;
 
@@ -24,6 +32,12 @@ export const getPublishedIndex = async (): Promise<PublishedIndex> => {
   const posts = await getCollection("posts");
   _cache = buildPublishedIndex(posts);
   return _cache;
+};
+
+export const getIndexedYear = async (): Promise<Year[]> => {
+  return objectKeys(await getPublishedIndex())
+    .sort()
+    .reverse();
 };
 
 const buildPublishedIndex = (posts: Post[]): PublishedIndex => {
@@ -35,10 +49,17 @@ const buildPublishedIndex = (posts: Post[]): PublishedIndex => {
   }
 
   for (const year of objectKeys(index)) {
-    index[year].sort((a, b) => a.month - b.month);
-    for (const entry of index[year]) {
-      entry.posts.sort((a, b) => compareDate(a.published, b.published, "desc"));
+    const yearEntry = index[year];
+    yearEntry.months.sort((a, b) => a.month - b.month);
+
+    let totalPostCount = 0;
+    for (const month of yearEntry.months) {
+      month.posts.sort((a, b) => compareDate(a.published, b.published, "desc"));
+      month.postCount = month.posts.length;
+      totalPostCount += month.postCount;
     }
+
+    yearEntry.totalPostCount = totalPostCount;
   }
 
   return index;
@@ -55,11 +76,11 @@ const appendPostToIndex = (
 ): void => {
   const { year, month } = getYearAndMonth(post.published);
 
-  const yearEntry = (index[year] ??= []);
-  let monthEntry = yearEntry.find((m) => m.month === month);
+  const yearEntry = (index[year] ??= createYearEntry());
+  let monthEntry = yearEntry.months.find((entry) => entry.month == month);
   if (!monthEntry) {
     monthEntry = createMonthEntry(month);
-    yearEntry.push(monthEntry);
+    yearEntry.months.push(monthEntry);
   }
   monthEntry.posts.push(post);
 };
@@ -69,12 +90,36 @@ const getYearAndMonth = (date: Date): YearAndMonth => ({
   month: date.getMonth() + 1,
 });
 
+const createYearEntry = (): YearEntry => ({
+  months: [],
+  totalPostCount: 0,
+});
+
 const createMonthEntry = (month: Month): MonthEntry => ({
   month,
+  monthName: getMonthName(month),
   posts: [],
+  postCount: 0,
 });
 
 const normalize = (post: Post): PublishedPost => ({
   id: post.id,
+  title: post.data.title,
   published: post.data.published,
 });
+
+const getMonthName = (month: Month): string =>
+  [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ][month - 1];

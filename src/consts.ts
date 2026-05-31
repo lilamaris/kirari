@@ -47,7 +47,7 @@ export const theme = {
 } as const;
 
 export const indexType = {
-  PublishedYear: "publishedYear",
+  Published: "published",
   Categories: "categories",
   Tags: "tags",
 } as const;
