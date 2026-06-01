@@ -1,0 +1,75 @@
+---
+import IndexLayout from "@/layouts/IndexLayout.astro";
+import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import { getFlatten, type CategoryNode } from "@/lib/index/category";
+import { indexType, siteConfig } from "@/consts";
+import { getCategoryIndex } from "@/lib/index/category";
+import { createRouteUrl } from "@/lib/utils";
+
+const index = await getCategoryIndex();
+
+const firstLevelCategories = Object.entries(index.root.children);
+
+const totalCategories = index.root.subtreeChildCount;
+const totalPosts = index.root.subtreePostCount;
+
+const categoryUrl = (n: CategoryNode): string =>
+  createRouteUrl("index", `categories/${n.categories.join("/")}`);
+---
+
+<IndexLayout
+  type={indexType.Categories}
+  groupCount={totalCategories}
+  postCount={totalPosts}
+  seoTitle={`Index - Categories`}
+  seoDescription={`Topic hierarchy of all posts on ${siteConfig.title}.`}
+>
+  <!-- Main content: first-level category sections -->
+  {firstLevelCategories.map(([name, node], i) => (
+    <section
+      id={name}
+      class="card anim-onload space-y-3 p-5 sm:p-6"
+      style={`--i: ${i + 1}`}
+    >
+      <!-- Category heading + post count -->
+      <div class="flex items-center justify-between gap-2">
+        <Decorator class="text-base font-semibold">
+          {node.name}
+        </Decorator>
+      </div>
+
+      <!-- Nested categories (excluding the node itself) -->
+      <div class="space-y-1">
+        {getFlatten(node).map((child) => (
+          <Link
+            class="flex items-center gap-2 rounded px-3 py-2 hover:bg-background transition-colors"
+            style={`margin-left: ${1 * (child.depth - node.depth)}rem`}
+            href={categoryUrl(child)}
+          >
+            <span class="text-foreground/60 truncate text-sm">
+              {child.name}
+            </span>
+            <span class="text-foreground/45 text-xs ml-auto">
+              {child.subtreePostCount} posts
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  ))}
+
+  <!-- Page nav: top-level category anchors -->
+  <div slot="page-nav">
+    {firstLevelCategories.map(([name]) => (
+      <a
+        class="btn row px-3 text-sm"
+        data-variant="ghost"
+        href={`#${name}`}
+      >
+        <span>{name}</span>
+        <span class="text-foreground/45 text-xs">{index.root.children[name].subtreePostCount}</span>
+      </a>
+    ))}
+  </div>
+</IndexLayout>

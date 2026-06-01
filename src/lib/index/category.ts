@@ -16,6 +16,8 @@ export interface CategoryNode {
 
 export interface CategorizedPost {
   id: string;
+  title: string;
+  published: Date;
   categories: CategoryName[];
 }
 
@@ -33,7 +35,8 @@ export const getCategoryIndex = async (): Promise<CategoryTree> => {
 };
 
 export const getIndexedCategory = async (): Promise<CategoryName[]> => {
-  const flat = getFlatten(await getCategoryIndex());
+  const tree = await getCategoryIndex();
+  const flat = getFlatten(tree.root);
   return flat.map((node) => node.name);
 };
 
@@ -43,6 +46,19 @@ export const getFlatten = (node: CategoryNode): CategoryNode[] => {
     result.push(...getFlatten(child));
   }
   return result;
+};
+
+export const resolveCategoryNode = (
+  root: CategoryNode,
+  segments: CategoryName[],
+): CategoryNode | null => {
+  let current = root;
+  for (const segment of segments) {
+    const child = current.children[segment];
+    if (!child) return null;
+    current = child;
+  }
+  return current;
 };
 
 const buildCategoryTree = (posts: Post[]): CategoryTree => {
@@ -122,6 +138,8 @@ const categorize = (post: Post): CategorizedPost => {
 
   return {
     id: post.id,
+    title: post.data.title,
+    published: post.data.published,
     categories: paths.slice(0, -1),
   };
 };

@@ -12,7 +12,7 @@ interface Props extends StyledProps {
 const { class: className = "", style: styleAttr = "", category } = Astro.props;
 
 function categoryUrl(node: CategoryNode): string {
-  if (node.categories.length === 0) {
+  if (node.depth === 0) {
     return createRouteUrl("index", "categories");
   }
   return createRouteUrl("index", `categories/${node.categories.join("/")}`);

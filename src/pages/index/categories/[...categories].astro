@@ -1,0 +1,176 @@
+---
+import type { GetStaticPaths } from "astro";
+import IndexLayout from "@/layouts/IndexLayout.astro";
+import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import {
+  getFlatten,
+  resolveCategoryNode,
+  type CategoryNode,
+} from "@/lib/index/category";
+import { getCategoryIndex } from "@/lib/index/category";
+import { indexType, siteConfig } from "@/consts";
+import { compareDate, createRouteUrl, formatDate } from "@/lib/utils";
+
+// Generate static paths for all non-root categories
+export const getStaticPaths = (async () => {
+  const index = await getCategoryIndex();
+  const allNodes = getFlatten(index.root);
+  return allNodes
+    .filter((node) => node.depth > 0)
+    .map((node) => ({
+      params: { categories: node.categories.join("/") },
+      props: { node },
+    }));
+}) satisfies GetStaticPaths;
+
+const index = await getCategoryIndex();
+
+const { node } = Astro.props;
+
+// Sort direct posts by published date descending
+const posts = [...node.directPostRefs].sort((a, b) =>
+  compareDate(a.published, b.published, "desc"),
+);
+
+// Parent node for breadcrumb (null for depth-1 nodes)
+const parentNode =
+  node.categories.length > 1
+    ? resolveCategoryNode(index.root, node.categories.slice(0, -1))
+    : null;
+
+// Child categories for page-nav
+const childCategories = Object.entries(node.children);
+
+const categoryUrl = (n: CategoryNode): string =>
+  createRouteUrl("index", `categories/${n.categories.join("/")}`);
+
+const indexUrl = createRouteUrl("index", "categories/");
+
+const totalCategories = index.root.subtreeChildCount;
+const totalPosts = index.root.subtreePostCount;
+---
+
+<IndexLayout
+  type={indexType.Categories}
+  groupCount={totalCategories}
+  postCount={totalPosts}
+  seoTitle={`Index - ${node.name}`}
+  seoDescription={`Posts in ${node.name} on ${siteConfig.title}.`}
+>
+  <section class="card anim-onload space-y-4 p-5 sm:p-6" style="--i: 1">
+    <!-- Breadcrumb + heading + stats -->
+    <div class="space-y-2">
+      {
+        parentNode ? (
+          <Link
+            class="text-foreground/55 hover:text-accent text-sm transition-colors"
+            href={
+              parentNode.categories.length > 1
+                ? categoryUrl(parentNode)
+                : indexUrl
+            }
+          >
+            {parentNode.name}
+          </Link>
+        ) : (
+          <Link
+            class="text-foreground/55 hover:text-accent text-sm transition-colors"
+            href={indexUrl}
+          >
+            Categories
+          </Link>
+        )
+      }
+      <div class="flex items-baseline gap-2">
+        <Decorator class="text-lg font-semibold">
+          {node.name}
+        </Decorator>
+        <span class="text-foreground/45 text-sm">
+          {node.subtreePostCount} posts
+        </span>
+        {
+          node.directChildCount > 0 && (
+            <span class="text-foreground/35 text-xs">
+              / {node.directChildCount} subcategories
+            </span>
+          )
+        }
+      </div>
+    </div>
+
+    <!-- Child category links -->
+    {
+      childCategories.length > 0 && (
+        <div class="space-y-1">
+          {childCategories.map(([name, child]) => (
+            <Link
+              class="hover:bg-background flex w-full items-center gap-2 rounded px-3 py-2 transition-colors"
+              href={categoryUrl(child)}
+            >
+              <span class="text-foreground/60 truncate text-sm">
+                {child.name}
+              </span>
+              <span class="text-foreground/45 ml-auto text-xs">
+                {child.subtreePostCount} posts
+              </span>
+            </Link>
+          ))}
+        </div>
+      )
+    }
+
+    <!-- Direct posts in this category -->
+    {
+      posts.length > 0 && (
+        <div class="divide-border/50 divide-y">
+          {posts.map((post) => (
+            <Link
+              class="hover:bg-background flex items-center gap-3 px-3 py-2.5 transition-colors"
+              href={createRouteUrl("blog", post.id)}
+            >
+              <time
+                class="text-foreground/45 min-w-[8.5rem] text-sm"
+                datetime={post.published.toISOString()}
+              >
+                {formatDate(post.published)}
+              </time>
+              <span class="text-foreground/55 truncate text-sm">
+                {post.title}
+              </span>
+            </Link>
+          ))}
+        </div>
+      )
+    }
+
+    <!-- Empty state -->
+    {
+      posts.length === 0 && childCategories.length === 0 && (
+        <div class="text-foreground/35 px-3 py-4 text-sm">
+          No posts in this category.
+        </div>
+      )
+    }
+  </section>
+
+  <!-- Page nav: child category links -->
+  {
+    childCategories.length > 0 && (
+      <div slot="page-nav">
+        {childCategories.map(([name, child]) => (
+          <Link
+            class="btn row px-3 text-sm"
+            data-variant="ghost"
+            href={categoryUrl(child)}
+          >
+            <span>{child.name}</span>
+            <span class="text-foreground/45 text-xs">
+              {child.subtreePostCount}
+            </span>
+          </Link>
+        ))}
+      </div>
+    )
+  }
+</IndexLayout>
