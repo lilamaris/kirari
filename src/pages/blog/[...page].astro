@@ -48,29 +48,9 @@ const seoDescription =
           >
             Blog
           </Decorator>
-          <div
-            class="text-foreground/55 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
-          >
-            <span>{allPosts.length} posts</span>
-            {
-              latestPost && (
-                <>
-                  <span class="text-foreground/25">/</span>
-                  <span>{formatDate(latestPost.data.published)}</span>
-                </>
-              )
-            }
-            {
-              page.lastPage > 1 && (
-                <>
-                  <span class="text-foreground/25">/</span>
-                  <span>
-                    Page {page.currentPage} of {page.lastPage}
-                  </span>
-                </>
-              )
-            }
-          </div>
+          <span class="text-foreground/55 flex flex-wrap items-center text-sm">
+            {allPosts.length} posts
+          </span>
         </div>
         <Link
           class="text-foreground/65 hover:text-accent text-sm transition-colors"
@@ -80,17 +60,45 @@ const seoDescription =
         </Link>
       </div>
     </section>
+    <div class="anim-onload card flex items-center justify-between p-1">
+      {
+        page.lastPage > 1 && (
+          <span class="text-foreground/55 px-3 text-sm">
+            Page {page.currentPage} of {page.lastPage}
+          </span>
+        )
+      }
+      <div class="flex items-center justify-center gap-0.5">
+        <Pagination
+          style="--initialDelay: 250ms"
+          current={page.currentPage}
+          prev={page.url.prev}
+          next={page.url.next}
+          first={page.url.first}
+          last={page.url.last}
+        />
+      </div>
+    </div>
 
     <PostList class:list={["anim-onload"]} style="--i: 1" posts={posts} />
-    <div class="anim-onload flex items-center justify-center gap-0.5">
-      <Pagination
-        style="--initialDelay: 250ms"
-        current={page.currentPage}
-        prev={page.url.prev}
-        next={page.url.next}
-        first={page.url.first}
-        last={page.url.last}
-      />
+    <div class="anim-onload card flex items-center justify-between p-1">
+      {
+        page.lastPage > 1 && (
+          <span class="text-foreground/55 px-3 text-sm">
+            Page {page.currentPage} of {page.lastPage}
+          </span>
+        )
+      }
+      <div class="flex items-center justify-center gap-0.5">
+        <Pagination
+          style="--initialDelay: 250ms"
+          current={page.currentPage}
+          prev={page.url.prev}
+          next={page.url.next}
+          first={page.url.first}
+          last={page.url.last}
+        />
+      </div>
     </div>
   </div>
 </MainLayout>
