@@ -11,7 +11,6 @@ import { routes, siteConfig, socials, themeConfig } from "@/consts";
 import { createRouteUrl, objectEntries } from "@/lib/utils";
 
 const posts = await getCollection("posts", ({ data }) => !data.draft);
-const indexes = await getCollection("postIndex");
 
 const { avatarImgUrl } = themeConfig;
 const { title, description, authorName, authorComment } = siteConfig;
@@ -25,7 +24,7 @@ const quickLinks = [
   {
     label: "Archive",
     href: createRouteUrl("index"),
-    detail: `${indexes.length} groups`,
+    detail: "Browse index",
   },
   {
     label: "Home",
@@ -145,7 +144,6 @@ const quickLinks = [
       <div class="text-foreground/60 space-y-1 text-sm">
         <p>{authorName}</p>
         <p>{posts.length} published posts</p>
-        <p>{indexes.length} archive groups</p>
       </div>
     </div>
   </div>

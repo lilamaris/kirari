@@ -9,7 +9,6 @@ import type {
 } from "./consts";
 
 export type Post = CollectionEntry<"posts">;
-export type PostIndex = CollectionEntry<"postIndex">;
 export type AssetLike = string | ImageMetadata;
 
 export type ThemeEnum = (typeof theme)[keyof typeof theme];

@@ -15,9 +15,11 @@ const escapeXml = (value: string): string =>
 export const GET: APIRoute = async () => {
   const siteUrl = getSiteUrl();
   const posts = await getCollection("posts", ({ data }) => !data.draft);
-  const indexes = await getCollection("postIndex");
 
-  const pageCount = Math.max(1, Math.ceil(posts.length / themeConfig.postPerPage));
+  const pageCount = Math.max(
+    1,
+    Math.ceil(posts.length / themeConfig.postPerPage),
+  );
   const blogPages = Array.from({ length: pageCount }, (_, i) =>
     i === 0 ? routes.blog.href : `${routes.blog.href}/${i + 1}`,
   );
@@ -29,9 +31,6 @@ export const GET: APIRoute = async () => {
     { path: routes.index.href },
     ...objectValues(indexType).map((type) => ({
       path: `${routes.index.href}/${type}`,
-    })),
-    ...indexes.map((index) => ({
-      path: `${routes.index.href}/${index.id}`,
     })),
     ...posts.map((post) => ({
       path: `${routes.blog.href}/${post.id}`,
