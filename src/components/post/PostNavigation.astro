@@ -37,7 +37,7 @@ const olderPost = olderPostRef
       class="mx-4 size-4 shrink-0 self-center transition-transform group-hover:-translate-x-2"
       name="lucide:arrow-left"
     />
-    <div class="flex-1">
+    <div class="flex-1 text-start">
       <div class="text-foreground/50 text-sm">Previous Post</div>
       <span class="line-clamp-1 font-medium">
         {olderPost?.data.title ?? "No previous post"}
@@ -46,12 +46,9 @@ const olderPost = olderPostRef
   </Link>
   <Link
     href={newerPost ? `/blog/${newerPost?.id}` : "#"}
-    class:list={[
-      "btn card group justify-end rounded-r-lg",
-      { disabled: !!!newerPost },
-    ]}
+    class:list={["btn card group rounded-r-lg", { disabled: !!!newerPost }]}
   >
-    <div class="text-end">
+    <div class="flex-1 text-end">
       <div class="text-foreground/50 text-sm">Next Post</div>
       <span class="line-clamp-1 font-medium">
         {newerPost?.data.title ?? "No next post"}
