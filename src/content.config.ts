@@ -5,7 +5,7 @@ const posts = defineCollection({
   loader: postLoader(),
   schema: ({ image }) =>
     z.object({
-      title: z.string(),
+      title: z.string().optional().default(""),
       description: z.string().optional(),
       tags: z.array(z.string()).default([]),
       published: z.coerce.date(),

@@ -20,6 +20,7 @@ export const postLoader = (): Loader => {
         const filePath = post.filePath;
 
         if (!filePath) throw new Error(`filePath undefined. id=${post.id}`);
+        post.data.title = getPostTitle(post, filePath);
         post.data.contentPath = normalizePath(filePath).slice(base.length);
         post.data.minutes = Math.max(
           1,
@@ -38,6 +39,16 @@ export const postLoader = (): Loader => {
       }
     },
   );
+};
+
+const getPostTitle = (post: Post, filePath: string): string => {
+  const title = post.data.title?.trim();
+  return title ? title : getTitleFromFilePath(filePath);
+};
+
+const getTitleFromFilePath = (filePath: string): string => {
+  const fileName = normalizePath(filePath).split("/").pop() ?? filePath;
+  return fileName.replace(/\.(md|mdx)$/i, "").trim();
 };
 
 const comparePost = (a: Post, b: Post): number => {
