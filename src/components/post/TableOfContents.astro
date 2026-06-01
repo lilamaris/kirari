@@ -12,37 +12,28 @@ const { class: className, style: styleAttr, headings } = Astro.props;
 ---
 
 <table-of-contents>
-  <div
-    id="toc-wrapper"
-    class:list={[className, "relative overflow-y-scroll"]}
-    style={styleAttr}
-  >
-    <ul class="mx-4 py-2">
-      {
-        headings.map((heading) => (
-          <li class="text-foreground/50 hover:text-accent not-first:mt-1">
-            <Link
-              href={`#${heading.slug}`}
-              class:list={["btn justify-start px-2 py-0.5"]}
-              data-variant="ghost"
+  {
+    headings.length && (
+      <div
+        id="toc-wrapper"
+        class:list={[className, "relative overflow-y-scroll"]}
+        style={styleAttr}
+      >
+        <ul class="text-sm">
+          {headings.map((heading) => (
+            <li
+              class="text-foreground/50 hover:text-accent ml-[calc(var(--depth)_*_1)] not-first:mt-1"
+              style={toStyleVars({ depth: heading.depth - 1 })}
             >
-              <span
-                class:list={["pl-[calc(var(--depth)_*_0.7)]"]}
-                style={toStyleVars({ depth: heading.depth - 1 })}
-              >
-                {heading.text}
-              </span>
-            </Link>
-          </li>
-        ))
-      }
-    </ul>
-    <div
-      id="viewport-indicator"
-      class:list={[
-        "bg-accent rounded-surface absolute left-0 -z-10 w-1 transition-[height,top] duration-100",
-      ]}
-    >
-    </div>
-  </div>
+              <Link href={`#${heading.slug}`}>{heading.text}</Link>
+            </li>
+          ))}
+        </ul>
+        <div
+          id="viewport-indicator"
+          class="bg-accent/80 rounded-surface absolute left-3 -z-10 w-1 transition-[height,top] duration-100"
+        />
+      </div>
+    )
+  }
 </table-of-contents>
