@@ -1,0 +1,74 @@
+---
+import IndexLayout from "@/layouts/IndexLayout.astro";
+import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import { getTagIndex, getIndexedTag, type TagName } from "@/lib/index/tag";
+import { indexType, siteConfig } from "@/consts";
+import { createRouteUrl } from "@/lib/utils";
+
+const index = await getTagIndex();
+
+const tags: TagName[] = await getIndexedTag();
+
+// Aggregate stats for layout header
+const totalTags = tags.length;
+const totalPosts = Object.values(index).reduce((sum, entry) => sum + entry.postCount, 0);
+
+const tagUrl = (name: TagName): string =>
+  createRouteUrl("index", `tags/${name}`);
+---
+
+<IndexLayout
+  type={indexType.Tags}
+  groupCount={totalTags}
+  postCount={totalPosts}
+  seoTitle={`Index - Tags`}
+  seoDescription={`Keyword tags of all posts on ${siteConfig.title}.`}
+>
+  <!-- Main content: alphabetical tag sections -->
+  <section
+    class="card anim-onload space-y-3 p-5 sm:p-6"
+    style="--i: 1"
+  >
+    <!-- Tag heading -->
+    <div class="flex items-center justify-between gap-2">
+      <Decorator class="text-base font-semibold">
+        All Tags
+      </Decorator>
+      <span class="text-foreground/45 text-sm">
+        {totalTags} tags / {totalPosts} posts
+      </span>
+    </div>
+
+    <!-- Tag list with counts -->
+    <div class="flex flex-wrap gap-2">
+      {tags.map((tag, i) => (
+        <Link
+          class="flex items-center gap-1.5 rounded-full px-3 py-1.5 hover:bg-background transition-colors"
+          href={tagUrl(tag)}
+        >
+          <span class="text-foreground/60 text-sm">
+            {tag}
+          </span>
+          <span class="text-foreground/40 text-xs">
+            ({index[tag].postCount})
+          </span>
+        </Link>
+      ))}
+    </div>
+  </section>
+
+  <!-- Page nav: tag quick links sorted by post count descending -->
+  <div slot="page-nav">
+    {[...Object.values(index)].sort((a, b) => b.postCount - a.postCount).map((entry) => (
+      <Link
+        class="btn row px-3 text-sm"
+        data-variant="ghost"
+        href={tagUrl(entry.name)}
+      >
+        <span>{entry.name}</span>
+        <span class="text-foreground/45 text-xs">{entry.postCount}</span>
+      </Link>
+    ))}
+  </div>
+</IndexLayout>

@@ -1,20 +1,34 @@
 ---
 import type { StyledProps } from "@/types";
 
-import IndexList from "./IndexList.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import Link from "@/components/common/Link.astro";
 
-import { indexType } from "@/consts";
+import { createRouteUrl } from "@/lib/utils";
+import { getTagIndex } from "@/lib/index/tag";
 
 interface Props extends StyledProps {}
 
 const { class: className = "", style: styleAttr = "" } = Astro.props;
+
+const tagIndex = await getTagIndex();
+const tags = Object.keys(tagIndex).sort();
 ---
 
-<IndexList
-  class={className}
-  style={styleAttr}
-  type={indexType.Tags}
-  title="Tags"
-  listClass="flex flex-wrap gap-1"
-  linkClass="btn px-2 text-xs"
-/>
+<div class:list={[className, "card space-y-1 px-4 py-2"]}>
+  <Decorator>
+    <span>Tags</span>
+  </Decorator>
+  <ul class="flex flex-wrap gap-1">
+    {tags.map((tag) => (
+      <li>
+        <Link
+          class="btn px-2 text-xs"
+          href={createRouteUrl("index", `tags/${tag}`)}
+        >
+          <span class="truncate">{tag}</span>
+        </Link>
+      </li>
+    ))}
+  </ul>
+</div>

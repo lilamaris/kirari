@@ -1,0 +1,142 @@
+---
+import type { GetStaticPaths } from "astro";
+import IndexLayout from "@/layouts/IndexLayout.astro";
+import Link from "@/components/common/Link.astro";
+import Decorator from "@/components/common/Decorator.astro";
+import { getTagIndex, type TagName } from "@/lib/index/tag";
+import { indexType, siteConfig } from "@/consts";
+import { compareDate, createRouteUrl, formatDate } from "@/lib/utils";
+
+// Generate static paths for all tags
+export const getStaticPaths = (async () => {
+  const index = await getTagIndex();
+  return Object.keys(index).map((tag) => ({
+    params: { tag },
+    props: { tag, index },
+  }));
+}) satisfies GetStaticPaths;
+
+const index = await getTagIndex();
+
+const { tag } = Astro.props;
+
+const entry = index[tag as TagName];
+
+// Sort posts by published date descending
+const posts = [...entry.posts].sort(
+  (a, b) => compareDate(a.published, b.published, "desc"),
+);
+
+const tagUrl = (name: TagName): string =>
+  createRouteUrl("index", `tags/${name}`);
+
+// Find other tags that share posts with this tag (related tags)
+const relatedTags = new Set<TagName>();
+for (const p of entry.posts) {
+  for (const [otherTag, otherEntry] of Object.entries(index)) {
+    if (otherTag === tag) continue;
+    if (otherEntry.posts.some((op) => op.id === p.id)) {
+      relatedTags.add(otherTag as TagName);
+    }
+  }
+}
+
+const totalTags = Object.keys(index).length;
+const totalPosts = Object.values(index).reduce((sum, e) => sum + e.postCount, 0);
+
+const indexUrl = createRouteUrl("index", "tags/");
+---
+
+<IndexLayout
+  type={indexType.Tags}
+  groupCount={totalTags}
+  postCount={totalPosts}
+  seoTitle={`Index - ${tag}`}
+  seoDescription={`Posts tagged ${tag} on ${siteConfig.title}.`}
+>
+  <section class="card anim-onload space-y-4 p-5 sm:p-6" style="--i: 1">
+    <!-- Breadcrumb + heading + stats -->
+    <div class="space-y-2">
+      <Link
+        class="text-foreground/55 hover:text-accent text-sm transition-colors"
+        href={indexUrl}
+      >
+        Tags
+      </Link>
+      <div class="flex items-baseline gap-2">
+        <Decorator class="text-lg font-semibold">
+          {tag}
+        </Decorator>
+        <span class="text-foreground/45 text-sm">
+          {entry.postCount} posts
+        </span>
+      </div>
+    </div>
+
+    <!-- Related tags -->
+    {relatedTags.size > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {[...relatedTags].sort().map((relatedTag) => (
+          <Link
+            class="flex items-center gap-1.5 rounded-full px-3 py-1.5 hover:bg-background transition-colors"
+            href={tagUrl(relatedTag)}
+          >
+            <span class="text-foreground/60 text-sm">
+              {relatedTag}
+            </span>
+            <span class="text-foreground/40 text-xs">
+              ({index[relatedTag].postCount})
+            </span>
+          </Link>
+        ))}
+      </div>
+    )}
+
+    <!-- Posts in this tag -->
+    {posts.length > 0 && (
+      <div class="divide-y divide-border/50">
+        {posts.map((post) => (
+          <Link
+            class="flex items-center gap-3 px-3 py-2.5 hover:bg-background transition-colors"
+            href={createRouteUrl("blog", post.id)}
+          >
+            <time
+              class="text-foreground/45 min-w-[8.5rem] text-sm"
+              datetime={post.published.toISOString()}
+            >
+              {formatDate(post.published)}
+            </time>
+            <span class="text-foreground/55 truncate text-sm">
+              {post.title}
+            </span>
+          </Link>
+        ))}
+      </div>
+    )}
+
+    <!-- Empty state -->
+    {posts.length === 0 && (
+      <div class="text-foreground/35 px-3 py-4 text-sm">
+        No posts with this tag.
+      </div>
+    )}
+  </section>
+
+  <!-- Page nav: related tag quick links -->
+  {relatedTags.size > 0 && (
+    <div slot="page-nav">
+      {[...relatedTags].sort().map((relatedTag) => (
+        <Link
+          class="btn row px-3 text-sm"
+          data-variant="ghost"
+          href={tagUrl(relatedTag)}
+        >
+          <span>{relatedTag}</span>
+          <span class="text-foreground/45 text-xs">
+            {index[relatedTag].postCount}
+          </span>
+        </Link>
+      ))}
+    </div>
+  )}
+</IndexLayout>
