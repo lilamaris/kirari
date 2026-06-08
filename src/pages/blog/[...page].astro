@@ -12,15 +12,13 @@ import { siteConfig, themeConfig } from "@/consts";
 import { createRouteUrl, formatDate } from "@/lib/utils";
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = await getCollection("posts");
   return paginate(posts, { pageSize: themeConfig.postPerPage });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
 const posts = page.data;
-const allPosts = [
-  ...(await getCollection("posts", ({ data }) => !data.draft)),
-].sort(
+const allPosts = [...(await getCollection("posts"))].sort(
   (a, b) => +new Date(b.data.published ?? 0) - +new Date(a.data.published ?? 0),
 );
 const latestPost = allPosts[0];
