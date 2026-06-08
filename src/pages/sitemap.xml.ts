@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
-import { indexType, routes, themeConfig } from "@/consts";
+import { indexType, themeConfig } from "@/consts";
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/seo";
-import { objectValues } from "@/lib/utils";
+import { createRouteUrl, objectValues } from "@/lib/utils";
 
 const escapeXml = (value: string): string =>
   value
@@ -21,19 +21,19 @@ export const GET: APIRoute = async () => {
     Math.ceil(posts.length / themeConfig.postPerPage),
   );
   const blogPages = Array.from({ length: pageCount }, (_, i) =>
-    i === 0 ? routes.blog.href : `${routes.blog.href}/${i + 1}`,
+    i === 0 ? createRouteUrl("blog") : createRouteUrl("blog", String(i + 1)),
   );
 
   const urls = [
-    { path: routes.root.href },
-    { path: routes.about.href },
+    { path: createRouteUrl("root") },
+    { path: createRouteUrl("about") },
     ...blogPages.map((path) => ({ path })),
-    { path: routes.index.href },
+    { path: createRouteUrl("index") },
     ...objectValues(indexType).map((type) => ({
-      path: `${routes.index.href}/${type}`,
+      path: createRouteUrl("index", type),
     })),
     ...posts.map((post) => ({
-      path: `${routes.blog.href}/${post.id}`,
+      path: createRouteUrl("blog", post.id),
       lastmod: post.data.published.toISOString(),
     })),
   ]

@@ -4,6 +4,7 @@ import { getEntry } from "astro:content";
 import Link from "@/components/common/Link.astro";
 import type { StyledProps } from "@/types";
 import { Icon } from "astro-icon/components";
+import { createRouteUrl } from "@/lib/utils";
 
 interface Props extends StyledProps {
   newerPostRef?: string;
@@ -30,7 +31,7 @@ const olderPost = olderPostRef
   style={styleAttr}
 >
   <Link
-    href={olderPost ? `/blog/${olderPost?.id}` : "#"}
+    href={olderPost ? createRouteUrl("blog", olderPost.id) : "#"}
     class:list={[
       "btn card group gap-4 rounded-l-lg px-4",
       { disabled: !!!olderPost },
@@ -48,7 +49,7 @@ const olderPost = olderPostRef
     </div>
   </Link>
   <Link
-    href={newerPost ? `/blog/${newerPost?.id}` : "#"}
+    href={newerPost ? createRouteUrl("blog", newerPost.id) : "#"}
     class:list={[
       "btn card group gap-4 rounded-r-lg px-4",
       { disabled: !!!newerPost },

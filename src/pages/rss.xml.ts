@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import { siteConfig } from "@/consts";
 import { getSiteUrl, toAbsoluteUrl } from "@/lib/seo";
+import { createRouteUrl } from "@/lib/utils";
 
 const escapeXml = (value: string): string =>
   value
@@ -24,7 +25,8 @@ export const GET: APIRoute = async () => {
 
   const items = sortedPosts
     .map((post) => {
-      const link = toAbsoluteUrl(`/blog/${post.id}`, siteUrl) ?? `/blog/${post.id}`;
+      const path = createRouteUrl("blog", post.id);
+      const link = toAbsoluteUrl(path, siteUrl) ?? path;
       return `  <item>
     <title>${escapeXml(post.data.title)}</title>
     <description>${escapeXml(post.data.description ?? "")}</description>

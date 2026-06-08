@@ -64,15 +64,15 @@ export const routes = {
     label: "/Home",
   },
   blog: {
-    href: "/blog",
+    href: "/blog/",
     label: "/Blog",
   },
   index: {
-    href: "/index",
+    href: "/index/",
     label: "/Index",
   },
   about: {
-    href: "/about",
+    href: "/about/",
     label: "/About",
   },
 } as const;

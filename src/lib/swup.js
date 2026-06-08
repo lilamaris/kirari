@@ -23,6 +23,9 @@ const setBaseUrlToDocument = () => {
 const swup = new Swup({
   containers: ["#swup-target"],
   animationSelector: '[class*="transition-swup-"]',
+  requestHeaders: {
+    Accept: "text/html, application/xhtml+xml",
+  },
   ignoreVisit: (url, { el } = {}) =>
     !!el?.closest("[data-no-swup]") || isNonHtmlEndpoint(url),
 });

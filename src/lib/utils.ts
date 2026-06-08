@@ -60,8 +60,13 @@ export const createUrl = (path: string) => {
 
 export const createRouteUrl = (route: Route, path?: string): string => {
   const baseUrl = routes[route]?.href ?? "/";
-  return joinUrl(baseUrl, ...(path != undefined ? [path] : []));
+  return withTrailingSlash(
+    joinUrl(baseUrl, ...(path != undefined ? [path] : [])),
+  );
 };
+
+const withTrailingSlash = (path: string): string =>
+  path === "/" || path.endsWith("/") ? path : `${path}/`;
 
 export const formatDate = (date: Date) => {
   return Intl.DateTimeFormat("en-US", {
